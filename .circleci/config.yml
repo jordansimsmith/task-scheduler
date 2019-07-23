@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/task-scheduler
+
+    docker:
+      - image: circleci/openjdk
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: task-scheduler-{{ checksum "pom.xml" }}
+      - run:
+          name: Download dependencies
+          command: mvn dependency:go-offline
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: task-scheduler-{{ checksum "pom.xml" }}
+      - run:
+          name: Build and test artifact
+          command: mvn package
+      - store_test_results:
+          path: target/surefire-reports
+      - store_artifacts:
+          path: target/task-scheduler-1.0-SNAPSHOT.jar
