@@ -1,2 +1,2 @@
-# process-scheduler
+# task-scheduler
 SOFTENG 306 Project 1.
