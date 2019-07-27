@@ -10,8 +10,16 @@ public class App
     {
         System.out.println( "SOFTENG306 Scheduler - Group 14" );
 
-        Configuration conf = processArguments(args);
-        if (conf == null)   {
+        Configuration conf;
+        try {
+            conf = processArguments(args);
+        } catch (IllegalArgumentException e)    {
+            printHelp();
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        if (conf == null)  {
             return;
         }
 
@@ -22,9 +30,9 @@ public class App
 
     /**
      * Processes commandline arguments into a Configuration object, fills defaults if not specified.
-     * Prints help, descriptive error and returns null if invalid commands given.
+     * @throws IllegalArgumentException if arguments incorrect, with error message
      */
-    private static Configuration processArguments(String[] args)
+    private static Configuration processArguments(String[] args) throws IllegalArgumentException
     {
         if (args.length < 2)
         {
@@ -38,9 +46,7 @@ public class App
         try {
             conf.numberCores = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            printHelp();
-            System.out.println("Number of processors to schedule on was not a valid integer.");
-            return null;
+            throw new IllegalArgumentException("Number of processors to schedule on was not a valid integer.");
         }
 
         conf.numberThreads = 1;
@@ -51,18 +57,14 @@ public class App
             switch (args[i])    {
                 case "-p":
                     if (args.length < i + 2)    {
-                        printHelp();
-                        System.out.println("Argument -p must be followed by a valid integer.");
-                        return null;
+                        throw new IllegalArgumentException("Argument -p must be followed by a valid integer.");
                     }
 
                     try {
                         conf.numberThreads = Integer.parseInt(args[i + 1]);
                         i++;
                     } catch (NumberFormatException e) {
-                        printHelp();
-                        System.out.println("Argument -p must be followed by a valid integer.");
-                        return null;
+                        throw new IllegalArgumentException("Argument -p must be followed by a valid integer.");
                     }
                     break;
                 case "-v":
@@ -70,18 +72,14 @@ public class App
                     break;
                 case "-o":
                     if (args.length < i + 2)    {
-                        printHelp();
-                        System.out.println("Argument -o must be followed by a filename.");
-                        return null;
+                        throw new IllegalArgumentException("Argument -o must be followed by a filename.");
                     }
 
                     conf.outputFile = args[i + 1];
                     i++;
                     break;
                 default:
-                    printHelp();
-                    System.out.println("Argument "+args[i]+" was not recognised as a valid command.");
-                    return null;
+                    throw new IllegalArgumentException("Argument "+args[i]+" was not recognised as a valid command.");
             }
         }
 
