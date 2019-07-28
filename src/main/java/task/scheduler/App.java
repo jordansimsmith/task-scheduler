@@ -1,5 +1,7 @@
 package task.scheduler;
 
+import java.io.File;
+
 /**
  * Hello world!
  *
@@ -26,6 +28,13 @@ public class App
         System.out.println("Processing "+conf.inputFile+" on "+conf.numberThreads+" cores to find a schedule for "+conf.numberCores+" processors.");
         System.out.println((conf.visualise) ? "The results will be visualised" : "The results will not be visualised");
         System.out.println("Output will be saved as "+conf.outputFile);
+
+        try
+        {
+            new Graph(new File(conf.inputFile));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
