@@ -22,4 +22,8 @@ public class MockLogger implements ILogger {
     public List<String> getLoggedItems() {
         return loggedItems;
     }
+
+    public void clearLoggedItems(){
+        loggedItems.clear();
+    }
 }
