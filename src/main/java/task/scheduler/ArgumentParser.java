@@ -2,12 +2,21 @@ package task.scheduler;
 
 import java.io.File;
 
+/**
+ * ArgumentParser is a class for parsing the command line arguments for the task-scheduler program.
+ */
 public class ArgumentParser {
 
     // TODO: inject logger here
     public ArgumentParser() {
     }
 
+    /**
+     * parse is used to parse the command line arguments into a machine readable, configuration object.
+     * @param args command line arguments from entry point
+     * @return Instance of config singleton object
+     * @throws IllegalArgumentException
+     */
     public Config parse(String[] args) throws IllegalArgumentException {
         // check for required arguments
         if (args.length < 2) {
@@ -72,6 +81,10 @@ public class ArgumentParser {
         return config;
     }
 
+    /**
+     * printHelp is used to print the help commands to the console.
+     * This method should be called when the user enters an incorrect set of arguments.
+     */
     public void printHelp() {
         System.out.println("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
                 "INPUT.dot a task graph with integer weights in dot format\r\n" +
