@@ -3,8 +3,7 @@ package task.scheduler;
 /**
  * Struct like class for storing configuration variables.
  */
-class Configuration
-{
+class Configuration {
     String inputFile;
     String outputFile;
 
