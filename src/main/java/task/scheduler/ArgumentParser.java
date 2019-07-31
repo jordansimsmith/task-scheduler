@@ -13,6 +13,7 @@ public class ArgumentParser {
 
     /**
      * parse is used to parse the command line arguments into a machine readable, configuration object.
+     *
      * @param args command line arguments from entry point
      * @return Instance of config singleton object
      * @throws IllegalArgumentException
@@ -64,6 +65,8 @@ public class ArgumentParser {
                     // output file path
                     outputFile = new File(args[++i]);
                     break;
+                default:
+                    throw new IllegalArgumentException("argument " + args[i] + " was not recognised as a valid command.");
             }
         }
 

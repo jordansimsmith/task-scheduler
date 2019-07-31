@@ -158,5 +158,21 @@ public class TestArgumentParser {
             assertEquals(expected, e.getMessage());
         }
     }
+
+    @Test
+    public void testInvalidOptionalArgument() {
+        // arrange
+        String[] args = {"src/test/resources/test_file.dot", "3", "-x"};
+
+        // act
+        try {
+            parser.parse(args);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // assert
+            String expected = "argument -x was not recognised as a valid command.";
+            assertEquals(expected, e.getMessage());
+        }
+    }
 }
 
