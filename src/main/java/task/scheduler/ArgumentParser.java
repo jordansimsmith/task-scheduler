@@ -62,7 +62,7 @@ public class ArgumentParser {
                     break;
                 case "-o":
                     // output file path
-                    outputFile = new File(args[1]);
+                    outputFile = new File(args[++i]);
                     break;
             }
         }
