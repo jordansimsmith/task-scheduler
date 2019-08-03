@@ -7,4 +7,5 @@ a -> c [Weight =2];
 d [ Weight=2] ;
 b -> d [ Weight =2];
 c -> d [ Weight =1];
+d -> a [ Weight=3];
 }
