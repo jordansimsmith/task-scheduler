@@ -1,5 +1,10 @@
 package task.scheduler;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+
 public class App {
     public static void main(String[] args) {
         System.out.println("Task Scheduler starting.");
@@ -26,6 +31,15 @@ public class App {
         try {
             new Graph(config.getInputFile());
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // write to output file - construction is long because dependency injection is needed
+        // TODO: move/change this invocation once algorithms have been implemented
+        try {
+            FileWriter fileWriter = new FileWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(config.getOutputFile()))));
+            fileWriter.writeScheduledGraphToFile(null, null, null);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
