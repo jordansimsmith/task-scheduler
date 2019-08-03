@@ -11,7 +11,7 @@ public class Config {
 
     // configuration options
     private File inputFile;
-    private File outputFile;
+    private File outputFile = new File("./INPUT−output.dot"); // default file
     private int numberOfCores;
     private int numberOfThreads;
     private boolean visualise;
