@@ -8,7 +8,7 @@ public class InputValidator {
 
     /**
      * Method validateGraph validates a task graph against the provided criteria.
-     * The nodes must not be null, there must be exactly one start and end node, the graph must be acyclic,
+     * The nodes must not be null, there must be exactly one start node, the graph must be acyclic,
      * the node labels must be unique.
      * @param graph to be validated
      * @throws GraphException if the graph is invalid.
@@ -23,17 +23,6 @@ public class InputValidator {
         // start node should have no parents
         if (!startNode.getParents().isEmpty()) {
             throw new GraphException("start node should not have any parents");
-        }
-
-        // end node should not be null
-        INode endNode = graph.getEndNode();
-        if (endNode == null) {
-            throw new GraphException("end node should not be null");
-        }
-
-        // end node should not have any children
-        if (!endNode.getChildren().isEmpty()) {
-            throw new GraphException("end node should not have any children");
         }
 
         // graph node list should not be null
@@ -62,11 +51,6 @@ public class InputValidator {
             // node should have at least one parent
             if (node != startNode && node.getParents().isEmpty()) {
                 throw new GraphException("there should only be one start node");
-            }
-
-            // node should have at least one child
-            if (node != endNode && node.getChildren().isEmpty()) {
-                throw new GraphException("there should be only one end node");
             }
 
             // node labels should be unique
