@@ -9,25 +9,21 @@ import java.util.List;
 public interface IGraph {
     /**
      * Method getNodes is returns a list of all the nodes in this graph.
+     *
      * @return List of INodes
      */
     public List<INode> getNodes();
 
     /**
      * Method getStartNode gets the start node for the graph. There is always only one start node for a valid graph.
+     *
      * @return start INode
      */
     public INode getStartNode();
 
     /**
-     * Method getEndNode gets the end node for the graph. There is always only one end node for a valid graph.
-     *
-     * @return end INode;
-     */
-    public INode getEndNode();
-
-    /**
      * Method getNodeCount gets the number of nodes in this graph.
+     *
      * @return an int for the number of nodes.
      */
     public int getNodeCount();
