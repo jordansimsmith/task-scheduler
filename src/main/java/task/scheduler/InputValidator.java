@@ -2,12 +2,17 @@ package task.scheduler;
 
 import task.scheduler.exception.GraphException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class InputValidator {
 
+    /**
+     * Method validateGraph validates a task graph against the provided criteria.
+     * The nodes must not be null, there must be exactly one start and end node, the graph must be acyclic,
+     * the node labels must be unique.
+     * @param graph to be validated
+     * @throws GraphException if the graph is invalid.
+     */
     public void validateGraph(IGraph graph) throws GraphException {
         // graph start node should not be null
         INode startNode = graph.getStartNode();
@@ -44,7 +49,7 @@ public class InputValidator {
 
         // iterate and validate each node
         Set<String> labels = new HashSet<>();
-        for (INode node: nodes) {
+        for (INode node : nodes) {
             // node should not be null
             if (node == null) {
                 throw new GraphException("node shouldn't be null");
@@ -71,7 +76,75 @@ public class InputValidator {
             } else {
                 labels.add(label);
             }
-
         }
+
+        // check for cycles
+        if (isCyclic(graph)) {
+            throw new GraphException("cycle detected in graph");
+        }
+    }
+
+    /**
+     * Detects cycles in digraphs
+     *
+     * @param graph the graph consider
+     * @return whether the graph is cyclic or not
+     */
+    private boolean isCyclic(IGraph graph) {
+
+        // initialise maps
+        List<INode> nodes = graph.getNodes();
+        Map<INode, Boolean> visited = new HashMap<>();
+        Map<INode, Boolean> recStack = new HashMap<>();
+        for (INode node : nodes) {
+            visited.put(node, false);
+            recStack.put(node, false);
+        }
+
+        // detect cycle in DFS trees starting from each node
+        for (INode node : nodes) {
+            if (isCyclicRecursive(node, visited, recStack)) {
+                return true;
+            }
+        }
+
+        // no cycle
+        return false;
+    }
+
+    /**
+     * Recursively called to detect cycles in DFS trees.
+     * https://www.geeksforgeeks.org/detect-cycle-in-a-graph/
+     *
+     * @param node     current node
+     * @param visited  map of whether nodes have been visited or not
+     * @param recStack recursion stack used for detecting back edges. Nodes currently being considered.
+     * @return whether there is a cycle in this sub problem
+     */
+    private boolean isCyclicRecursive(INode node, Map<INode, Boolean> visited, Map<INode, Boolean> recStack) {
+
+        // node already in the recursion stack, cycle detected
+        if (recStack.get(node)) {
+            return true;
+        }
+
+        // node already visited
+        if (visited.get(node)) {
+            return false;
+        }
+
+        visited.put(node, true);
+        recStack.put(node, true);
+
+        // recursively call on children
+        for (Tuple<INode, Integer> child : node.getChildren()) {
+            if (isCyclicRecursive(child.x, visited, recStack)) {
+                return true;
+            }
+        }
+
+        // no cycle in this DFS tree
+        recStack.put(node, false);
+        return false;
     }
 }
