@@ -65,7 +65,7 @@ public class TestFileWriter {
         when(mockSchedule.getNodeSchedule(node)).thenReturn(new Tuple<>(2,3));
 
         // act
-        fileWriter.writeScheduledGraphToFile(mockGraph, mockSchedule, "testSingleNode");
+        fileWriter.writeScheduledGraphToFile(mockGraph, mockSchedule);
 
         // remove carriage return if testing on windows
         String actualString = outputStream.toString().replaceAll("\r","");

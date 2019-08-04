@@ -10,10 +10,11 @@ public class FileWriter {
         this.outputStream = outputStream;
     }
 
-    public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule, String graphName) {
+    public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule) {
+        String outputGraphName = getOutputGraphName();
 
         try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream))){
-            bufferedWriter.write(String.format("digraph \"%s\" {", graphName));
+            bufferedWriter.write(String.format("digraph \"%s\" {", outputGraphName));
             bufferedWriter.newLine();
 
             for(INode node: graph.getNodes()) {
@@ -36,5 +37,12 @@ public class FileWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @return the output graph name which is the output file name without the file extension
+     */
+    private String getOutputGraphName() {
+        return Config.getInstance().getOutputFile().getName().replaceFirst("[.][^.]+$", "");
     }
 }
