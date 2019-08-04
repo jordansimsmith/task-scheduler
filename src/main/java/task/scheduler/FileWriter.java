@@ -1,8 +1,15 @@
 package task.scheduler;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.Closeable;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.IOException;
 
-public class FileWriter implements Closeable{
+/**
+ * A FileWriter object writes an IGraph and ISchedule to a dot file.
+ */
+public class FileWriter implements Closeable {
 
     private OutputStream outputStream;
 
@@ -10,6 +17,12 @@ public class FileWriter implements Closeable{
         this.outputStream = outputStream;
     }
 
+    /**
+     * Writes the given graph with the given solution schedule to a file in dot file format.
+     * The name of the output file is taken from the global config settings.
+     * @param graph
+     * @param schedule
+     */
     public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule) {
         String outputGraphName = getOutputGraphName();
 
