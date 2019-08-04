@@ -9,7 +9,6 @@ import java.util.Map;
  * */
 public class ValidSchedulerSchedule implements ISchedule{
     private Map<INode,Tuple<Integer,Integer>> schedule;
-    private int cost = 0;
 
     public ValidSchedulerSchedule(){
         this.schedule = new HashMap<>();
