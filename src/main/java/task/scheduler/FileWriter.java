@@ -26,7 +26,7 @@ public class FileWriter implements Closeable{
                 if (!node.getParents().isEmpty()) {
 
                     for(Tuple<INode, Integer> parentNode : node.getParents()) {
-                        bufferedWriter.write(String.format("\t%s -> %s\t[Weight=%d]", parentNode.x.getLabel(), node.getLabel(), parentNode.y));
+                        bufferedWriter.write(String.format("\t%s -> %s\t[Weight=%d];", parentNode.x.getLabel(), node.getLabel(), parentNode.y));
                         bufferedWriter.newLine();
                     }
                 }
