@@ -4,15 +4,15 @@ import java.io.*;
 
 public class FileWriter {
 
-    private BufferedWriter bufferedWriter;
+    private OutputStream outputStream;
 
-    public FileWriter(BufferedWriter bufferedWriter) {
-        this.bufferedWriter = bufferedWriter;
+    public FileWriter(OutputStream outputStream) {
+        this.outputStream = outputStream;
     }
 
     public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule, String graphName) {
 
-        try {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream))){
             bufferedWriter.write(String.format("digraph \"%s\" {", graphName));
             bufferedWriter.newLine();
 

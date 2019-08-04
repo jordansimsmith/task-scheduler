@@ -37,7 +37,7 @@ public class App {
         // write to output file - construction is long because dependency injection is needed
         // TODO: move/change this invocation once algorithms have been implemented
         try {
-            FileWriter fileWriter = new FileWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(config.getOutputFile()))));
+            FileWriter fileWriter = new FileWriter((new FileOutputStream(config.getOutputFile())));
             fileWriter.writeScheduledGraphToFile(null, null, null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
