@@ -8,6 +8,7 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,12 +23,14 @@ import static org.mockito.Mockito.when;
 public class TestFileWriter {
 
     private FileWriter fileWriter;
+    private Config config;
     @Spy  private ByteArrayOutputStream outputStream;
     @Mock private IGraph mockGraph;
     @Mock private ISchedule mockSchedule;
 
     public TestFileWriter(){
-        outputStream = new ByteArrayOutputStream();
+        this.outputStream = new ByteArrayOutputStream();
+        this.config = Config.getInstance();
     }
 
     @Before
@@ -37,14 +40,11 @@ public class TestFileWriter {
 
     @After
     public void tearDown() {
-        Config config = Config.getInstance();
-
         // clear output stream between tests
         outputStream.reset();
 
         // reset singleton config object between tests
         config.setInputFile(null);
-        config.setOutputFile(null);
         config.setNumberOfCores(0);
         config.setNumberOfThreads(0);
         config.setVisualise(false);
@@ -53,6 +53,7 @@ public class TestFileWriter {
     @Test
     public void testSingleNode() throws IOException {
         // arrange
+        config.setOutputFile(new File("src/testSingleNode.dot"));
         String expectedString = "digraph \"testSingleNode\" {\n" +
                 "\ta\t[Weight=1 Start=2 Processor=3];\n" +
                 "}";
