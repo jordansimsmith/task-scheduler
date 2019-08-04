@@ -1,9 +1,6 @@
 package task.scheduler;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
 public class App {
     public static void main(String[] args) {
@@ -36,10 +33,9 @@ public class App {
 
         // write to output file - construction is long because dependency injection is needed
         // TODO: move/change this invocation once algorithms have been implemented
-        try {
-            FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()));
+        try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))){
             fileWriter.writeScheduledGraphToFile(null, null);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

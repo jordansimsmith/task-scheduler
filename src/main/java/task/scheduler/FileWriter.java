@@ -2,41 +2,36 @@ package task.scheduler;
 
 import java.io.*;
 
-public class FileWriter {
+public class FileWriter implements Closeable {
 
-    private OutputStream outputStream;
+    private BufferedWriter bufferedWriter;
 
     public FileWriter(OutputStream outputStream) {
-        this.outputStream = outputStream;
+        this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
     }
 
-    public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule) {
+    public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule) throws IOException {
         String outputGraphName = getOutputGraphName();
 
-        try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream))){
-            bufferedWriter.write(String.format("digraph \"%s\" {", outputGraphName));
+        bufferedWriter.write(String.format("digraph \"%s\" {", outputGraphName));
+        bufferedWriter.newLine();
+
+        for(INode node: graph.getNodes()) {
+            Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
+
+            bufferedWriter.write(String.format("\t%s\t[Weight=%d Start=%d Processor=%d];", node.getLabel(), node.getProcessingCost(), nodeSchedule.x, nodeSchedule.y));
             bufferedWriter.newLine();
 
-            for(INode node: graph.getNodes()) {
-                Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
+            if (!node.getParents().isEmpty()) {
 
-                bufferedWriter.write(String.format("\t%s\t[Weight=%d Start=%d Processor=%d];", node.getLabel(), node.getProcessingCost(), nodeSchedule.x, nodeSchedule.y));
-                bufferedWriter.newLine();
-
-                if (!node.getParents().isEmpty()) {
-
-                    for(Tuple<INode, Integer> parentNode : node.getParents()) {
-                        bufferedWriter.write(String.format("\t%s -> %s\t[Weight=%d]", parentNode.x.getLabel(), node.getLabel(), parentNode.y));
-                        bufferedWriter.newLine();
-                    }
+                for(Tuple<INode, Integer> parentNode : node.getParents()) {
+                    bufferedWriter.write(String.format("\t%s -> %s\t[Weight=%d]", parentNode.x.getLabel(), node.getLabel(), parentNode.y));
+                    bufferedWriter.newLine();
                 }
             }
-
-            bufferedWriter.write("}");
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+        bufferedWriter.write("}");
     }
 
     /**
@@ -44,5 +39,10 @@ public class FileWriter {
      */
     private String getOutputGraphName() {
         return Config.getInstance().getOutputFile().getName().replaceFirst("[.][^.]+$", "");
+    }
+
+    @Override
+    public void close() throws IOException {
+        bufferedWriter.close();
     }
 }

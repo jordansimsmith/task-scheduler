@@ -51,7 +51,7 @@ public class TestFileWriter {
     }
 
     @Test
-    public void testSingleNode() {
+    public void testSingleNode() throws IOException {
         // arrange
         String expectedString = "digraph \"testSingleNode\" {\n" +
                 "\ta\t[Weight=1 Start=2 Processor=3];\n" +
