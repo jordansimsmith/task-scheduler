@@ -5,7 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import task.scheduler.common.InputValidator;
+import task.scheduler.common.Tuple;
 import task.scheduler.exception.GraphException;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
 
 import java.util.ArrayList;
 import java.util.Arrays;

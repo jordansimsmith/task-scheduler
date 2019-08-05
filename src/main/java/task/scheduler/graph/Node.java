@@ -1,9 +1,9 @@
-package task.scheduler;
+package task.scheduler.graph;
 
-import java.util.Collections;
+import task.scheduler.common.Tuple;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a task to be scheduled, and its dependencies

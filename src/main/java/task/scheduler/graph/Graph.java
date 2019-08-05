@@ -1,10 +1,9 @@
-package task.scheduler;
+package task.scheduler.graph;
 
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
 import java.io.*;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -1,5 +1,10 @@
 package task.scheduler;
 
+import task.scheduler.common.ArgumentParser;
+import task.scheduler.common.Config;
+import task.scheduler.common.FileWriter;
+import task.scheduler.graph.Graph;
+
 import java.io.*;
 
 public class App {
@@ -33,7 +38,7 @@ public class App {
 
         // write to output file - construction is long because dependency injection is needed
         // TODO: move/change this invocation once algorithms have been implemented
-        try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))){
+        try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
             fileWriter.writeScheduledGraphToFile(null, null);
         } catch (IOException e) {
             e.printStackTrace();

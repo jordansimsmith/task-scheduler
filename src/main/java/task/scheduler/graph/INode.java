@@ -1,4 +1,6 @@
-package task.scheduler;
+package task.scheduler.graph;
+
+import task.scheduler.common.Tuple;
 
 import java.util.List;
 

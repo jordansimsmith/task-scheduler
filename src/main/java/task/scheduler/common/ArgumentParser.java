@@ -1,4 +1,6 @@
-package task.scheduler;
+package task.scheduler.common;
+
+import task.scheduler.common.Config;
 
 import java.io.File;
 

@@ -6,14 +6,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import task.scheduler.common.Config;
+import task.scheduler.common.FileWriter;
+import task.scheduler.common.Tuple;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
+import task.scheduler.graph.Node;
+import task.scheduler.schedule.ISchedule;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.atLeastOnce;
