@@ -30,11 +30,14 @@ public class TestFileWriter {
 
     private FileWriter fileWriter;
     private Config config;
-    @Spy  private ByteArrayOutputStream outputStream;
-    @Mock private IGraph mockGraph;
-    @Mock private ISchedule mockSchedule;
+    @Spy
+    private ByteArrayOutputStream outputStream;
+    @Mock
+    private IGraph mockGraph;
+    @Mock
+    private ISchedule mockSchedule;
 
-    public TestFileWriter(){
+    public TestFileWriter() {
         this.outputStream = new ByteArrayOutputStream();
         this.config = Config.getInstance();
     }
@@ -69,13 +72,13 @@ public class TestFileWriter {
         nodes.add(node);
 
         when(mockGraph.getNodes()).thenReturn(nodes);
-        when(mockSchedule.getNodeSchedule(node)).thenReturn(new Tuple<>(2,3));
+        when(mockSchedule.getNodeSchedule(node)).thenReturn(new Tuple<>(2, 3));
 
         // act
         fileWriter.writeScheduledGraphToFile(mockGraph, mockSchedule);
 
         // remove carriage return if testing on windows
-        String actualString = outputStream.toString().replaceAll("\r","");
+        String actualString = outputStream.toString().replaceAll("\r", "");
 
         // assert
         assertEquals(expectedString, actualString);
@@ -97,7 +100,7 @@ public class TestFileWriter {
 
         int[] array = new int[50];
 
-        for (int i = 1; i < array.length; i++){
+        for (int i = 1; i < array.length; i++) {
             array[i] = i;
         }
 
@@ -123,7 +126,7 @@ public class TestFileWriter {
         fileWriter.writeScheduledGraphToFile(mockGraph, mockSchedule);
 
         // remove carriage return if testing on windows
-        String actualString = outputStream.toString().replaceAll("\r","");
+        String actualString = outputStream.toString().replaceAll("\r", "");
 
         // assert
         assertEquals(expectedString, actualString);

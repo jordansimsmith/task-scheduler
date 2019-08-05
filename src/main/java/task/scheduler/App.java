@@ -1,37 +1,37 @@
 package task.scheduler;
 
-import task.scheduler.common.ArgumentParser;
-import task.scheduler.common.Config;
-import task.scheduler.common.FileWriter;
+import task.scheduler.common.*;
 import task.scheduler.graph.Graph;
 
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Task Scheduler starting.");
+        final ILogger logger = new ConsoleLogger();
+        logger.log("Task Scheduler starting.");
 
         // parse input arguments
-        ArgumentParser argumentParser = new ArgumentParser();
+        ArgumentParser argumentParser = new ArgumentParser(logger);
         Config config;
         try {
             config = argumentParser.parse(args);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            logger.log(e.getMessage());
             argumentParser.printHelp();
             return;
         }
 
         // display results
-        System.out.println("Processing input file " + config.getInputFile().getPath());
-        System.out.println("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
-        System.out.println(config.getNumberOfThreads() + " threads will be used in execution");
-        System.out.println(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
-        System.out.println("The results will be saved to " + config.getOutputFile().getPath());
+        logger.log("Processing input file " + config.getInputFile().getPath());
+        logger.log("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
+        logger.log(config.getNumberOfThreads() + " threads will be used in execution");
+        logger.log(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
+        logger.log("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
         try {
-            new Graph(config.getInputFile());
+            new Graph(config.getInputFile(), logger);
         } catch (Exception e) {
             e.printStackTrace();
         }

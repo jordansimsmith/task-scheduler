@@ -1,5 +1,6 @@
 package task.scheduler.graph;
 
+import task.scheduler.common.ILogger;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
@@ -15,8 +16,11 @@ import java.util.List;
 public class Graph implements IGraph {
     private List<Node> nodes;
     private Node startNode;
+    private final ILogger logger;
 
-    public Graph(File inputFile) throws IOException, DotFormatException {
+
+    public Graph(File inputFile, ILogger logger) throws IOException, DotFormatException {
+        this.logger = logger;
         this.loadGraphFromDotFile(inputFile);
     }
 
@@ -48,7 +52,7 @@ public class Graph implements IGraph {
         }
 
         for (Node node : nodes) {
-            System.out.println(node);
+            logger.log(node.toString());
         }
     }
 

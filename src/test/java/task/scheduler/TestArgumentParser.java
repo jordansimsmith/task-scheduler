@@ -3,6 +3,7 @@ package task.scheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import task.scheduler.mockclasses.MockLogger;
 import task.scheduler.common.ArgumentParser;
 import task.scheduler.common.Config;
 
@@ -13,10 +14,15 @@ import static org.junit.Assert.*;
 public class TestArgumentParser {
 
     private ArgumentParser parser;
+    private final MockLogger mockLogger;
+
+    public TestArgumentParser() {
+        this.mockLogger = new MockLogger();
+    }
 
     @Before
     public void setUp() {
-        this.parser = new ArgumentParser();
+        this.parser = new ArgumentParser(mockLogger);
     }
 
     @After
@@ -29,6 +35,9 @@ public class TestArgumentParser {
         config.setNumberOfCores(0);
         config.setNumberOfThreads(0);
         config.setVisualise(false);
+
+        // clear all strings that have been logged between tests
+        mockLogger.clearLoggedItems();
     }
 
     @Test
@@ -63,8 +72,22 @@ public class TestArgumentParser {
 
     @Test
     public void testHelp() {
-        // should not throw an exception
+        // arrange
+        String expectedString1 = "java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
+                "INPUT.dot a task graph with integer weights in dot format\r\n" +
+                "P number of processors to schedule the INPUT graph on\r\n";
+
+        String expectedString2 = "Optional: \r\n" +
+                "−p N use N cores for execution in parallel (default is sequential )\r\n" +
+                "−v visualise the search\r\n" +
+                "−o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)\r\n";
+
+        // act
         parser.printHelp();
+
+        // assert
+        assertEquals(mockLogger.getLoggedItems().get(0), expectedString1);
+        assertEquals(mockLogger.getLoggedItems().get(1), expectedString2);
     }
 
     @Test
