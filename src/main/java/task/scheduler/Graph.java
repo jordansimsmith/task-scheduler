@@ -16,7 +16,6 @@ import java.util.List;
 class Graph implements IGraph {
     private List<Node> nodes;
     private Node startNode;
-    private Node endNode;
 
     Graph(File inputFile) throws IOException, DotFormatException {
         this.loadGraphFromDotFile(inputFile);
@@ -42,23 +41,11 @@ class Graph implements IGraph {
 
                 startNode = node;
             }
-
-            if (node.getChildren().size() == 0) {
-                if (endNode != null) {
-                    throw new DotFormatException("Found two end nodes labelled " + endNode.getLabel() + " and " + node.getLabel());
-                }
-
-                endNode = node;
-            }
         }
 
         // Check start/end nodes
         if (startNode == null) {
             throw new DotNodeMissingException("No start node");
-        }
-
-        if (endNode == null) {
-            throw new DotNodeMissingException("No end node");
         }
 
         for (Node node : nodes) {
