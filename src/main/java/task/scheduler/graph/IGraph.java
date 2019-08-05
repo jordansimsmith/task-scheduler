@@ -1,4 +1,4 @@
-package task.scheduler;
+package task.scheduler.graph;
 
 import java.util.List;
 

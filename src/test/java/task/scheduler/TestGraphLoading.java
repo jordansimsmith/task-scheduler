@@ -1,10 +1,12 @@
 package task.scheduler;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.mockclasses.MockLogger;
+import task.scheduler.graph.Graph;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
 
 import java.io.File;
 
@@ -15,7 +17,7 @@ public class TestGraphLoading {
     private String dotFiles = "src/test/resources/dot_files/";
     private final MockLogger mockLogger;
 
-    public TestGraphLoading(){
+    public TestGraphLoading() {
         this.mockLogger = new MockLogger();
     }
 

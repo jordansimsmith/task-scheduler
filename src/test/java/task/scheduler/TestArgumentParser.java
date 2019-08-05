@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import task.scheduler.mockclasses.MockLogger;
+import task.scheduler.common.ArgumentParser;
+import task.scheduler.common.Config;
 
 import java.io.File;
 
