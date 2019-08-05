@@ -1,4 +1,7 @@
-package task.scheduler;
+package task.scheduler.schedule;
+
+import task.scheduler.common.Tuple;
+import task.scheduler.graph.INode;
 
 /**
  * ISchedule represents a schedule for a graph on a number of processors.

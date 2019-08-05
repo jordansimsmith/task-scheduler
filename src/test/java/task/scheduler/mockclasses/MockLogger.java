@@ -1,6 +1,6 @@
 package task.scheduler.mockclasses;
 
-import task.scheduler.ILogger;
+import task.scheduler.common.ILogger;
 import java.util.ArrayList;
 import java.util.List;
 

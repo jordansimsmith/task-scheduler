@@ -1,4 +1,10 @@
-package task.scheduler;
+package task.scheduler.common;
+
+import task.scheduler.common.Config;
+import task.scheduler.common.Tuple;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
+import task.scheduler.schedule.ISchedule;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;

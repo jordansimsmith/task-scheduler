@@ -1,4 +1,4 @@
-package task.scheduler;
+package task.scheduler.common;
 
 /**
  * Tuple is a generic class used to store two immutable objects.

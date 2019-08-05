@@ -1,6 +1,9 @@
-package task.scheduler;
+package task.scheduler.common;
 
+import task.scheduler.common.Tuple;
 import task.scheduler.exception.GraphException;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
 
 import java.util.*;
 

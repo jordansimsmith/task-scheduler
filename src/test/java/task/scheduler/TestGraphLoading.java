@@ -1,9 +1,10 @@
 package task.scheduler;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import task.scheduler.exception.DotFormatException;
+import task.scheduler.graph.Graph;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
 
 import java.io.File;
 
