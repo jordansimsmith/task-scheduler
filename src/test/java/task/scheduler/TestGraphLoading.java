@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import task.scheduler.exception.DotFormatException;
+import task.scheduler.mockclasses.MockLogger;
 
 import java.io.File;
 
@@ -11,6 +12,17 @@ import static org.junit.Assert.assertEquals;
 
 public class TestGraphLoading {
     private String dotFiles = "src/test/resources/dot_files/";
+    private final MockLogger mockLogger;
+
+    public TestGraphLoading(){
+        this.mockLogger = new MockLogger();
+    }
+
+    @After
+    public void tearDown() {
+        // clear all strings that have been logged between tests
+        mockLogger.clearLoggedItems();
+    }
 
     @Test
     public void testValidNoComments() throws Exception {
@@ -18,7 +30,7 @@ public class TestGraphLoading {
         String file = "valid_no_comments.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles + file));
+        IGraph g = new Graph(new File(dotFiles + file), mockLogger);
 
         // assert
         assertEquals(g.getNodeCount(), 4);
@@ -43,6 +55,6 @@ public class TestGraphLoading {
         String file = "invalid_looped.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles + file));
+        IGraph g = new Graph(new File(dotFiles + file), mockLogger);
     }
 }

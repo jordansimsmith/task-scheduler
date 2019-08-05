@@ -3,6 +3,7 @@ package task.scheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import task.scheduler.mockclasses.MockLogger;
 
 import java.io.File;
 
@@ -11,10 +12,15 @@ import static org.junit.Assert.*;
 public class TestArgumentParser {
 
     private ArgumentParser parser;
+    private final MockLogger mockLogger;
+
+    public TestArgumentParser() {
+        this.mockLogger = new MockLogger();
+    }
 
     @Before
     public void setUp() {
-        this.parser = new ArgumentParser();
+        this.parser = new ArgumentParser(mockLogger);
     }
 
     @After
@@ -27,6 +33,9 @@ public class TestArgumentParser {
         config.setNumberOfCores(0);
         config.setNumberOfThreads(0);
         config.setVisualise(false);
+
+        // clear all strings that have been logged between tests
+        mockLogger.clearLoggedItems();
     }
 
     @Test
