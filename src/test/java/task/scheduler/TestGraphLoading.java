@@ -18,12 +18,11 @@ public class TestGraphLoading {
         String file = "valid_no_comments.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles+file));
+        IGraph g = new Graph(new File(dotFiles + file));
 
         // assert
         assertEquals(g.getNodeCount(), 4);
         assertEquals(g.getStartNode().getLabel(), "a");
-        assertEquals(g.getEndNode().getLabel(), "d");
 
         for (INode node : g.getNodes()) {
             if (node.getLabel().equals("b")) {
@@ -44,6 +43,6 @@ public class TestGraphLoading {
         String file = "invalid_looped.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles+file));
+        IGraph g = new Graph(new File(dotFiles + file));
     }
 }

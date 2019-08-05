@@ -35,17 +35,17 @@ class Graph implements IGraph {
 
         // Find start and end nodes
         for (Node node : nodes) {
-            if (node.getParents().size() == 0)  {
-                if (startNode != null)  {
-                    throw new DotFormatException("Found two start nodes labelled "+startNode.getLabel()+" and "+node.getLabel());
+            if (node.getParents().size() == 0) {
+                if (startNode != null) {
+                    throw new DotFormatException("Found two start nodes labelled " + startNode.getLabel() + " and " + node.getLabel());
                 }
 
                 startNode = node;
             }
 
-            if (node.getChildren().size() == 0)  {
-                if (endNode != null)  {
-                    throw new DotFormatException("Found two end nodes labelled "+endNode.getLabel()+" and "+node.getLabel());
+            if (node.getChildren().size() == 0) {
+                if (endNode != null) {
+                    throw new DotFormatException("Found two end nodes labelled " + endNode.getLabel() + " and " + node.getLabel());
                 }
 
                 endNode = node;
@@ -53,11 +53,11 @@ class Graph implements IGraph {
         }
 
         // Check start/end nodes
-        if (startNode == null)    {
+        if (startNode == null) {
             throw new DotNodeMissingException("No start node");
         }
 
-        if (endNode == null)    {
+        if (endNode == null) {
             throw new DotNodeMissingException("No end node");
         }
 
@@ -90,12 +90,12 @@ class Graph implements IGraph {
 
     private Node getNodeByLabel(String label) throws DotNodeMissingException {
         for (Node node : nodes) {
-            if (node.getLabel().equals(label))  {
+            if (node.getLabel().equals(label)) {
                 return node;
             }
         }
 
-        throw new DotNodeMissingException("Node "+label+" could not be found");
+        throw new DotNodeMissingException("Node " + label + " could not be found");
     }
 
     /**
@@ -114,11 +114,6 @@ class Graph implements IGraph {
     @Override
     public INode getStartNode() {
         return startNode;
-    }
-
-    @Override
-    public INode getEndNode() {
-        return endNode;
     }
 
     @Override

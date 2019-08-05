@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Represents a task to be scheduled, and its dependencies
  */
-public class Node implements INode  {
+public class Node implements INode {
     private String label;
     private int cost;
     private List<Tuple<INode, Integer>> dependencies;
