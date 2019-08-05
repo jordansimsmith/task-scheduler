@@ -25,7 +25,7 @@ public class TestValidScheduler {
     private INode node;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         this.start = mock(INode.class);
         this.node = mock(INode.class);
         this.mockGraph = mock(IGraph.class);
@@ -45,13 +45,13 @@ public class TestValidScheduler {
 
     @Test
     public void testValidGraph() {
-        ValidScheduler scheduler = new ValidScheduler(mockGraph);
-        ISchedule schedule = scheduler.execute();
-        Tuple<Integer,Integer> s1 = schedule.getNodeSchedule(this.start);
-        Tuple<Integer,Integer> s2 = schedule.getNodeSchedule(this.node);
-        assertEquals(s1.x,Integer.valueOf(1));
-        assertEquals(s1.y,Integer.valueOf(0));
-        assertEquals(s2.x,Integer.valueOf(1));
-        assertEquals(s2.y,Integer.valueOf(2));
+        ValidScheduler scheduler = new ValidScheduler();
+        ISchedule schedule = scheduler.execute(mockGraph);
+        Tuple<Integer, Integer> s1 = schedule.getNodeSchedule(this.start);
+        Tuple<Integer, Integer> s2 = schedule.getNodeSchedule(this.node);
+        assertEquals(s1.x, Integer.valueOf(1));
+        assertEquals(s1.y, Integer.valueOf(0));
+        assertEquals(s2.x, Integer.valueOf(1));
+        assertEquals(s2.y, Integer.valueOf(2));
     }
 }
