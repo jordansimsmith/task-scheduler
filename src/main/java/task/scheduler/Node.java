@@ -11,27 +11,25 @@ import java.util.Map;
 public class Node implements INode {
     private String label;
     private int cost;
-    private List<Tuple<INode, Integer>> dependencies;
-    private List<Tuple<INode, Integer>> dependents;
+    private List<Tuple<INode, Integer>> dependencies = new LinkedList<>();
+    private List<Tuple<INode, Integer>> dependents = new LinkedList<>();
 
-    Node(int cost, String label) {
+    public Node(int cost, String label) {
         this.label = label;
         this.cost = cost;
-        dependencies = new LinkedList<>();
-        dependents = new LinkedList<>();
     }
 
     /**
      * Sets the task to be dependent on the given task, with given cost for transfer between processors
      */
-    void addDependency(INode task, int cost) {
+    public void addDependency(INode task, int cost) {
         dependencies.add(new Tuple<>(task, cost));
     }
 
     /**
      * Sets the task to be depended on by the given task, with given cost for transfer between processors
      */
-    void addDependent(INode task, int cost) {
+    public void addDependent(INode task, int cost) {
         dependents.add(new Tuple<>(task, cost));
     }
 

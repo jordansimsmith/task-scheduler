@@ -13,11 +13,11 @@ import java.util.List;
  * TODO: Needs to handle things like DotFormat comments, etc
  * TODO: Can nodes have multiple char names?
  */
-class Graph implements IGraph {
+public class Graph implements IGraph {
     private List<Node> nodes;
     private Node startNode;
 
-    Graph(File inputFile) throws IOException, DotFormatException {
+    public Graph(File inputFile) throws IOException, DotFormatException {
         this.loadGraphFromDotFile(inputFile);
     }
 
