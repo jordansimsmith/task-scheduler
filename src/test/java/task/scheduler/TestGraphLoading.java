@@ -9,6 +9,7 @@ import task.scheduler.mockclasses.MockLogger;
 import java.io.File;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TestGraphLoading {
     private String dotFiles = "src/test/resources/dot_files/";
@@ -45,6 +46,8 @@ public class TestGraphLoading {
                 assertEquals(1, node.getChildren().size(), 1);
                 assertEquals("d", node.getChildren().get(0).x.getLabel());
                 assertEquals(2, (int) node.getChildren().get(0).y);
+
+                assertTrue(mockLogger.getLoggedItems().contains(node.toString()));
             }
         }
     }
@@ -56,5 +59,8 @@ public class TestGraphLoading {
 
         // act
         IGraph g = new Graph(new File(dotFiles + file), mockLogger);
+
+        // assert - should also throw exception
+        assertTrue(mockLogger.getLoggedItems().isEmpty());
     }
 }

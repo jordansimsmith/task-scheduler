@@ -70,8 +70,22 @@ public class TestArgumentParser {
 
     @Test
     public void testHelp() {
-        // should not throw an exception
+        // arrange
+        String expectedString1 = "java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
+                "INPUT.dot a task graph with integer weights in dot format\r\n" +
+                "P number of processors to schedule the INPUT graph on\r\n";
+
+        String expectedString2 = "Optional: \r\n" +
+                "−p N use N cores for execution in parallel (default is sequential )\r\n" +
+                "−v visualise the search\r\n" +
+                "−o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)\r\n";
+
+        // act
         parser.printHelp();
+
+        // assert
+        assertEquals(mockLogger.getLoggedItems().get(0), expectedString1);
+        assertEquals(mockLogger.getLoggedItems().get(1), expectedString2);
     }
 
     @Test
