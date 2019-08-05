@@ -7,8 +7,10 @@ import java.io.File;
  */
 public class ArgumentParser {
 
-    // TODO: inject logger here
-    public ArgumentParser() {
+    private final ILogger logger;
+
+    public ArgumentParser(ILogger logger) {
+        this.logger = logger;
     }
 
     /**
@@ -89,11 +91,11 @@ public class ArgumentParser {
      * This method should be called when the user enters an incorrect set of arguments.
      */
     public void printHelp() {
-        System.out.println("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
+        logger.log("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
                 "INPUT.dot a task graph with integer weights in dot format\r\n" +
                 "P number of processors to schedule the INPUT graph on\r\n");
 
-        System.out.println("Optional: \r\n" +
+        logger.log("Optional: \r\n" +
                 "−p N use N cores for execution in parallel (default is sequential )\r\n" +
                 "−v visualise the search\r\n" +
                 "−o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)\r\n");
