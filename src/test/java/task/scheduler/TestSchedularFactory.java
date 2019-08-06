@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 
 public class TestSchedularFactory {
 
-    SchedulerFactory schedulerFactory;
+    private SchedulerFactory schedulerFactory;
 
     @Before
     public void setUp() {
@@ -33,7 +33,7 @@ public class TestSchedularFactory {
         try {
             schedulerFactory.createScheduler(null);
             fail();
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             //Assert
             assertEquals("Null is not a valid argument", e.getMessage());
         }
