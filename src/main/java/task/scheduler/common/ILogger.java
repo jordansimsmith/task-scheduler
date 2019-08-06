@@ -6,5 +6,4 @@ package task.scheduler.common;
 public interface ILogger {
 
     void log(String message);
-
 }
