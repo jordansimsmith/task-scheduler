@@ -40,6 +40,7 @@ public class App {
             return;
         }
 
+        // validation
         InputValidator validator = new InputValidator();
         try {
             validator.validateGraph(input);
