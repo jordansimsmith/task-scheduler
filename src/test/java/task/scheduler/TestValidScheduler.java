@@ -3,6 +3,7 @@ package task.scheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import task.scheduler.schedule.ValidScheduler;
 
 import java.util.ArrayList;
 import java.util.Arrays;

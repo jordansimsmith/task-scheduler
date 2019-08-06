@@ -1,8 +1,5 @@
 package task.scheduler.schedule;
 
-import task.scheduler.IScheduler;
-import task.scheduler.ValidScheduler;
-
 /**
  * The class SchedularFactory returns a scheduler object as specified by the SchedulerType input to createSchedular
  * method

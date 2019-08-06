@@ -1,4 +1,8 @@
-package task.scheduler;
+package task.scheduler.schedule;
+
+import task.scheduler.INode;
+import task.scheduler.ISchedule;
+import task.scheduler.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;

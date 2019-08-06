@@ -1,5 +1,8 @@
-package task.scheduler;
+package task.scheduler.schedule;
 
+
+import task.scheduler.IGraph;
+import task.scheduler.ISchedule;
 
 /**
  * Interface to define what each scheduler will need to have.
