@@ -22,7 +22,6 @@ public class SchedulerFactory {
      * @param type
      * @return IScheduler
      */
-
     public IScheduler createScheduler(SchedulerType type) {
         if (type == null) {
             throw new IllegalArgumentException("Null is not a valid argument");
