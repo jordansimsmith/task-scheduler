@@ -1,4 +1,6 @@
-package task.scheduler;
+package task.scheduler.common;
+
+import task.scheduler.common.ILogger;
 
 /**
  * A ConsoleLogger writes messages to the console / standard output

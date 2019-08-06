@@ -1,6 +1,7 @@
 package task.scheduler.mockclasses;
 
-import task.scheduler.ILogger;
+import task.scheduler.common.ILogger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class MockLogger implements ILogger {
     private List<String> loggedItems;
 
-    public MockLogger(){
+    public MockLogger() {
         loggedItems = new ArrayList<>();
     }
 
@@ -23,7 +24,7 @@ public class MockLogger implements ILogger {
         return loggedItems;
     }
 
-    public void clearLoggedItems(){
+    public void clearLoggedItems() {
         loggedItems.clear();
     }
 }

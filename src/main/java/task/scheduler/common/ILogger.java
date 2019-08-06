@@ -1,4 +1,4 @@
-package task.scheduler;
+package task.scheduler.common;
 
 /**
  * An ILogger logs messages
