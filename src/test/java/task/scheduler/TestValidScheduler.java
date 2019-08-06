@@ -2,7 +2,9 @@ package task.scheduler;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import task.scheduler.common.Tuple;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
@@ -18,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TestValidScheduler {
 
     @Mock
@@ -31,19 +34,11 @@ public class TestValidScheduler {
 
     @Before
     public void setUp() {
-        this.start = mock(INode.class);
-        this.node = mock(INode.class);
-        this.mockGraph = mock(IGraph.class);
         List<INode> nodes = new LinkedList<>(Arrays.asList(this.start, this.node));
-        when(this.start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
-        when(this.start.getLabel()).thenReturn("b");
         when(this.start.getProcessingCost()).thenReturn(2);
         when(this.node.getProcessingCost()).thenReturn(1);
         when(this.node.getParents()).thenReturn(new LinkedList<>(Arrays.asList(new Tuple<>(this.start, 2))));
-        when(this.node.getLabel()).thenReturn("a");
         when(this.mockGraph.getStartNode()).thenReturn(this.start);
-        when(this.mockGraph.getNodes()).thenReturn(nodes);
-        when(this.mockGraph.getNodeCount()).thenReturn(2);
         when(this.start.getChildren()).thenReturn(new LinkedList<>(Arrays.asList(new Tuple<>(this.node, 3))));
         when(this.node.getChildren()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
     }
