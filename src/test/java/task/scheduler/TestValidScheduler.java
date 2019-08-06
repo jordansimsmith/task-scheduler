@@ -3,6 +3,10 @@ package task.scheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import task.scheduler.common.Tuple;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
+import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.ValidScheduler;
 
 import java.util.ArrayList;

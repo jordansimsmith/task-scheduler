@@ -1,10 +1,9 @@
 package task.scheduler.schedule;
 
 
-import task.scheduler.IGraph;
-import task.scheduler.INode;
-import task.scheduler.ISchedule;
-import task.scheduler.Tuple;
+import task.scheduler.common.Tuple;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
 
 import java.util.*;
 
