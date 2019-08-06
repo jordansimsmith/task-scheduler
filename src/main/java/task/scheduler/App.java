@@ -1,6 +1,5 @@
 package task.scheduler;
 
-import jdk.internal.util.xml.impl.Input;
 import task.scheduler.common.*;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
@@ -19,7 +18,7 @@ public class App {
         try {
             config = argumentParser.parse(args);
         } catch (IllegalArgumentException e) {
-            logger.log(e.getMessage());
+            logger.error(e.getMessage());
             argumentParser.printHelp();
             return;
         }
@@ -45,7 +44,7 @@ public class App {
         try {
             validator.validateGraph(input);
         } catch (GraphException e) {
-            logger.log("Validation failure. Check your graph!");
+            logger.error("Validation failure. Check your graph!");
             e.printStackTrace();
             return;
         }
