@@ -4,7 +4,7 @@ digraph "example" {
 a -> b [Weight =1];
 c [ Weight =3];
 a -> c [Weight =2];
-d [ Weight=2] ;
-b -> d [ Weight =2];
-c -> d [ Weight =1];
+d322 [ Weight=2] ;
+b -> d322 [ Weight =21];
+c -> d322 [ Weight =1];
 }
