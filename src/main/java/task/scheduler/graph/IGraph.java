@@ -12,19 +12,19 @@ public interface IGraph {
      *
      * @return List of INodes
      */
-    public List<INode> getNodes();
+    List<INode> getNodes();
 
     /**
      * Method getStartNode gets the start node for the graph. There is always only one start node for a valid graph.
      *
      * @return start INode
      */
-    public INode getStartNode();
+    INode getStartNode();
 
     /**
      * Method getNodeCount gets the number of nodes in this graph.
      *
      * @return an int for the number of nodes.
      */
-    public int getNodeCount();
+    int getNodeCount();
 }

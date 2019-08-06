@@ -15,7 +15,7 @@ public interface INode {
      *
      * @return A List of edge tuples.
      */
-    public List<Tuple<INode, Integer>> getChildren();
+    List<Tuple<INode, Integer>> getChildren();
 
     /**
      * Method getParents is similar to getChildren; retrieving all incoming edges to this node.
@@ -23,7 +23,7 @@ public interface INode {
      *
      * @return A list of edge tuples.
      */
-    public List<Tuple<INode, Integer>> getParents();
+    List<Tuple<INode, Integer>> getParents();
 
     /**
      * Method getProcessingCost is a getter for the processing cost associated with this node.
@@ -31,7 +31,7 @@ public interface INode {
      *
      * @return an int corresponding to the processing cost.
      */
-    public int getProcessingCost();
+    int getProcessingCost();
 
     /**
      * Method get getLabel is a getter for the human-readable identifier for this node.
@@ -39,5 +39,5 @@ public interface INode {
      *
      * @return a string containing the node identifier/label.
      */
-    public String getLabel();
+    String getLabel();
 }

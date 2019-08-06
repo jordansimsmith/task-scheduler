@@ -14,5 +14,5 @@ public interface ISchedule {
      * @param node INode of the schedule information to return.
      * @return A 2-tuple of the start time Integer and processor number Integer.
      */
-    public Tuple<Integer, Integer> getNodeSchedule(INode node);
+    Tuple<Integer, Integer> getNodeSchedule(INode node);
 }
