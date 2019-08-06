@@ -18,7 +18,7 @@ public class ValidSchedulerSchedule implements ISchedule {
     }
 
     public void addSchedule(INode node, int startTime, int processor) {
-        schedule.put(node, new Tuple<Integer, Integer>(processor, startTime));
+        schedule.put(node, new Tuple<Integer, Integer>(startTime, processor));
     }
 
     public int getScheduleSize() {
