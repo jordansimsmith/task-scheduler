@@ -1,6 +1,8 @@
 package task.scheduler;
 
+import jdk.internal.util.xml.impl.Input;
 import task.scheduler.common.*;
+import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
 
 import java.io.FileOutputStream;
@@ -30,10 +32,21 @@ public class App {
         logger.log("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
+        Graph input;
         try {
-            new Graph(config.getInputFile(), logger);
+            input = new Graph(config.getInputFile(), logger);
         } catch (Exception e) {
             e.printStackTrace();
+            return;
+        }
+
+        InputValidator validator = new InputValidator();
+        try {
+            validator.validateGraph(input);
+        } catch (GraphException e) {
+            logger.log("Validation failure. Check your graph!");
+            e.printStackTrace();
+            return;
         }
 
         // write to output file - construction is long because dependency injection is needed
