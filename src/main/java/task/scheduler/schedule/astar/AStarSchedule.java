@@ -34,6 +34,15 @@ public class AStarSchedule implements ISchedule {
 
     }
 
+    public void setSchedulable(List<INode> nodes){
+        this.schedulable = nodes;
+    }
+
+    @Override
+    public int getTotalCost() {
+        return cost;
+    }
+
     @Override
     public Tuple<Integer, Integer> getNodeSchedule(INode node) {
         return scheduled.get(node);

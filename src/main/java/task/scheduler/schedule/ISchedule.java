@@ -15,4 +15,6 @@ public interface ISchedule {
      * @return A 2-tuple of the start time Integer and processor number Integer.
      */
     Tuple<Integer, Integer> getNodeSchedule(INode node);
+
+    int getTotalCost();
 }

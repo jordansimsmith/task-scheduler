@@ -21,7 +21,7 @@ public class AStar implements IScheduler {
     @Override
     public ISchedule execute(IGraph graph) {
         AStarSchedule schedule = new AStarSchedule();
-        schedule.scheduleNode(graph.getStartNode(), 1);
+        schedule.setSchedulable(graph.getStartNodes());
         this.solutions.add(schedule);
         while (true) {
             AStarSchedule current = this.solutions.poll();
@@ -30,10 +30,16 @@ public class AStar implements IScheduler {
             }
             List<INode> nodes = current.getSchedulable();
             for (INode node : nodes) {
-                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+                if(current.getNodesScheduled() == 0){
                     AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(),current.getCost());
-                    toSchedule.scheduleNode(node, i);
+                    toSchedule.scheduleNode(node, 1);
                     this.solutions.add(toSchedule);
+                }else{
+                    for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+                        AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(),current.getCost());
+                        toSchedule.scheduleNode(node, i);
+                        this.solutions.add(toSchedule);
+                    }
                 }
             }
         }
