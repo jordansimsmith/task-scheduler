@@ -48,8 +48,6 @@ public class TestGraphLoading {
                 assertEquals(1, node.getChildren().size(), 1);
                 assertEquals("d", node.getChildren().get(0).x.getLabel());
                 assertEquals(2, (int) node.getChildren().get(0).y);
-
-                assertTrue(mockLogger.getLoggedItems().contains(node.toString()));
             }
         }
     }

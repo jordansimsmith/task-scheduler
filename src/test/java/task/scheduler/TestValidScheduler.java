@@ -49,9 +49,9 @@ public class TestValidScheduler {
         ISchedule schedule = scheduler.execute(mockGraph);
         Tuple<Integer, Integer> s1 = schedule.getNodeSchedule(this.start);
         Tuple<Integer, Integer> s2 = schedule.getNodeSchedule(this.node);
-        assertEquals(s1.x, Integer.valueOf(1));
-        assertEquals(s1.y, Integer.valueOf(0));
-        assertEquals(s2.x, Integer.valueOf(1));
-        assertEquals(s2.y, Integer.valueOf(2));
+        assertEquals(s1.y, Integer.valueOf(1));
+        assertEquals(s1.x, Integer.valueOf(0));
+        assertEquals(s2.y, Integer.valueOf(1));
+        assertEquals(s2.x, Integer.valueOf(2));
     }
 }
