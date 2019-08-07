@@ -12,6 +12,7 @@ import java.util.Map;
  */
 public class ValidSchedulerSchedule implements ISchedule {
     private Map<INode, Tuple<Integer, Integer>> schedule;
+    private int cost = 0;
 
     public ValidSchedulerSchedule() {
         this.schedule = new HashMap<>();
@@ -19,6 +20,12 @@ public class ValidSchedulerSchedule implements ISchedule {
 
     public void addSchedule(INode node, int startTime, int processor) {
         schedule.put(node, new Tuple<Integer, Integer>(startTime, processor));
+        cost = Math.max(node.getProcessingCost() + startTime, cost);
+    }
+
+    @Override
+    public int getTotalCost() {
+        return cost;
     }
 
     public int getScheduleSize() {
