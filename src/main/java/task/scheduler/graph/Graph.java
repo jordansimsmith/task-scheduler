@@ -7,6 +7,8 @@ import task.scheduler.exception.DotNodeMissingException;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Encapsulates the loading and storage of a graph from a Dot File
@@ -18,9 +20,15 @@ public class Graph implements IGraph {
     private Node startNode;
     private final ILogger logger;
 
+    private Pattern nodeMatcher, edgeMatcher;
+
 
     public Graph(File inputFile, ILogger logger) throws IOException, DotFormatException {
         this.logger = logger;
+
+        nodeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
+        edgeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)->([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
+
         this.loadGraphFromDotFile(inputFile);
     }
 
@@ -60,17 +68,19 @@ public class Graph implements IGraph {
         }
 
         // Find tasks
-        if (line.matches("^[a-z]\\[(.*)Weight=\\d+(.*)")) {
-            nodes.add(new Node(Integer.parseInt(line.replaceAll("[^0-9]", "")),
-                    line.substring(0, 1)));
+        Matcher m = nodeMatcher.matcher(line);
+        if (m.matches()) {
+            nodes.add(new Node(Integer.parseInt(m.group(3)),
+                    m.group(1)));
         }
 
         // Find dependencies
-        if (line.matches("^[a-z]->[a-z]\\[(.*)Weight=\\d+(.*)")) {
-            Node dependent = getNodeByLabel(line.substring(3, 4));
-            Node parent = getNodeByLabel(line.substring(0, 1));
+        m = edgeMatcher.matcher(line);
+        if (m.matches()) {
+            Node dependent = getNodeByLabel(m.group(2));
+            Node parent = getNodeByLabel(m.group(1));
 
-            addDependency(parent, dependent, Integer.parseInt(line.replaceAll("[^0-9]", "")));
+            addDependency(parent, dependent, Integer.parseInt(m.group(4)));
         }
     }
 
