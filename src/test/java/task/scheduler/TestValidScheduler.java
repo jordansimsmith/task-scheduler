@@ -31,14 +31,14 @@ public class TestValidScheduler {
 
     @Before
     public void setUp() {
-        Map<INode,Integer> map = new HashMap<>();
-        map.put(this.start,2);
-        Map<INode,Integer> map1 = new HashMap<>();
-        map1.put(this.node,2);
+        Map<INode, Integer> map = new HashMap<>();
+        map.put(this.start, 2);
+        Map<INode, Integer> map1 = new HashMap<>();
+        map1.put(this.node, 2);
         when(this.start.getProcessingCost()).thenReturn(2);
         when(this.node.getProcessingCost()).thenReturn(1);
         when(this.node.getParents()).thenReturn(map);
-        when(this.mockGraph.getStartNode()).thenReturn(this.start);
+        when(this.mockGraph.getStartNodes()).thenReturn(Arrays.asList(start));
         when(this.start.getChildren()).thenReturn(map1);
         when(this.node.getChildren()).thenReturn(new HashMap<INode, Integer>());
     }
