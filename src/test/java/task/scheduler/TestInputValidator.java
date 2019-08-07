@@ -11,9 +11,7 @@ import task.scheduler.exception.GraphException;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -53,11 +51,11 @@ public class TestInputValidator {
     public void testInvalidParent() {
         // arrange
         INode start = mock(INode.class);
-        Tuple<INode, Integer> edgeA = new Tuple<>(mock(INode.class), 1);
-        Tuple<INode, Integer> edgeB = new Tuple<>(mock(INode.class), 2);
-        List<Tuple<INode, Integer>> edges = Arrays.asList(edgeA, edgeB);
+        Map<INode,Integer> map = new HashMap<>();
+        map.put(mock(INode.class), 1);
+        map.put(mock(INode.class), 2);
 
-        when(start.getParents()).thenReturn(edges);
+        when(start.getParents()).thenReturn(map);
         when(mockGraph.getStartNode()).thenReturn(start);
 
         // act
@@ -75,7 +73,7 @@ public class TestInputValidator {
     public void testNullNodeList() {
         // arrange
         INode start = mock(INode.class);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(null);
 
@@ -94,7 +92,7 @@ public class TestInputValidator {
     public void testInvalidListSize() {
         // arrange
         INode start = mock(INode.class);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(new ArrayList<INode>());
         when(mockGraph.getNodeCount()).thenReturn(1);
@@ -116,7 +114,7 @@ public class TestInputValidator {
         INode start = mock(INode.class);
         List<INode> nodes = new ArrayList<>();
         nodes.add(null);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(nodes);
         when(mockGraph.getNodeCount()).thenReturn(1);
@@ -138,7 +136,7 @@ public class TestInputValidator {
         INode start = mock(INode.class);
         INode node = mock(INode.class);
         List<INode> nodes = Arrays.asList(node);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(node.getProcessingCost()).thenReturn(0);
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(nodes);
@@ -161,9 +159,9 @@ public class TestInputValidator {
         INode start = mock(INode.class);
         INode node = mock(INode.class);
         List<INode> nodes = Arrays.asList(node);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(node.getProcessingCost()).thenReturn(1);
-        when(node.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(node.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(nodes);
         when(mockGraph.getNodeCount()).thenReturn(1);
@@ -184,10 +182,12 @@ public class TestInputValidator {
         // arrange
         INode start = mock(INode.class);
         INode node = mock(INode.class);
+        Map<INode,Integer> map = new HashMap<>();
+        map.put(start,3);
         List<INode> nodes = Arrays.asList(node, node);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(node.getProcessingCost()).thenReturn(1);
-        when(node.getParents()).thenReturn(Arrays.asList(new Tuple<>(start, 3)));
+        when(node.getParents()).thenReturn(map);
         when(node.getLabel()).thenReturn("a");
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(nodes);
@@ -209,20 +209,24 @@ public class TestInputValidator {
         // arrange
         INode start = mock(INode.class);
         INode node = mock(INode.class);
+        Map<INode,Integer> map = new HashMap<>();
+        map.put(node,3);
+        Map<INode,Integer> map1 = new HashMap<>();
+        map1.put(start,2);
         List<INode> nodes = Arrays.asList(start, node);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(start.getLabel()).thenReturn("b");
         when(start.getProcessingCost()).thenReturn(2);
         when(node.getProcessingCost()).thenReturn(1);
-        when(node.getParents()).thenReturn(Arrays.asList(new Tuple<>(start, 2)));
+        when(node.getParents()).thenReturn(map1);
         when(node.getLabel()).thenReturn("a");
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(nodes);
         when(mockGraph.getNodeCount()).thenReturn(2);
 
         // introduce cycle
-        when(start.getChildren()).thenReturn(Arrays.asList(new Tuple<>(node, 3)));
-        when(node.getChildren()).thenReturn(Arrays.asList(new Tuple<>(start, 2)));
+        when(start.getChildren()).thenReturn(map);
+        when(node.getChildren()).thenReturn(map1);
 
         // act
         try {
@@ -238,22 +242,26 @@ public class TestInputValidator {
     @Test
     public void testValidGraph() throws GraphException {
         // arrange
+        Map<INode,Integer> map = new HashMap<>();
         INode start = mock(INode.class);
+        map.put(start,2);
         INode node = mock(INode.class);
         List<INode> nodes = Arrays.asList(start, node);
-        when(start.getParents()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
         when(start.getLabel()).thenReturn("b");
         when(start.getProcessingCost()).thenReturn(2);
         when(node.getProcessingCost()).thenReturn(1);
-        when(node.getParents()).thenReturn(Arrays.asList(new Tuple<>(start, 2)));
+        when(node.getParents()).thenReturn(map);
         when(node.getLabel()).thenReturn("a");
         when(mockGraph.getStartNode()).thenReturn(start);
         when(mockGraph.getNodes()).thenReturn(nodes);
         when(mockGraph.getNodeCount()).thenReturn(2);
 
+        Map<INode,Integer> map1 = new HashMap<>();
+        map1.put(node,3);
         // introduce cycle
-        when(start.getChildren()).thenReturn(Arrays.asList(new Tuple<>(node, 3)));
-        when(node.getChildren()).thenReturn(new ArrayList<Tuple<INode, Integer>>());
+        when(start.getChildren()).thenReturn(map1);
+        when(node.getChildren()).thenReturn(new HashMap<INode, Integer>());
 
         // act
         validator.validateGraph(mockGraph);
