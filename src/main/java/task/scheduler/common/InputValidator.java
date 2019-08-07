@@ -124,8 +124,8 @@ public class InputValidator {
         recStack.put(node, true);
 
         // recursively call on children
-        for (Tuple<INode, Integer> child : node.getChildren()) {
-            if (isCyclicRecursive(child.x, visited, recStack)) {
+        for (INode child : node.getChildren().keySet()) {
+            if (isCyclicRecursive(child, visited, recStack)) {
                 return true;
             }
         }

@@ -24,7 +24,7 @@ public class ValidScheduler implements IScheduler {
     @Override
     public ISchedule execute(IGraph graph) {
         INode startNode = graph.getStartNode();
-        Map<INode, List<Tuple<INode, Integer>>> dependencies = new HashMap<>();
+        Map<INode, Map<INode, Integer>> dependencies = new HashMap<>();
 
         Queue<INode> queue = new LinkedList<>();
         queue.add(startNode);
@@ -50,23 +50,18 @@ public class ValidScheduler implements IScheduler {
      *
      * @Author : Reshad Contractor
      */
-    private List<INode> removeDependencies(INode node, Map<INode, List<Tuple<INode, Integer>>> dependencies) {
-        List<Tuple<INode, Integer>> children = node.getChildren();
+    private List<INode> removeDependencies(INode node, Map<INode, Map<INode, Integer>> dependencies) {
+        Map<INode, Integer> children = node.getChildren();
         List<INode> toRet = new ArrayList<>();
-        for (Tuple<INode, Integer> child : children) {
+        for (INode child : children.keySet()) {
             // If the child node is not contained add it to the map and fill it with all its dependencies (Parents)
-            if (!dependencies.containsKey(child.x)) {
-                dependencies.put(child.x, child.x.getParents());
+            if (!dependencies.containsKey(child)) {
+                dependencies.put(child, child.getParents());
             }
-            List<Tuple<INode, Integer>> parents = dependencies.get(child.x);
-            for (Tuple<INode, Integer> parent : parents) {
-                if (parent.x == node) {
-                    parents.remove(parent);
-                    break;
-                }
-            }
+            Map<INode, Integer> parents = dependencies.get(child);
+            parents.remove(node);
             if (parents.size() == 0) {
-                toRet.add(child.x);
+                toRet.add(child);
             }
 
         }

@@ -3,6 +3,7 @@ package task.scheduler.graph;
 import task.scheduler.common.Tuple;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * INode represents a node in the input graph. INode's are immutable, they should not be modified by the scheduler.
@@ -15,7 +16,7 @@ public interface INode {
      *
      * @return A List of edge tuples.
      */
-    List<Tuple<INode, Integer>> getChildren();
+    Map<INode, Integer> getChildren();
 
     /**
      * Method getParents is similar to getChildren; retrieving all incoming edges to this node.
@@ -23,7 +24,7 @@ public interface INode {
      *
      * @return A list of edge tuples.
      */
-    List<Tuple<INode, Integer>> getParents();
+    Map<INode, Integer> getParents();
 
     /**
      * Method getProcessingCost is a getter for the processing cost associated with this node.
