@@ -1,0 +1,10 @@
+digraph "example" {
+    apache_node [ Weight =2];
+    _ [Weight =3];
+apache_node -> _ [Weight =1];
+2hj78 [ Weight =3];
+apache_node -> 2hj78 [Weight =2];
+D322 [ Weight=2] ;
+_ -> D322 [ Weight =21];
+2hj78 -> D322 [ Weight =1];
+}

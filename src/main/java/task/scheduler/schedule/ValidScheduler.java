@@ -1,7 +1,6 @@
 package task.scheduler.schedule;
 
 
-import task.scheduler.common.Tuple;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 
@@ -23,11 +22,11 @@ public class ValidScheduler implements IScheduler {
      */
     @Override
     public ISchedule execute(IGraph graph) {
-        INode startNode = graph.getStartNode();
+        List<INode> startNodes = graph.getStartNodes();
         Map<INode, Map<INode, Integer>> dependencies = new HashMap<>();
 
         Queue<INode> queue = new LinkedList<>();
-        queue.add(startNode);
+        queue.addAll(startNodes);
         int startTime = 0;
         ValidSchedulerSchedule schedule = new ValidSchedulerSchedule();
         while (!queue.isEmpty()) {
