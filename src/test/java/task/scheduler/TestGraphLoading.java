@@ -39,6 +39,7 @@ public class TestGraphLoading {
         assertEquals(g.getNodeCount(), 4);
         assertEquals(g.getStartNode().getLabel(), "a");
 
+
 //        for (INode node : g.getNodes()) {
 //            if (node.getLabel().equals("b")) {
 //                assertEquals(1, node.getParents().size());

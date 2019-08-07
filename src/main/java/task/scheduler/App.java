@@ -1,7 +1,12 @@
 package task.scheduler;
 
 import task.scheduler.common.*;
+import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
+import task.scheduler.graph.IGraph;
+import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
+import task.scheduler.schedule.ValidScheduler;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,7 +22,7 @@ public class App {
         try {
             config = argumentParser.parse(args);
         } catch (IllegalArgumentException e) {
-            logger.log(e.getMessage());
+            logger.error(e.getMessage());
             argumentParser.printHelp();
             return;
         }
@@ -30,18 +35,35 @@ public class App {
         logger.log("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
+        IGraph input;
         try {
-            new Graph(config.getInputFile(), logger);
+            input = new Graph(config.getInputFile(), logger);
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
 
+        // validation
+        InputValidator validator = new InputValidator();
+        try {
+            validator.validateGraph(input);
+        } catch (GraphException e) {
+            logger.error("Validation failure. Check your graph!");
+            e.printStackTrace();
+            return;
+        }
+
+        // produce schedule
+        IScheduler scheduler = new ValidScheduler();
+        ISchedule output = scheduler.execute(input);
+
         // write to output file - construction is long because dependency injection is needed
-        // TODO: move/change this invocation once algorithms have been implemented
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
-            fileWriter.writeScheduledGraphToFile(null, null);
+            fileWriter.writeScheduledGraphToFile(input, output);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        logger.log("Finished.");
     }
 }

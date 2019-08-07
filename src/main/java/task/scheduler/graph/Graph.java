@@ -50,10 +50,6 @@ public class Graph implements IGraph {
         if (startNode == null) {
             throw new DotNodeMissingException("No start node");
         }
-
-        for (Node node : nodes) {
-            logger.log(node.toString());
-        }
     }
 
     private void readDotFileLine(String line) throws DotFormatException {
