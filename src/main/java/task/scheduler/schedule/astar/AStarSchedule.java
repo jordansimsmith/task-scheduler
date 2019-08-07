@@ -62,9 +62,6 @@ public class AStarSchedule implements ISchedule {
     }
 
     public void scheduleNode(INode node, int processor) {
-        if(!this.schedulable.contains(node)){
-            throw new Error("cant schedule that node?");
-        }
         this.schedulable.remove(node);
         this.nodesScheduled++;
         Map<INode, Integer> parents = node.getParents();

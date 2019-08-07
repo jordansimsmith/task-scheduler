@@ -15,7 +15,7 @@ public class AStar implements IScheduler {
     PriorityQueue<AStarSchedule> solutions;
 
     public AStar(Comparator comparator) {
-        this.solutions = new PriorityQueue<>(new AStarBaseHeuristic());
+        this.solutions = new PriorityQueue<>(comparator);
     }
 
     @Override
