@@ -31,7 +31,7 @@ public class AStar implements IScheduler {
             List<INode> nodes = current.getSchedulable();
             for (INode node : nodes) {
                 for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-                    AStarSchedule toSchedule = new AStarSchedule(schedule.getScheduled(), schedule.getSchedulable(), schedule.getEarliestTimes(),schedule.getCost());
+                    AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(),current.getCost());
                     toSchedule.scheduleNode(node, i);
                     this.solutions.add(toSchedule);
                 }
