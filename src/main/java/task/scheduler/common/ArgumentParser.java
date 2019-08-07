@@ -91,11 +91,11 @@ public class ArgumentParser {
      * This method should be called when the user enters an incorrect set of arguments.
      */
     public void printHelp() {
-        logger.log("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
+        logger.error("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
                 "INPUT.dot a task graph with integer weights in dot format\r\n" +
                 "P number of processors to schedule the INPUT graph on\r\n");
 
-        logger.log("Optional: \r\n" +
+        logger.error("Optional: \r\n" +
                 "−p N use N cores for execution in parallel (default is sequential )\r\n" +
                 "−v visualise the search\r\n" +
                 "−o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)\r\n");
