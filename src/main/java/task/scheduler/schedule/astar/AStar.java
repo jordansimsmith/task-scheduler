@@ -25,18 +25,18 @@ public class AStar implements IScheduler {
         this.solutions.add(schedule);
         while (true) {
             AStarSchedule current = this.solutions.poll();
-            if(current.getNodesScheduled() == graph.getNodeCount()){
+            if (current.getNodesScheduled() == graph.getNodeCount()) {
                 return current;
             }
             List<INode> nodes = current.getSchedulable();
             for (INode node : nodes) {
-                if(current.getNodesScheduled() == 0){
-                    AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(),current.getCost());
+                if (current.getNodesScheduled() == 0) {
+                    AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(), current.getCost());
                     toSchedule.scheduleNode(node, 1);
                     this.solutions.add(toSchedule);
-                }else{
+                } else {
                     for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-                        AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(),current.getCost());
+                        AStarSchedule toSchedule = new AStarSchedule(current.getScheduled(), current.getSchedulable(), current.getEarliestTimes(), current.getCost());
                         toSchedule.scheduleNode(node, i);
                         this.solutions.add(toSchedule);
                     }

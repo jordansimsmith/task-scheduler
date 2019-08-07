@@ -16,7 +16,7 @@ public class AStarSchedule implements ISchedule {
     private Map<INode, Tuple<Integer, Integer>> scheduled;
 
     private int[] earliestTimes;
-    private int cost=0;
+    private int cost = 0;
     private int nodesScheduled = 0;
 
     public AStarSchedule() {
@@ -34,7 +34,7 @@ public class AStarSchedule implements ISchedule {
 
     }
 
-    public void setSchedulable(List<INode> nodes){
+    public void setSchedulable(List<INode> nodes) {
         this.schedulable = nodes;
     }
 
@@ -62,11 +62,11 @@ public class AStarSchedule implements ISchedule {
         return copy;
     }
 
-    public int getCost(){
+    public int getCost() {
         return cost;
     }
 
-    public int getNodesScheduled(){
+    public int getNodesScheduled() {
         return nodesScheduled;
     }
 
@@ -87,21 +87,21 @@ public class AStarSchedule implements ISchedule {
         latest = Math.max(latest, this.earliestTimes[processor - 1]);
         this.scheduled.put(node, new Tuple<>(latest, processor));
         this.earliestTimes[processor - 1] = latest + node.getProcessingCost();
-        cost = Math.max(earliestTimes[processor - 1],cost);
+        cost = Math.max(earliestTimes[processor - 1], cost);
         updateSchedule(node);
     }
 
-    private void updateSchedule(INode node){
-        Map<INode,Integer> children = node.getChildren();
-        for(INode child:children.keySet()){
+    private void updateSchedule(INode node) {
+        Map<INode, Integer> children = node.getChildren();
+        for (INode child : children.keySet()) {
             boolean canAdd = true;
-            for(INode parent:child.getParents().keySet()){
-                if(!this.scheduled.containsKey(parent)){
+            for (INode parent : child.getParents().keySet()) {
+                if (!this.scheduled.containsKey(parent)) {
                     canAdd = false;
                     break;
                 }
             }
-            if(canAdd){
+            if (canAdd) {
                 this.schedulable.add(child);
             }
         }

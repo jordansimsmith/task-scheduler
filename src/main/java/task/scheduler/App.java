@@ -60,7 +60,7 @@ public class App {
         Long time = System.currentTimeMillis();
         System.out.println("Starting ...");
         ISchedule output = scheduler.execute(input);
-        System.out.println(System.currentTimeMillis()-time + "ms");
+        System.out.println(System.currentTimeMillis() - time + "ms");
         System.out.println(output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed

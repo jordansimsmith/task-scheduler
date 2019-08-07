@@ -20,7 +20,7 @@ public class ValidSchedulerSchedule implements ISchedule {
 
     public void addSchedule(INode node, int startTime, int processor) {
         schedule.put(node, new Tuple<Integer, Integer>(startTime, processor));
-        cost = Math.max(node.getProcessingCost()+startTime,cost);
+        cost = Math.max(node.getProcessingCost() + startTime, cost);
     }
 
     @Override
