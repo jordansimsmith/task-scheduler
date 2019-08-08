@@ -1,10 +1,8 @@
 package task.scheduler.ui;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.sun.org.apache.bcel.internal.generic.INEG;
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 
@@ -25,9 +23,9 @@ public class InputGraphGenerator {
     public void GenerateGraph(){
         Graph visualization = new SingleGraph("Initial Graph");
 
+        visualization.display();
         visualization.setStrict(false);
         visualization.setAutoCreate(true);
-        visualization.display();
 
         List<INode> nodes = graph.getNodes();
 
@@ -37,8 +35,16 @@ public class InputGraphGenerator {
 
             for ( INode child : childrenList){
                 visualization.addEdge(parent.getLabel() + child.getLabel(), parent.getLabel(), child.getLabel());
+
             }
         }
+        //Adding label
+        for (Node node : visualization) {
+            node.addAttribute("ui.label", node.getId());
+            node.addAttribute("ui.style", "text-size: 20px;");
+            node.addAttribute("ui.style", "size: 20px;");
+        }
+
 
 
     }
