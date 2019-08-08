@@ -6,9 +6,7 @@ import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
-import task.scheduler.schedule.ValidScheduler;
-import task.scheduler.schedule.astar.AStar;
-import task.scheduler.schedule.astar.AStarBaseHeuristic;
+import task.scheduler.schedule.SchedulerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,7 +54,7 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new AStar(new AStarBaseHeuristic());
+        IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
         Long time = System.currentTimeMillis();
         System.out.println("Starting ...");
         ISchedule output = scheduler.execute(input);
