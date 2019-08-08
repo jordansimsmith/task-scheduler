@@ -1,10 +1,17 @@
-package task.scheduler;
+package task.scheduler.common;
+
+import task.scheduler.common.Config;
+import task.scheduler.common.Tuple;
+import task.scheduler.graph.IGraph;
+import task.scheduler.graph.INode;
+import task.scheduler.schedule.ISchedule;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * A FileWriter object writes an IGraph and ISchedule to a dot file.
@@ -38,8 +45,8 @@ public class FileWriter implements Closeable {
 
                 if (!node.getParents().isEmpty()) {
 
-                    for(Tuple<INode, Integer> parentNode : node.getParents()) {
-                        bufferedWriter.write(String.format("\t%s -> %s\t[Weight=%d];", parentNode.x.getLabel(), node.getLabel(), parentNode.y));
+                    for(Map.Entry<INode, Integer> parentNode : node.getParents().entrySet()) {
+                        bufferedWriter.write(String.format("\t%s -> %s\t[Weight=%d];", parentNode.getKey().getLabel(), node.getLabel(), parentNode.getValue()));
                         bufferedWriter.newLine();
                     }
                 }

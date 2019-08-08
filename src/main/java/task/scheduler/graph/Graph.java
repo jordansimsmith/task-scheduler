@@ -1,24 +1,34 @@
-package task.scheduler;
+package task.scheduler.graph;
 
+import task.scheduler.common.ILogger;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
 import java.io.*;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Encapsulates the loading and storage of a graph from a Dot File
  * TODO: Needs to handle things like DotFormat comments, etc
  * TODO: Can nodes have multiple char names?
  */
-class Graph implements IGraph {
+public class Graph implements IGraph {
     private List<Node> nodes;
     private Node startNode;
-    private Node endNode;
+    private final ILogger logger;
 
-    Graph(File inputFile) throws IOException, DotFormatException {
+    private Pattern nodeMatcher, edgeMatcher;
+
+
+    public Graph(File inputFile, ILogger logger) throws IOException, DotFormatException {
+        this.logger = logger;
+
+        nodeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
+        edgeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)->([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
+
         this.loadGraphFromDotFile(inputFile);
     }
 
@@ -35,34 +45,18 @@ class Graph implements IGraph {
 
         // Find start and end nodes
         for (Node node : nodes) {
-            if (node.getParents().size() == 0)  {
-                if (startNode != null)  {
-                    throw new DotFormatException("Found two start nodes labelled "+startNode.getLabel()+" and "+node.getLabel());
+            if (node.getParents().size() == 0) {
+                if (startNode != null) {
+                    throw new DotFormatException("Found two start nodes labelled " + startNode.getLabel() + " and " + node.getLabel());
                 }
 
                 startNode = node;
             }
-
-            if (node.getChildren().size() == 0)  {
-                if (endNode != null)  {
-                    throw new DotFormatException("Found two end nodes labelled "+endNode.getLabel()+" and "+node.getLabel());
-                }
-
-                endNode = node;
-            }
         }
 
         // Check start/end nodes
-        if (startNode == null)    {
+        if (startNode == null) {
             throw new DotNodeMissingException("No start node");
-        }
-
-        if (endNode == null)    {
-            throw new DotNodeMissingException("No end node");
-        }
-
-        for (Node node : nodes) {
-            System.out.println(node);
         }
     }
 
@@ -74,28 +68,30 @@ class Graph implements IGraph {
         }
 
         // Find tasks
-        if (line.matches("^[a-z]\\[(.*)Weight=\\d+(.*)")) {
-            nodes.add(new Node(Integer.parseInt(line.replaceAll("[^0-9]", "")),
-                    line.substring(0, 1)));
+        Matcher m = nodeMatcher.matcher(line);
+        if (m.matches()) {
+            nodes.add(new Node(Integer.parseInt(m.group(3)),
+                    m.group(1)));
         }
 
         // Find dependencies
-        if (line.matches("^[a-z]->[a-z]\\[(.*)Weight=\\d+(.*)")) {
-            Node dependent = getNodeByLabel(line.substring(3, 4));
-            Node parent = getNodeByLabel(line.substring(0, 1));
+        m = edgeMatcher.matcher(line);
+        if (m.matches()) {
+            Node dependent = getNodeByLabel(m.group(2));
+            Node parent = getNodeByLabel(m.group(1));
 
-            addDependency(parent, dependent, Integer.parseInt(line.replaceAll("[^0-9]", "")));
+            addDependency(parent, dependent, Integer.parseInt(m.group(4)));
         }
     }
 
     private Node getNodeByLabel(String label) throws DotNodeMissingException {
         for (Node node : nodes) {
-            if (node.getLabel().equals(label))  {
+            if (node.getLabel().equals(label)) {
                 return node;
             }
         }
 
-        throw new DotNodeMissingException("Node "+label+" could not be found");
+        throw new DotNodeMissingException("Node " + label + " could not be found");
     }
 
     /**
@@ -114,11 +110,6 @@ class Graph implements IGraph {
     @Override
     public INode getStartNode() {
         return startNode;
-    }
-
-    @Override
-    public INode getEndNode() {
-        return endNode;
     }
 
     @Override

@@ -1,0 +1,11 @@
+digraph "example" {
+  digraph "example" {
+      a [ Weight =2];
+      b [Weight =3];
+  a -> b [__strange_param=2, Weight =11, thisparamhasweight3=230];
+  c [ Weight =3];
+  a -> c [Weight =2];
+  d [ Weight=2] ;
+  b -> d [Weight =2,afterparam232=test];
+  c -> d [Weight =1];
+  }

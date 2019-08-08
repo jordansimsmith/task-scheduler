@@ -1,42 +1,69 @@
 package task.scheduler;
 
-import java.io.*;
+import task.scheduler.common.*;
+import task.scheduler.exception.GraphException;
+import task.scheduler.graph.Graph;
+import task.scheduler.graph.IGraph;
+import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
+import task.scheduler.schedule.ValidScheduler;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Task Scheduler starting.");
+        final ILogger logger = new ConsoleLogger();
+        logger.log("Task Scheduler starting.");
 
         // parse input arguments
-        ArgumentParser argumentParser = new ArgumentParser();
+        ArgumentParser argumentParser = new ArgumentParser(logger);
         Config config;
         try {
             config = argumentParser.parse(args);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage());
             argumentParser.printHelp();
             return;
         }
 
         // display results
-        System.out.println("Processing input file " + config.getInputFile().getPath());
-        System.out.println("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
-        System.out.println(config.getNumberOfThreads() + " threads will be used in execution");
-        System.out.println(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
-        System.out.println("The results will be saved to " + config.getOutputFile().getPath());
+        logger.log("Processing input file " + config.getInputFile().getPath());
+        logger.log("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
+        logger.log(config.getNumberOfThreads() + " threads will be used in execution");
+        logger.log(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
+        logger.log("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
+        IGraph input;
         try {
-            new Graph(config.getInputFile());
+            input = new Graph(config.getInputFile(), logger);
         } catch (Exception e) {
             e.printStackTrace();
+            return;
         }
 
+        // validation
+        InputValidator validator = new InputValidator();
+        try {
+            validator.validateGraph(input);
+        } catch (GraphException e) {
+            logger.error("Validation failure. Check your graph!");
+            e.printStackTrace();
+            return;
+        }
+
+        // produce schedule
+        IScheduler scheduler = new ValidScheduler();
+        ISchedule output = scheduler.execute(input);
+
         // write to output file - construction is long because dependency injection is needed
-        // TODO: move/change this invocation once algorithms have been implemented
-        try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))){
-            fileWriter.writeScheduledGraphToFile(null, null);
+        try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
+            fileWriter.writeScheduledGraphToFile(input, output);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        logger.log("Finished.");
     }
 }

@@ -3,6 +3,9 @@ package task.scheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import task.scheduler.mockclasses.MockLogger;
+import task.scheduler.common.ArgumentParser;
+import task.scheduler.common.Config;
 
 import java.io.File;
 
@@ -11,10 +14,15 @@ import static org.junit.Assert.*;
 public class TestArgumentParser {
 
     private ArgumentParser parser;
+    private final MockLogger mockLogger;
+
+    public TestArgumentParser() {
+        this.mockLogger = new MockLogger();
+    }
 
     @Before
     public void setUp() {
-        this.parser = new ArgumentParser();
+        this.parser = new ArgumentParser(mockLogger);
     }
 
     @After
@@ -27,32 +35,35 @@ public class TestArgumentParser {
         config.setNumberOfCores(0);
         config.setNumberOfThreads(0);
         config.setVisualise(false);
+
+        // clear all strings that have been logged between tests
+        mockLogger.clearLoggedItems();
     }
 
     @Test
     public void testMinumumArguments() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot", "2"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot", "2"};
 
         // act
         Config config = parser.parse(args);
 
         // assert
-        assertEquals(new File("src/test/resources/test_file.dot"), config.getInputFile());
-        assertEquals(new File("src/test/resources/test_file-output.dot"), config.getOutputFile());
+        assertEquals(new File("src/test/resources/dot_files/test_file.dot"), config.getInputFile());
+        assertEquals(new File("src/test/resources/dot_files/test_file-output.dot"), config.getOutputFile());
         assertEquals(2, config.getNumberOfCores());
     }
 
     @Test
     public void testOptionalArguments() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot", "3", "-v", "-o", "output_file.dot", "-p", "8"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot", "3", "-v", "-o", "output_file.dot", "-p", "8"};
 
         // act
         Config config = parser.parse(args);
 
         // assert
-        assertEquals(new File("src/test/resources/test_file.dot"), config.getInputFile());
+        assertEquals(new File("src/test/resources/dot_files/test_file.dot"), config.getInputFile());
         assertEquals(new File("output_file.dot"), config.getOutputFile());
         assertEquals(3, config.getNumberOfCores());
         assertEquals(8, config.getNumberOfThreads());
@@ -61,8 +72,22 @@ public class TestArgumentParser {
 
     @Test
     public void testHelp() {
-        // should not throw an exception
+        // arrange
+        String expectedString1 = "java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
+                "INPUT.dot a task graph with integer weights in dot format\r\n" +
+                "P number of processors to schedule the INPUT graph on\r\n";
+
+        String expectedString2 = "Optional: \r\n" +
+                "−p N use N cores for execution in parallel (default is sequential )\r\n" +
+                "−v visualise the search\r\n" +
+                "−o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)\r\n";
+
+        // act
         parser.printHelp();
+
+        // assert
+        assertEquals(mockLogger.getLoggedItems().get(0), expectedString1);
+        assertEquals(mockLogger.getLoggedItems().get(1), expectedString2);
     }
 
     @Test
@@ -82,7 +107,7 @@ public class TestArgumentParser {
     @Test
     public void testInvalidCoreArgument() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot", "abc"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot", "abc"};
 
         // act
         try {
@@ -114,7 +139,7 @@ public class TestArgumentParser {
     @Test
     public void testSingleArgument() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot"};
 
         // act
         try {
@@ -130,7 +155,7 @@ public class TestArgumentParser {
     @Test
     public void testIncompleteThreadArgument() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot", "3", "-v", "-o", "output_file.dot", "-p"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot", "3", "-v", "-o", "output_file.dot", "-p"};
 
         // act
         try {
@@ -146,7 +171,7 @@ public class TestArgumentParser {
     @Test
     public void testInvalidThreadArgument() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot", "3", "-v", "-o", "output_file.dot", "-p", "not an int"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot", "3", "-v", "-o", "output_file.dot", "-p", "not an int"};
 
         // act
         try {
@@ -162,7 +187,7 @@ public class TestArgumentParser {
     @Test
     public void testInvalidOptionalArgument() {
         // arrange
-        String[] args = {"src/test/resources/test_file.dot", "3", "-x"};
+        String[] args = {"src/test/resources/dot_files/test_file.dot", "3", "-x"};
 
         // act
         try {

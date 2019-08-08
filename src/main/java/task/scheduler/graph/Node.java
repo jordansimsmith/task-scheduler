@@ -1,6 +1,8 @@
-package task.scheduler;
+package task.scheduler.graph;
 
-import java.util.Collections;
+import task.scheduler.common.Tuple;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -8,39 +10,37 @@ import java.util.Map;
 /**
  * Represents a task to be scheduled, and its dependencies
  */
-public class Node implements INode  {
+public class Node implements INode {
     private String label;
     private int cost;
-    private List<Tuple<INode, Integer>> dependencies;
-    private List<Tuple<INode, Integer>> dependents;
+    private Map<INode, Integer> dependencies = new HashMap<>();
+    private Map<INode, Integer> dependents = new HashMap<>();
 
-    Node(int cost, String label) {
+    public Node(int cost, String label) {
         this.label = label;
         this.cost = cost;
-        dependencies = new LinkedList<>();
-        dependents = new LinkedList<>();
     }
 
     /**
      * Sets the task to be dependent on the given task, with given cost for transfer between processors
      */
-    void addDependency(INode task, int cost) {
-        dependencies.add(new Tuple<>(task, cost));
+    public void addDependency(INode task, int cost) {
+        dependencies.put(task, cost);
     }
 
     /**
      * Sets the task to be depended on by the given task, with given cost for transfer between processors
      */
-    void addDependent(INode task, int cost) {
-        dependents.add(new Tuple<>(task, cost));
+    public void addDependent(INode task, int cost) {
+        dependents.put(task, cost);
     }
 
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder(label + " (" + cost + ") [");
 
-        for (Tuple<INode, Integer> dependency : dependencies) {
-            string.append(dependency.x.getLabel()).append("(").append(dependency.y).append("),");
+        for (Map.Entry<INode, Integer> dependency : dependencies.entrySet()) {
+            string.append(dependency.getKey().getLabel()).append("(").append(dependency.getValue()).append("),");
         }
         string.append("]");
 
@@ -48,13 +48,13 @@ public class Node implements INode  {
     }
 
     @Override
-    public List<Tuple<INode, Integer>> getChildren() {
-        return new LinkedList<>(dependents);
+    public Map<INode, Integer> getChildren() {
+        return new HashMap<>(dependents);
     }
 
     @Override
-    public List<Tuple<INode, Integer>> getParents() {
-        return new LinkedList<>(dependencies);
+    public Map<INode, Integer> getParents() {
+        return new HashMap<>(dependencies);
     }
 
     @Override
