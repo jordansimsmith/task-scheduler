@@ -45,8 +45,9 @@ public class InputGraphGenerator {
             node.addAttribute("ui.style", "size: 20px;");
         }
 
-
-
     }
 
+    public IGraph getGraph() {
+        return graph;
+    }
 }
