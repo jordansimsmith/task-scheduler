@@ -40,7 +40,7 @@ public class TestGraphLoading {
 
         // assert
         assertEquals(g.getNodeCount(), 4);
-        assertEquals(g.getStartNode().getLabel(), "a");
+        assertEquals(g.getStartNodes().get(0).getLabel(), "a");
 
 
         for (INode node : g.getNodes()) {
@@ -86,7 +86,7 @@ public class TestGraphLoading {
 
         // assert
         assertEquals(g.getNodeCount(), 4);
-        assertEquals(g.getStartNode().getLabel(), "apache_node");
+        assertEquals(g.getStartNodes().get(0).getLabel(), "apache_node");
 
 
         for (INode node : g.getNodes()) {
@@ -112,7 +112,7 @@ public class TestGraphLoading {
 
         // assert
         assertEquals(g.getNodeCount(), 4);
-        assertEquals(g.getStartNode().getLabel(), "a");
+        assertEquals(g.getStartNodes().get(0).getLabel(), "a");
 
 
         for (INode node : g.getNodes()) {

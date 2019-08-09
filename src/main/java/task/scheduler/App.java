@@ -7,6 +7,8 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.ValidScheduler;
+import task.scheduler.schedule.astar.AStar;
+import task.scheduler.schedule.astar.AStarBaseHeuristic;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,8 +56,12 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new ValidScheduler();
+        IScheduler scheduler = new AStar(new AStarBaseHeuristic());
+        Long time = System.currentTimeMillis();
+        System.out.println("Starting ...");
         ISchedule output = scheduler.execute(input);
+        System.out.println(System.currentTimeMillis() - time + "ms");
+        System.out.println(output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {

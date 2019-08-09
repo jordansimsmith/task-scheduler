@@ -5,6 +5,7 @@ import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public class Graph implements IGraph {
     private List<Node> nodes;
-    private Node startNode;
+    private List<Node> startNodes;
     private final ILogger logger;
 
     private Pattern nodeMatcher, edgeMatcher;
@@ -25,7 +26,7 @@ public class Graph implements IGraph {
 
     public Graph(File inputFile, ILogger logger) throws IOException, DotFormatException {
         this.logger = logger;
-
+        this.startNodes = new ArrayList<>();
         nodeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
         edgeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)->([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
 
@@ -43,19 +44,15 @@ public class Graph implements IGraph {
             line = reader.readLine();
         }
 
-        // Find start and end nodes
+        // Find start nodes
         for (Node node : nodes) {
             if (node.getParents().size() == 0) {
-                if (startNode != null) {
-                    throw new DotFormatException("Found two start nodes labelled " + startNode.getLabel() + " and " + node.getLabel());
-                }
-
-                startNode = node;
+                startNodes.add(node);
             }
         }
 
         // Check start/end nodes
-        if (startNode == null) {
+        if (startNodes.isEmpty()) {
             throw new DotNodeMissingException("No start node");
         }
     }
@@ -108,8 +105,8 @@ public class Graph implements IGraph {
     }
 
     @Override
-    public INode getStartNode() {
-        return startNode;
+    public List<INode> getStartNodes() {
+        return new ArrayList<INode>(startNodes);
     }
 
     @Override

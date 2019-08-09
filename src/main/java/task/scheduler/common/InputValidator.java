@@ -1,6 +1,5 @@
 package task.scheduler.common;
 
-import task.scheduler.common.Tuple;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
@@ -18,14 +17,16 @@ public class InputValidator {
      */
     public void validateGraph(IGraph graph) throws GraphException {
         // graph start node should not be null
-        INode startNode = graph.getStartNode();
-        if (startNode == null) {
-            throw new GraphException("start node cannot be null");
+        List<INode> startNodes = graph.getStartNodes();
+        if (startNodes.isEmpty()) {
+            throw new GraphException("start node cannot be empty");
         }
 
         // start node should have no parents
-        if (!startNode.getParents().isEmpty()) {
-            throw new GraphException("start node should not have any parents");
+        for(INode node:startNodes){
+            if (!node.getParents().isEmpty()) {
+                throw new GraphException("start nodes should not have any parents");
+            }
         }
 
         // graph node list should not be null
@@ -49,11 +50,6 @@ public class InputValidator {
 
             if (node.getProcessingCost() < 1) {
                 throw new GraphException("node processing cost cannot be less than 1");
-            }
-
-            // node should have at least one parent
-            if (node != startNode && node.getParents().isEmpty()) {
-                throw new GraphException("there should only be one start node");
             }
 
             // node labels should be unique
