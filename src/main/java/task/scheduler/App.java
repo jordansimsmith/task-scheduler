@@ -1,6 +1,7 @@
 package task.scheduler;
 
 import task.scheduler.common.*;
+import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
@@ -38,8 +39,12 @@ public class App {
         IGraph input;
         try {
             input = new Graph(config.getInputFile(), logger);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            return;
+        } catch (DotFormatException e) {
+            logger.error("There was an error in the input dot file");
+            logger.error(e.getMessage());
             return;
         }
 
