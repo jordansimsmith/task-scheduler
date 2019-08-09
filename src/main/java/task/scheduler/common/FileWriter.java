@@ -40,7 +40,7 @@ public class FileWriter implements Closeable {
             for(INode node: graph.getNodes()) {
                 Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
 
-                bufferedWriter.write(String.format("\t%s\t[Weight=%d Start=%d Processor=%d];", node.getLabel(), node.getProcessingCost(), nodeSchedule.x, nodeSchedule.y));
+                bufferedWriter.write(String.format("\t%s\t[Weight=%d, Start=%d, Processor=%d];", node.getLabel(), node.getProcessingCost(), nodeSchedule.x, nodeSchedule.y));
                 bufferedWriter.newLine();
 
                 if (!node.getParents().isEmpty()) {
