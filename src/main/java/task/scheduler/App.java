@@ -56,10 +56,10 @@ public class App {
         // produce schedule
         IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
         Long time = System.currentTimeMillis();
-        System.out.println("Starting ...");
+        logger.log("Starting ...");
         ISchedule output = scheduler.execute(input);
-        System.out.println(System.currentTimeMillis() - time + "ms");
-        System.out.println(output.getTotalCost());
+        logger.log(System.currentTimeMillis() - time + "ms");
+        logger.log(String.valueOf(output.getTotalCost()));
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
