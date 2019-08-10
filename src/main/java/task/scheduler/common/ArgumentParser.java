@@ -1,17 +1,16 @@
 package task.scheduler.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import task.scheduler.App;
+
 import java.io.File;
 
 /**
  * ArgumentParser is a class for parsing the command line arguments for the task-scheduler program.
  */
 public class ArgumentParser {
-
-    private final ILogger logger;
-
-    public ArgumentParser(ILogger logger) {
-        this.logger = logger;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ArgumentParser.class);
 
     /**
      * parse is used to parse the command line arguments into a machine readable, configuration object.
@@ -91,11 +90,11 @@ public class ArgumentParser {
      * This method should be called when the user enters an incorrect set of arguments.
      */
     public void printHelp() {
-        logger.error("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
+        logger.info("java −jar scheduler.jar INPUT.dot P [OPTION]\r\n" +
                 "INPUT.dot a task graph with integer weights in dot format\r\n" +
                 "P number of processors to schedule the INPUT graph on\r\n");
 
-        logger.error("Optional: \r\n" +
+        logger.info("Optional: \r\n" +
                 "−p N use N cores for execution in parallel (default is sequential )\r\n" +
                 "−v visualise the search\r\n" +
                 "−o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)\r\n");
