@@ -19,7 +19,7 @@ jobs:
           key: task-scheduler-{{ checksum "pom.xml" }}
       - run:
           name: Build and test artifact
-          command: mvn package
+          command: mvn verify
       - store_test_results:
           path: target/surefire-reports
       - store_artifacts:
