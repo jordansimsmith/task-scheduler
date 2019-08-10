@@ -52,16 +52,28 @@ public class Node implements INode {
         return new HashMap<>(dependents);
     }
 
+    /**
+     * Produces a map of parents for the graph, from the parent node to the connection weight
+     * @return
+     */
     @Override
     public Map<INode, Integer> getParents() {
         return new HashMap<>(dependencies);
     }
 
+    /**
+     * The weight (processing cost) of this node
+     * @return
+     */
     @Override
     public int getProcessingCost() {
         return cost;
     }
 
+    /**
+     * Label that was loaded from the original file for this node
+     * @return
+     */
     @Override
     public String getLabel() {
         return label;
