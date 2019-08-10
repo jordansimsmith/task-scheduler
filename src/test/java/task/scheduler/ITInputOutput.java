@@ -25,6 +25,14 @@ public class ITInputOutput {
         // construct temporary output file which is deleted on JVM exit
         this.outputFile = File.createTempFile("output", ".dot");
         this.outputFile.deleteOnExit();
+
+        if (!new File(JAR).exists()) {
+            fail("JAR doesn't exist");
+        }
+
+        if (!new File(INPUT).exists()) {
+            fail("input file doesn't exist");
+        }
     }
 
     @Test
