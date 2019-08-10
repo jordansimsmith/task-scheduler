@@ -1,8 +1,5 @@
 package task.scheduler.graph;
 
-import task.scheduler.common.Tuple;
-
-import java.util.List;
 import java.util.Map;
 
 /**

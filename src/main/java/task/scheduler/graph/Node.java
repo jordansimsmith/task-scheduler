@@ -1,10 +1,6 @@
 package task.scheduler.graph;
 
-import task.scheduler.common.Tuple;
-
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,7 +50,6 @@ public class Node implements INode {
 
     /**
      * Produces a map of parents for the graph, from the parent node to the connection weight
-     * @return
      */
     @Override
     public Map<INode, Integer> getParents() {
@@ -63,7 +58,6 @@ public class Node implements INode {
 
     /**
      * The weight (processing cost) of this node
-     * @return
      */
     @Override
     public int getProcessingCost() {
@@ -72,7 +66,6 @@ public class Node implements INode {
 
     /**
      * Label that was loaded from the original file for this node
-     * @return
      */
     @Override
     public String getLabel() {

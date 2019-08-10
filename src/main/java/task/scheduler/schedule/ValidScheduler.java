@@ -18,7 +18,6 @@ public class ValidScheduler implements IScheduler {
     /**
      * Uses the BFS algorithm to identify all the nodes.
      *
-     * @Author : Reshad Contractor
      */
     @Override
     public ISchedule execute(IGraph graph) {
@@ -47,7 +46,6 @@ public class ValidScheduler implements IScheduler {
      * This function will remove the dependencies from the child nodes and return the child node if upon removing the
      * parent node it does not contain any dependencies.
      *
-     * @Author : Reshad Contractor
      */
     private List<INode> removeDependencies(INode node, Map<INode, Map<INode, Integer>> dependencies) {
         Map<INode, Integer> children = node.getChildren();
