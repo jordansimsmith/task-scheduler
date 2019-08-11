@@ -15,7 +15,8 @@ public interface IGraph {
     List<INode> getNodes();
 
     /**
-     * Method getStartNodes gets the start node for the graph. There is always only one start node for a valid graph.
+     * Method getStartNodes gets the start nodes for the graph.
+     * There may be multiple start nodes in a graph. 
      *
      * @return start INode
      */

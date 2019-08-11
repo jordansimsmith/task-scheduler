@@ -9,7 +9,7 @@ import task.scheduler.schedule.ValidScheduler;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
-public class TestSchedularFactory {
+public class TestSchedulerFactory {
 
     private SchedulerFactory schedulerFactory;
 
@@ -19,7 +19,7 @@ public class TestSchedularFactory {
     }
 
     @Test
-    public void testSchedularValidScheduler() {
+    public void testSchedulerValidScheduler() {
 
         //Act
         IScheduler scheduler = schedulerFactory.createScheduler(SchedulerFactory.SchedulerType.VALID);

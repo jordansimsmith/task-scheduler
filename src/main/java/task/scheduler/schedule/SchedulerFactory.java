@@ -16,8 +16,6 @@ public class SchedulerFactory {
     /**
      * ISchedular takes in a SchedularType and returns a corresponding scheduler.
      *
-     * @param type
-     * @return IScheduler
      */
     public IScheduler createScheduler(SchedulerType type) {
         if (type == null) {

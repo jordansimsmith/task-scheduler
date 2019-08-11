@@ -1,8 +1,5 @@
 package task.scheduler.graph;
 
-import task.scheduler.common.Tuple;
-
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +33,7 @@ public interface INode {
 
     /**
      * Method get getLabel is a getter for the human-readable identifier for this node.
-     * E.g. "a", "b" etc.
+     * Consistent with input.
      *
      * @return a string containing the node identifier/label.
      */
