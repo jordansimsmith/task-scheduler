@@ -1,14 +1,13 @@
 package task.scheduler;
 
 import task.scheduler.common.*;
+import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
-import task.scheduler.schedule.ValidScheduler;
-import task.scheduler.schedule.astar.AStar;
-import task.scheduler.schedule.astar.AStarBaseHeuristic;
+import task.scheduler.schedule.SchedulerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,8 +39,12 @@ public class App {
         IGraph input;
         try {
             input = new Graph(config.getInputFile(), logger);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            return;
+        } catch (DotFormatException e) {
+            logger.error("There was an error in the input dot file");
+            logger.error(e.getMessage());
             return;
         }
 
@@ -56,20 +59,22 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new AStar(new AStarBaseHeuristic());
-        Long time = System.currentTimeMillis();
-        System.out.println("Starting ...");
+        IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
+        long time = System.currentTimeMillis();
+        logger.log("Starting ...");
         ISchedule output = scheduler.execute(input);
-        System.out.println(System.currentTimeMillis() - time + "ms");
-        System.out.println(output.getTotalCost());
+        logger.log("... Finished");
+        logger.log("In " + (System.currentTimeMillis() - time) + "ms");
+        logger.log("Schedule cost: " + output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
             fileWriter.writeScheduledGraphToFile(input, output);
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
 
-        logger.log("Finished.");
+        logger.log("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
     }
 }

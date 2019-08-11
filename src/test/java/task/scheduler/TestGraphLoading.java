@@ -10,8 +10,7 @@ import task.scheduler.graph.INode;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestGraphLoading {
     private String dotFiles = "src/test/resources/dot_files/";
@@ -48,12 +47,12 @@ public class TestGraphLoading {
                 assertEquals(1, node.getParents().size());
                 assertTrue(node.getParents().containsValue(11));
 
-                assertTrue(!node.getParents().containsValue(1));
+                assertFalse(node.getParents().containsValue(1));
 
                 assertEquals(1, node.getChildren().size());
                 assertTrue(node.getChildren().containsValue(2));
 
-                assertTrue(!node.getChildren().containsValue(3));
+                assertFalse(node.getChildren().containsValue(3));
             }
         }
     }
@@ -120,12 +119,12 @@ public class TestGraphLoading {
                 assertEquals(1, node.getParents().size());
                 assertTrue(node.getParents().containsValue(11));
 
-                assertTrue(!node.getParents().containsValue(1));
+                assertFalse(node.getParents().containsValue(1));
 
                 assertEquals(1, node.getChildren().size());
                 assertTrue(node.getChildren().containsValue(2));
 
-                assertTrue(!node.getChildren().containsValue(3));
+                assertFalse(node.getChildren().containsValue(3));
             }
         }
     }

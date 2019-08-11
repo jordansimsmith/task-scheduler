@@ -18,7 +18,6 @@ public class ArgumentParser {
      *
      * @param args command line arguments from entry point
      * @return Instance of config singleton object
-     * @throws IllegalArgumentException
      */
     public Config parse(String[] args) throws IllegalArgumentException {
         // check for required arguments
@@ -34,7 +33,7 @@ public class ArgumentParser {
         }
 
         // process number of cores
-        int numberOfCores = 0;
+        int numberOfCores;
         try {
             numberOfCores = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
