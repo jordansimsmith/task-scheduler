@@ -28,3 +28,6 @@ target/
 # intellij files
 .idea/
 *.iml
+
+# file used for building dependency reduced jar
+dependency-reduced-pom.xml
