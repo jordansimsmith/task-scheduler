@@ -10,14 +10,12 @@ import task.scheduler.common.Tuple;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
-import task.scheduler.schedule.ValidScheduler;
 import task.scheduler.schedule.astar.AStar;
 import task.scheduler.schedule.astar.AStarBaseHeuristic;
 
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

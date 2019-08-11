@@ -12,8 +12,6 @@ import java.util.regex.Pattern;
 
 /**
  * Encapsulates the loading and storage of a graph from a Dot File
- * TODO: Needs to handle things like DotFormat comments, etc
- * TODO: Can nodes have multiple char names?
  */
 public class Graph implements IGraph {
     private List<Node> nodes;
@@ -98,12 +96,12 @@ public class Graph implements IGraph {
 
     @Override
     public List<INode> getNodes() {
-        return new LinkedList<INode>(nodes);
+        return new LinkedList<>(nodes);
     }
 
     @Override
     public List<INode> getStartNodes() {
-        return new ArrayList<INode>(startNodes);
+        return new ArrayList<>(startNodes);
     }
 
     @Override

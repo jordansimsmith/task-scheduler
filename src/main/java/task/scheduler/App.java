@@ -3,13 +3,13 @@ package task.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import task.scheduler.common.*;
+import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
-import task.scheduler.schedule.astar.AStar;
-import task.scheduler.schedule.astar.AStarBaseHeuristic;
+import task.scheduler.schedule.SchedulerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,8 +42,12 @@ public class App {
         IGraph input;
         try {
             input = new Graph(config.getInputFile());
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            return;
+        } catch (DotFormatException e) {
+            logger.error("There was an error in the input dot file");
+            logger.error(e.getMessage());
             return;
         }
 
@@ -58,20 +62,22 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new AStar(new AStarBaseHeuristic());
-        Long time = System.currentTimeMillis();
+        IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
+        long time = System.currentTimeMillis();
         logger.info("Starting ...");
         ISchedule output = scheduler.execute(input);
-        logger.info(System.currentTimeMillis() - time + "ms");
-        logger.info(String.valueOf(output.getTotalCost()));
+        logger.info("... Finished");
+        logger.info("In " + (System.currentTimeMillis() - time) + "ms");
+        logger.info("Schedule cost: " + output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
             fileWriter.writeScheduledGraphToFile(input, output);
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
 
-        logger.info("Finished.");
+        logger.info("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
     }
 }

@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class AStar implements IScheduler {
-
-    PriorityQueue<AStarSchedule> solutions;
+    private PriorityQueue<AStarSchedule> solutions;
 
     public AStar(Comparator comparator) {
         this.solutions = new PriorityQueue<>(comparator);

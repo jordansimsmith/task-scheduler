@@ -27,8 +27,6 @@ public class FileWriter implements Closeable {
     /**
      * Writes the given graph with the given solution schedule to a file in dot file format.
      * The name of the output file is taken from the global config settings.
-     * @param graph
-     * @param schedule
      */
     public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule) {
         String outputGraphName = getOutputGraphName();

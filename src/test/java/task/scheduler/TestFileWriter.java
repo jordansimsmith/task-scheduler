@@ -60,7 +60,7 @@ public class TestFileWriter {
     }
 
     @Test
-    public void testSingleNode() throws IOException {
+    public void testSingleNode() throws Exception {
         // arrange
         config.setOutputFile(new File("src/testSingleNode.dot"));
         String expectedString = "digraph \"testSingleNode\" {\n" +
@@ -82,11 +82,11 @@ public class TestFileWriter {
 
         // assert
         assertEquals(expectedString, actualString);
-        verify(outputStream, atLeastOnce()).write((byte[]) Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
+        verify(outputStream, atLeastOnce()).write(Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
     }
 
     @Test
-    public void testTreeOfDepthOne() throws IOException {
+    public void testTreeOfDepthOne() throws Exception {
         // arrange
         config.setOutputFile(new File("src/testTree.dot"));
         StringBuilder stringBuilder = new StringBuilder("digraph \"testTree\" {\n");
@@ -130,7 +130,7 @@ public class TestFileWriter {
 
         // assert
         assertEquals(expectedString, actualString);
-        verify(outputStream, atLeastOnce()).write((byte[]) Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
+        verify(outputStream, atLeastOnce()).write(Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
     }
 }
 

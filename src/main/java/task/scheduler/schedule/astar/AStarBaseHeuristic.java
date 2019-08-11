@@ -10,13 +10,7 @@ public class AStarBaseHeuristic implements Comparator<AStarSchedule> {
         } else if (o1.getCost() > o2.getCost()) {
             return 1;
         } else {
-            if (o1.getNodesScheduled() < o2.getNodesScheduled()) {
-                return 1;
-            } else if (o1.getNodesScheduled() > o2.getNodesScheduled()) {
-                return -1;
-            } else {
-                return 0;
-            }
+            return Integer.compare(o2.getNodesScheduled(), o1.getNodesScheduled());
         }
     }
 }

@@ -33,7 +33,7 @@ public class TestInputValidator {
     @Test
     public void testEmptyStartNodes() {
         // arrange
-        when(mockGraph.getStartNodes()).thenReturn(new ArrayList<INode>());
+        when(mockGraph.getStartNodes()).thenReturn(new ArrayList<>());
 
         // act
         try {
@@ -72,7 +72,7 @@ public class TestInputValidator {
     public void testNullNodeList() {
         // arrange
         INode start = mock(INode.class);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(mockGraph.getStartNodes()).thenReturn(Arrays.asList(start));
         when(mockGraph.getNodes()).thenReturn(null);
 
@@ -91,9 +91,9 @@ public class TestInputValidator {
     public void testInvalidListSize() {
         // arrange
         INode start = mock(INode.class);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(mockGraph.getStartNodes()).thenReturn(Arrays.asList(start));
-        when(mockGraph.getNodes()).thenReturn(new ArrayList<INode>());
+        when(mockGraph.getNodes()).thenReturn(new ArrayList<>());
         when(mockGraph.getNodeCount()).thenReturn(1);
 
         // act
@@ -113,7 +113,7 @@ public class TestInputValidator {
         INode start = mock(INode.class);
         List<INode> nodes = new ArrayList<>();
         nodes.add(null);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(mockGraph.getStartNodes()).thenReturn(Arrays.asList(start));
         when(mockGraph.getNodes()).thenReturn(nodes);
         when(mockGraph.getNodeCount()).thenReturn(1);
@@ -135,7 +135,7 @@ public class TestInputValidator {
         INode start = mock(INode.class);
         INode node = mock(INode.class);
         List<INode> nodes = Arrays.asList(node);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(node.getProcessingCost()).thenReturn(0);
         when(mockGraph.getStartNodes()).thenReturn(Arrays.asList(start));
         when(mockGraph.getNodes()).thenReturn(nodes);
@@ -160,7 +160,7 @@ public class TestInputValidator {
         Map<INode, Integer> map = new HashMap<>();
         map.put(start, 3);
         List<INode> nodes = Arrays.asList(node, node);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(node.getProcessingCost()).thenReturn(1);
         when(node.getLabel()).thenReturn("a");
         when(mockGraph.getStartNodes()).thenReturn(Arrays.asList(start));
@@ -188,7 +188,7 @@ public class TestInputValidator {
         Map<INode, Integer> map1 = new HashMap<>();
         map1.put(start, 2);
         List<INode> nodes = Arrays.asList(start, node);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(start.getLabel()).thenReturn("b");
         when(start.getProcessingCost()).thenReturn(2);
         when(node.getProcessingCost()).thenReturn(1);
@@ -220,7 +220,7 @@ public class TestInputValidator {
         map.put(start, 2);
         INode node = mock(INode.class);
         List<INode> nodes = Arrays.asList(start, node);
-        when(start.getParents()).thenReturn(new HashMap<INode, Integer>());
+        when(start.getParents()).thenReturn(new HashMap<>());
         when(start.getLabel()).thenReturn("b");
         when(start.getProcessingCost()).thenReturn(2);
         when(node.getProcessingCost()).thenReturn(1);
@@ -233,7 +233,7 @@ public class TestInputValidator {
         map1.put(node, 3);
         // introduce cycle
         when(start.getChildren()).thenReturn(map1);
-        when(node.getChildren()).thenReturn(new HashMap<INode, Integer>());
+        when(node.getChildren()).thenReturn(new HashMap<>());
 
         // act
         validator.validateGraph(mockGraph);
