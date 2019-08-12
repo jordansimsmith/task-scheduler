@@ -37,6 +37,16 @@
       <artifactId>slf4j-log4j12</artifactId>
       <version>${slf.version}</version>
     </dependency>
+    <dependency>
+      <groupId>guru.nidi</groupId>
+      <artifactId>graphviz-java</artifactId>
+      <version>0.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>12.0.2</version>
+    </dependency>
   </dependencies>
 
   <build>
