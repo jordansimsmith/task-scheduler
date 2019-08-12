@@ -1,9 +1,7 @@
 package task.scheduler;
 
-import org.junit.After;
 import org.junit.Test;
 import task.scheduler.exception.DotFormatException;
-import task.scheduler.mockclasses.MockLogger;
 import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
@@ -14,17 +12,6 @@ import static org.junit.Assert.*;
 
 public class TestGraphLoading {
     private String dotFiles = "src/test/resources/dot_files/";
-    private final MockLogger mockLogger;
-
-    public TestGraphLoading() {
-        this.mockLogger = new MockLogger();
-    }
-
-    @After
-    public void tearDown() {
-        // clear all strings that have been logged between tests
-        mockLogger.clearLoggedItems();
-    }
 
     /**
      * Check a basic valid graph is loaded correctly
@@ -35,7 +22,7 @@ public class TestGraphLoading {
         String file = "valid_no_comments.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles + file), mockLogger);
+        IGraph g = new Graph(new File(dotFiles + file));
 
         // assert
         assertEquals(g.getNodeCount(), 4);
@@ -66,10 +53,7 @@ public class TestGraphLoading {
         String file = "invalid_looped.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles + file), mockLogger);
-
-        // assert - should also throw exception
-        assertTrue(mockLogger.getLoggedItems().isEmpty());
+        IGraph g = new Graph(new File(dotFiles + file));
     }
 
     /**
@@ -81,7 +65,7 @@ public class TestGraphLoading {
         String file = "valid_special_names.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles + file), mockLogger);
+        IGraph g = new Graph(new File(dotFiles + file));
 
         // assert
         assertEquals(g.getNodeCount(), 4);
@@ -107,7 +91,7 @@ public class TestGraphLoading {
         String file = "valid_extra_params.dot";
 
         // act
-        IGraph g = new Graph(new File(dotFiles + file), mockLogger);
+        IGraph g = new Graph(new File(dotFiles + file));
 
         // assert
         assertEquals(g.getNodeCount(), 4);

@@ -1,5 +1,7 @@
 package task.scheduler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import task.scheduler.common.*;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
@@ -13,12 +15,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) {
-        final ILogger logger = new ConsoleLogger();
-        logger.log("Task Scheduler starting.");
+        logger.info("Task Scheduler starting.");
 
         // parse input arguments
-        ArgumentParser argumentParser = new ArgumentParser(logger);
+        ArgumentParser argumentParser = new ArgumentParser();
         Config config;
         try {
             config = argumentParser.parse(args);
@@ -29,16 +32,16 @@ public class App {
         }
 
         // display results
-        logger.log("Processing input file " + config.getInputFile().getPath());
-        logger.log("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
-        logger.log(config.getNumberOfThreads() + " threads will be used in execution");
-        logger.log(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
-        logger.log("The results will be saved to " + config.getOutputFile().getPath());
+        logger.info("Processing input file " + config.getInputFile().getPath());
+        logger.info("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
+        logger.info(config.getNumberOfThreads() + " threads will be used in execution");
+        logger.info(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
+        logger.info("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
         IGraph input;
         try {
-            input = new Graph(config.getInputFile(), logger);
+            input = new Graph(config.getInputFile());
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -61,11 +64,11 @@ public class App {
         // produce schedule
         IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
         long time = System.currentTimeMillis();
-        logger.log("Starting ...");
+        logger.info("Starting ...");
         ISchedule output = scheduler.execute(input);
-        logger.log("... Finished");
-        logger.log("In " + (System.currentTimeMillis() - time) + "ms");
-        logger.log("Schedule cost: " + output.getTotalCost());
+        logger.info("... Finished");
+        logger.info("In " + (System.currentTimeMillis() - time) + "ms");
+        logger.info("Schedule cost: " + output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
@@ -75,6 +78,6 @@ public class App {
             return;
         }
 
-        logger.log("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
+        logger.info("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
     }
 }

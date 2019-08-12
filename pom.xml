@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <slf.version>1.7.25</slf.version>
   </properties>
 
   <dependencies>
@@ -28,6 +29,13 @@
       <artifactId>mockito-core</artifactId>
       <version>3.0.0</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf.version}</version>
     </dependency>
   </dependencies>
 
@@ -79,6 +87,32 @@
               </manifest>
             </archive>
           </configuration>
+        </plugin>
+
+        <!-- build javafx jar with all dependencies packaged inside -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <minimizeJar>true</minimizeJar>
+                <filters>
+                  <filter>
+                    <artifact>log4j:log4j</artifact>
+                    <includes>
+                      <include>**</include>
+                    </includes>
+                  </filter>
+                </filters>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>

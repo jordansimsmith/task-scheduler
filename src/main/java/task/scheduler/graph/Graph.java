@@ -1,6 +1,5 @@
 package task.scheduler.graph;
 
-import task.scheduler.common.ILogger;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
@@ -17,13 +16,11 @@ import java.util.regex.Pattern;
 public class Graph implements IGraph {
     private List<Node> nodes;
     private List<Node> startNodes;
-    private final ILogger logger;
 
     private Pattern nodeMatcher, edgeMatcher;
 
 
-    public Graph(File inputFile, ILogger logger) throws IOException, DotFormatException {
-        this.logger = logger;
+    public Graph(File inputFile) throws IOException, DotFormatException {
         this.startNodes = new ArrayList<>();
         nodeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
         edgeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)->([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
