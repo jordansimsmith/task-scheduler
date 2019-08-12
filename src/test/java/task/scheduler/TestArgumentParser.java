@@ -3,26 +3,34 @@ package task.scheduler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import task.scheduler.mockclasses.MockLogger;
+import org.apache.log4j.Level;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Logger;
+
 import task.scheduler.common.ArgumentParser;
 import task.scheduler.common.Config;
+import task.scheduler.mockclasses.MockAppender;
 
 import java.io.File;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class TestArgumentParser {
 
     private ArgumentParser parser;
-    private final MockLogger mockLogger;
+    private MockAppender appender;
+    private Logger logger;
 
-    public TestArgumentParser() {
-        this.mockLogger = new MockLogger();
+    public TestArgumentParser(){
+        parser = new ArgumentParser();
+        appender = new MockAppender();
     }
 
     @Before
     public void setUp() {
-        this.parser = new ArgumentParser(mockLogger);
+        logger = Logger.getRootLogger();
+        logger.addAppender(appender);
     }
 
     @After
@@ -36,8 +44,8 @@ public class TestArgumentParser {
         config.setNumberOfThreads(0);
         config.setVisualise(false);
 
-        // clear all strings that have been logged between tests
-        mockLogger.clearLoggedItems();
+        // reset the appender between tests
+        logger.removeAppender(appender);
     }
 
     @Test
@@ -86,8 +94,15 @@ public class TestArgumentParser {
         parser.printHelp();
 
         // assert
-        assertEquals(mockLogger.getLoggedItems().get(0), expectedString1);
-        assertEquals(mockLogger.getLoggedItems().get(1), expectedString2);
+        final List<LoggingEvent> log = appender.getLoggedItems();
+
+        final LoggingEvent firstLogEntry = log.get(0);
+        assertEquals(firstLogEntry.getLevel(), (Level.INFO));
+        assertEquals(firstLogEntry.getMessage(), expectedString1);
+
+        final LoggingEvent secondLogEntry = log.get(1);
+        assertEquals(secondLogEntry.getLevel(), (Level.INFO));
+        assertEquals(secondLogEntry.getMessage(), expectedString2);
     }
 
     @Test

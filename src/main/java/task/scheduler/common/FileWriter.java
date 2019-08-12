@@ -27,8 +27,6 @@ public class FileWriter implements Closeable {
     /**
      * Writes the given graph with the given solution schedule to a file in dot file format.
      * The name of the output file is taken from the global config settings.
-     * @param graph
-     * @param schedule
      */
     public void writeScheduledGraphToFile(IGraph graph, ISchedule schedule) {
         String outputGraphName = getOutputGraphName();
@@ -40,7 +38,7 @@ public class FileWriter implements Closeable {
             for(INode node: graph.getNodes()) {
                 Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
 
-                bufferedWriter.write(String.format("\t%s\t[Weight=%d Start=%d Processor=%d];", node.getLabel(), node.getProcessingCost(), nodeSchedule.x, nodeSchedule.y));
+                bufferedWriter.write(String.format("\t%s\t[Weight=%d, Start=%d, Processor=%d];", node.getLabel(), node.getProcessingCost(), nodeSchedule.x, nodeSchedule.y));
                 bufferedWriter.newLine();
 
                 if (!node.getParents().isEmpty()) {

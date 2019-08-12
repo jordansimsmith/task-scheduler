@@ -1,6 +1,5 @@
 package task.scheduler.graph;
 
-import task.scheduler.common.ILogger;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
@@ -13,19 +12,15 @@ import java.util.regex.Pattern;
 
 /**
  * Encapsulates the loading and storage of a graph from a Dot File
- * TODO: Needs to handle things like DotFormat comments, etc
- * TODO: Can nodes have multiple char names?
  */
 public class Graph implements IGraph {
     private List<Node> nodes;
     private List<Node> startNodes;
-    private final ILogger logger;
 
     private Pattern nodeMatcher, edgeMatcher;
 
 
-    public Graph(File inputFile, ILogger logger) throws IOException, DotFormatException {
-        this.logger = logger;
+    public Graph(File inputFile) throws IOException, DotFormatException {
         this.startNodes = new ArrayList<>();
         nodeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
         edgeMatcher = Pattern.compile("^([a-zA-Z0-9_]*)->([a-zA-Z0-9_]*)\\[(.*)Weight=(\\d+)(.*)");
@@ -101,12 +96,12 @@ public class Graph implements IGraph {
 
     @Override
     public List<INode> getNodes() {
-        return new LinkedList<INode>(nodes);
+        return new LinkedList<>(nodes);
     }
 
     @Override
     public List<INode> getStartNodes() {
-        return new ArrayList<INode>(startNodes);
+        return new ArrayList<>(startNodes);
     }
 
     @Override

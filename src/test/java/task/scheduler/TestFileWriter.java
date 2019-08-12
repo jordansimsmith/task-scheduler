@@ -60,11 +60,11 @@ public class TestFileWriter {
     }
 
     @Test
-    public void testSingleNode() throws IOException {
+    public void testSingleNode() throws Exception {
         // arrange
         config.setOutputFile(new File("src/testSingleNode.dot"));
         String expectedString = "digraph \"testSingleNode\" {\n" +
-                "\ta\t[Weight=1 Start=2 Processor=3];\n" +
+                "\ta\t[Weight=1, Start=2, Processor=3];\n" +
                 "}";
 
         Node node = new Node(1, "a");
@@ -82,15 +82,15 @@ public class TestFileWriter {
 
         // assert
         assertEquals(expectedString, actualString);
-        verify(outputStream, atLeastOnce()).write((byte[]) Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
+        verify(outputStream, atLeastOnce()).write(Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
     }
 
     @Test
-    public void testTreeOfDepthOne() throws IOException {
+    public void testTreeOfDepthOne() throws Exception {
         // arrange
         config.setOutputFile(new File("src/testTree.dot"));
         StringBuilder stringBuilder = new StringBuilder("digraph \"testTree\" {\n");
-        stringBuilder.append("\t0\t[Weight=1 Start=0 Processor=0];\n");
+        stringBuilder.append("\t0\t[Weight=1, Start=0, Processor=0];\n");
 
         // set up single parent node
         Node firstNode = new Node(1, "0");
@@ -108,7 +108,7 @@ public class TestFileWriter {
         for (int i : array) {
             Node node = new Node(i, String.valueOf(i));
             when(mockSchedule.getNodeSchedule(node)).thenReturn(new Tuple<>(i, i));
-            stringBuilder.append(String.format("\t%s\t[Weight=%d Start=%d Processor=%d];\n", node.getLabel(), i, i, i));
+            stringBuilder.append(String.format("\t%s\t[Weight=%d, Start=%d, Processor=%d];\n", node.getLabel(), i, i, i));
 
             node.addDependency(firstNode, i);
             stringBuilder.append(String.format("\t%s -> %s\t[Weight=%d];\n", firstNode.getLabel(), node.getLabel(), i));
@@ -130,7 +130,7 @@ public class TestFileWriter {
 
         // assert
         assertEquals(expectedString, actualString);
-        verify(outputStream, atLeastOnce()).write((byte[]) Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
+        verify(outputStream, atLeastOnce()).write(Mockito.any(), Mockito.anyInt(), Mockito.anyInt());
     }
 }
 

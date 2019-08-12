@@ -1,25 +1,27 @@
 package task.scheduler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import task.scheduler.common.*;
+import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
-import task.scheduler.schedule.ValidScheduler;
-import task.scheduler.schedule.astar.AStar;
-import task.scheduler.schedule.astar.AStarBaseHeuristic;
+import task.scheduler.schedule.SchedulerFactory;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main(String[] args) {
-        final ILogger logger = new ConsoleLogger();
-        logger.log("Task Scheduler starting.");
+        logger.info("Task Scheduler starting.");
 
         // parse input arguments
-        ArgumentParser argumentParser = new ArgumentParser(logger);
+        ArgumentParser argumentParser = new ArgumentParser();
         Config config;
         try {
             config = argumentParser.parse(args);
@@ -30,18 +32,22 @@ public class App {
         }
 
         // display results
-        logger.log("Processing input file " + config.getInputFile().getPath());
-        logger.log("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
-        logger.log(config.getNumberOfThreads() + " threads will be used in execution");
-        logger.log(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
-        logger.log("The results will be saved to " + config.getOutputFile().getPath());
+        logger.info("Processing input file " + config.getInputFile().getPath());
+        logger.info("To generate an optimal schedule over " + config.getNumberOfCores() + " cores");
+        logger.info(config.getNumberOfThreads() + " threads will be used in execution");
+        logger.info(config.isVisualise() ? "The results will be visualised" : "The results will not be visualised");
+        logger.info("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
         IGraph input;
         try {
-            input = new Graph(config.getInputFile(), logger);
-        } catch (Exception e) {
+            input = new Graph(config.getInputFile());
+        } catch (IOException e) {
             e.printStackTrace();
+            return;
+        } catch (DotFormatException e) {
+            logger.error("There was an error in the input dot file");
+            logger.error(e.getMessage());
             return;
         }
 
@@ -56,20 +62,22 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new AStar(new AStarBaseHeuristic());
-        Long time = System.currentTimeMillis();
-        System.out.println("Starting ...");
+        IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
+        long time = System.currentTimeMillis();
+        logger.info("Starting ...");
         ISchedule output = scheduler.execute(input);
-        System.out.println(System.currentTimeMillis() - time + "ms");
-        System.out.println(output.getTotalCost());
+        logger.info("... Finished");
+        logger.info("In " + (System.currentTimeMillis() - time) + "ms");
+        logger.info("Schedule cost: " + output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
             fileWriter.writeScheduledGraphToFile(input, output);
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         }
 
-        logger.log("Finished.");
+        logger.info("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
     }
 }
