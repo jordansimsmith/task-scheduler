@@ -71,7 +71,7 @@ public class InputGraphGenerator {
     /**
      * The getGraph() function returns the ImageView associated with the DAG graph image.
      *
-     * @return
+     * @return returns an ImageView object
      */
     public ImageView getGraph() {
 
