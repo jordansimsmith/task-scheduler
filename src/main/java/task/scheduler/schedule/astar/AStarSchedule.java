@@ -70,7 +70,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
                 free.add(child);
             }
         }
-        s.scheduledNodeCount = ++scheduledNodeCount;
+        s.scheduledNodeCount = scheduledNodeCount + 1;
         Map<INode, Tuple<Integer, Integer>> schedule = new HashMap<>(this.schedule);
         schedule.put(node, new Tuple<>(lastNodeStartTime, processor));
 
@@ -142,8 +142,8 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     @Override
     public boolean equals(Object o) {
         if(o instanceof AStarSchedule){
-            o = ((AStarSchedule) o).scheduleString;
-            return this.scheduleString.equals(o);
+            o = (AStarSchedule) o;
+            return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
         }
         return false;
     }
