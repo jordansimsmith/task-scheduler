@@ -32,12 +32,20 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void seriesAdded(Series<X, Y> series, int i) {
-
+        for (Data<X, Y> data : series.getData()){
+            Node node = createNodeVisual(data);
+            getPlotChildren().add(node);
+        }
     }
 
     @Override
     protected void seriesRemoved(Series<X, Y> series) {
+        for (Data<X, Y> data : series.getData()){
+            Node node = data.getNode();
+            getPlotChildren().remove(node);
+        }
 
+        removeSeriesFromDisplay(series);
     }
 
     @Override
