@@ -12,17 +12,10 @@ import java.util.Map;
 
 public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
-    private AStarSchedule parent;
-
     private int maxBottomLevelCost;
-    private INode lastNode;
-    private int lastNodeProcessor;
-    private int lastNodeStartTime;
-
     private int idleTime;
     private int[] earliestTimes;
     private int idleTimeHeuristicValue;
-
     private int heuristicValue;
 
     private List<INode> free;
@@ -57,11 +50,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
         int lastNodeStartTime = minStartTime(node, processor);
 
-        s.parent = this;
         s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + AStar.bottomLevelCache.get(node));
-        s.lastNode = node;
-        s.lastNodeProcessor = processor;
-        s.lastNodeStartTime = lastNodeStartTime;
         s.idleTime = this.idleTime + lastNodeStartTime - this.earliestTimes[processor - 1];
         s.idleTimeHeuristicValue = (s.idleTime + AStar.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
 
