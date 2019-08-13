@@ -15,11 +15,14 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void dataItemAdded(Series<X, Y> series, int i, Data<X, Y> data) {
+        Node node  = createNodeVisual(data);
+        getPlotChildren().add(node);
     }
 
     @Override
     protected void dataItemRemoved(Data<X, Y> data, Series<X, Y> series) {
-
+        Node node = data.getNode();
+        getPlotChildren().remove(node);
     }
 
     @Override
