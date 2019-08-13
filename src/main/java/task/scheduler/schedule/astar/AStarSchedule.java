@@ -49,7 +49,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         AStarSchedule s = new AStarSchedule();
 
         int lastNodeStartTime = minStartTime(node, processor);
-
+        lastNodeStartTime = Math.max(lastNodeStartTime,earliestTimes[processor-1]);
         s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + AStar.bottomLevelCache.get(node));
         s.idleTime = this.idleTime + lastNodeStartTime - this.earliestTimes[processor - 1];
         s.idleTimeHeuristicValue = (s.idleTime + AStar.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
