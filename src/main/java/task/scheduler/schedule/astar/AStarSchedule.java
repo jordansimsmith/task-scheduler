@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AStarSchedule implements ISchedule {
+public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     private AStarSchedule parent;
 
@@ -22,6 +22,8 @@ public class AStarSchedule implements ISchedule {
     private int idleTime;
     private int[] earliestTimes;
     private int idleTimeHeuristicValue;
+
+    private int heuristicValue;
 
     private List<INode> free;
     private Map<INode, Tuple<Integer, Integer>> schedule;
@@ -87,6 +89,8 @@ public class AStarSchedule implements ISchedule {
         s.parentCounter = parentCounter;
         s.schedule = schedule;
 
+        s.heuristicValue = Math.max(s.maxBottomLevelCost, s.idleTimeHeuristicValue);
+
         return s;
     }
 
@@ -113,5 +117,10 @@ public class AStarSchedule implements ISchedule {
     @Override
     public int getTotalCost() {
         throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public int compareTo(AStarSchedule o) {
+        return Integer.compare(this.heuristicValue, o.heuristicValue);
     }
 }
