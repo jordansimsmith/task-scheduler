@@ -5,10 +5,7 @@ import task.scheduler.common.Tuple;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
@@ -17,12 +14,13 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     private int[] earliestTimes;
     private int idleTimeHeuristicValue;
     private int heuristicValue;
+    private final Set<String> scheduleString = new HashSet<>();
 
     private List<INode> free;
     private Map<INode, Tuple<Integer, Integer>> schedule;
     private Map<INode, Integer> parentCounter;
 
-    public AStarSchedule() {
+    private AStarSchedule() {
     }
 
     /**
@@ -79,6 +77,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         s.schedule = schedule;
 
         s.heuristicValue = Math.max(s.maxBottomLevelCost, s.idleTimeHeuristicValue);
+        s.populateScheduleString();
 
         return s;
     }
@@ -98,6 +97,20 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         return startTime;
     }
 
+    private void populateScheduleString(){
+        StringJoiner[] joiners = new StringJoiner[Config.getInstance().getNumberOfCores()];
+
+        // for each processor add node scheduled
+        for(Map.Entry<INode, Tuple<Integer, Integer>> entry : schedule.entrySet()){
+            joiners[entry.getValue().y].add(String.valueOf(entry.getValue().x)).add(entry.getKey().getLabel());
+        }
+
+        // add strings to cached set
+        for(StringJoiner joiner : joiners){
+            scheduleString.add(joiner.toString());
+        }
+    }
+
     @Override
     public Tuple<Integer, Integer> getNodeSchedule(INode node) {
         return this.schedule.get(node);
@@ -111,5 +124,13 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     @Override
     public int compareTo(AStarSchedule o) {
         return Integer.compare(this.heuristicValue, o.heuristicValue);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof AStarSchedule){
+            return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
+        }
+        return false;
     }
 }
