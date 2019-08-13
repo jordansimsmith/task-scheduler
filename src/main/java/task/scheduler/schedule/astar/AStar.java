@@ -1,10 +1,12 @@
 package task.scheduler.schedule.astar;
 
+import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
+import java.io.Serializable;
 import java.util.*;
 
 public class AStar implements IScheduler {
@@ -20,11 +22,37 @@ public class AStar implements IScheduler {
     @Override
     public ISchedule execute(IGraph graph) {
         totalNodeWeighting = getTotalNodeWeighting(graph);
+        Map<INode, Integer> parentCounter = new HashMap<>();
 
         bottomLevelCache.clear();
         for (INode node : graph.getNodes()) {
             computeCriticalPath(node, graph);
+            parentCounter.put(node, node.getParents().size());
         }
+
+        PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
+        Set<AStarSchedule> closed = new HashSet<>();
+        open.add(new AStarSchedule(graph.getStartNodes(), parentCounter));
+
+        while(!open.isEmpty()){
+            AStarSchedule s = open.peek();
+
+            if (s.getScheduledNodeCount() == graph.getNodeCount()) {
+                return s; // optimal schedule found
+            }
+
+            Set<AStarSchedule> childStates = new HashSet<>();
+            for (INode node : s.getFree()){
+                for(int i = 1; i <= Config.getInstance().getNumberOfCores(); i++){
+                    childStates.add(s.expand(node, i));
+                }
+            }
+
+            open.addAll(childStates);
+            closed.add(s);
+            open.remove(s);
+        }
+        return null;
     }
 
     private int getTotalNodeWeighting(IGraph graph) {
@@ -35,10 +63,6 @@ public class AStar implements IScheduler {
         }
 
         return totalNodeWeighting;
-    }
-
-    private Map<INode, Integer> getBottomLevelCache(IGraph graph) {
-
     }
 
     /**

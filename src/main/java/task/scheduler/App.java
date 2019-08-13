@@ -10,6 +10,7 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
+import task.scheduler.schedule.astar.AStar;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new SchedulerFactory().createScheduler(SchedulerFactory.SchedulerType.VALID);
+        IScheduler scheduler = new AStar();
         long time = System.currentTimeMillis();
         logger.info("Starting ...");
         ISchedule output = scheduler.execute(input);

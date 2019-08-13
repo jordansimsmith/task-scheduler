@@ -20,6 +20,8 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     private Map<INode, Tuple<Integer, Integer>> schedule;
     private Map<INode, Integer> parentCounter;
 
+    private int scheduledNodeCount;
+
     private AStarSchedule() {
     }
 
@@ -68,7 +70,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
                 free.add(child);
             }
         }
-
+        s.scheduledNodeCount = ++scheduledNodeCount;
         Map<INode, Tuple<Integer, Integer>> schedule = new HashMap<>(this.schedule);
         schedule.put(node, new Tuple<>(lastNodeStartTime, processor));
 
@@ -92,23 +94,34 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
                 // parent on different processor
                 startTime = Math.max(startTime, nodeSchedule.x + parent.getProcessingCost() + entry.getValue());
             }
-            startTime = Math.max(startTime, this.earliestTimes[processor]);
+            startTime = Math.max(startTime, this.earliestTimes[processor - 1]);
         }
         return startTime;
     }
 
     private void populateScheduleString(){
         StringJoiner[] joiners = new StringJoiner[Config.getInstance().getNumberOfCores()];
+        for (int i = 0 ; i < joiners.length; i++) {
+            joiners[i] = new StringJoiner(" ");
+        }
 
         // for each processor add node scheduled
         for(Map.Entry<INode, Tuple<Integer, Integer>> entry : schedule.entrySet()){
-            joiners[entry.getValue().y].add(String.valueOf(entry.getValue().x)).add(entry.getKey().getLabel());
+            joiners[entry.getValue().y - 1].add(String.valueOf(entry.getValue().x)).add(entry.getKey().getLabel());
         }
 
         // add strings to cached set
         for(StringJoiner joiner : joiners){
             scheduleString.add(joiner.toString());
         }
+    }
+
+    public int getScheduledNodeCount() {
+        return scheduledNodeCount;
+    }
+
+    public List<INode> getFree() {
+        return free;
     }
 
     @Override
@@ -118,7 +131,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     @Override
     public int getTotalCost() {
-        throw new RuntimeException("not implemented");
+        return Arrays.stream(earliestTimes).max().getAsInt();
     }
 
     @Override
@@ -129,7 +142,8 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     @Override
     public boolean equals(Object o) {
         if(o instanceof AStarSchedule){
-            return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
+            o = ((AStarSchedule) o).scheduleString;
+            return this.scheduleString.equals(o);
         }
         return false;
     }
