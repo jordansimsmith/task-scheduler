@@ -48,7 +48,7 @@ public class SchedulingVisualizationAdapter {
                         XYChart.Series k = new XYChart.Series();
 
                         k = seriesMap.get(nodeSchedule.y);
-                        k.getData().add(new XYChart.Data(nodeSchedule.x, "Core" + nodeSchedule.y, s));
+                        k.getData().add(new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s));
 
                     }
                 });
@@ -75,11 +75,9 @@ public class SchedulingVisualizationAdapter {
         chart.setLegendVisible(false);
         chart.setBlockHeight( 50);
 
-        int threads = Config.getInstance().getNumberOfThreads();
-
-        for (int i = 1; i <= threads; i++){
+        for (int p = 1; p <= Config.getInstance().getNumberOfCores(); p++) {
             final XYChart.Series series = new XYChart.Series();
-            seriesMap.put(i, series);
+            seriesMap.put(p, series);
         }
 
         for (XYChart.Series s : seriesMap.values()){
