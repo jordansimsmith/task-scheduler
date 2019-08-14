@@ -137,6 +137,10 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         return Integer.compare(this.heuristicValue, o.heuristicValue);
     }
 
+    @Override
+    public int hashCode() {
+        return this.scheduleString.hashCode();
+    }
 
     @Override
     public boolean equals(Object o) {
