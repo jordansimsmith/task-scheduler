@@ -1,5 +1,6 @@
 package task.scheduler.ui;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
@@ -7,29 +8,43 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Based on the example provided here https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch
+ * @param <X>
+ * @param <Y>
+ */
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     public static class DetailedInformation{
         public int length;
-        public String styleClass;
+        public String styleSheet;
 
-        public DetailedInformation(String styleClass, int length){
+        public  DetailedInformation(int length, String styleSheet){
             super();
             this.length = length;
-            this.styleClass = styleClass;
+            this.styleSheet = styleSheet;
         }
 
         public int getLength() {
             return length;
         }
 
-        public String getStyleClass() {
-            return styleClass;
+        public void setLength(int length) {
+            this.length = length;
+        }
+
+        public String getStyleSheet() {
+            return styleSheet;
+        }
+
+        public void setStyleSheet(String styleSheet) {
+            this.styleSheet = styleSheet;
         }
     }
 
@@ -38,6 +53,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     public SchedulingVisualization(Axis<X> axisX, Axis<Y> axisY, ObservableList<Series<X, Y>> nodes) {
         super(axisX, axisY);
         setData(nodes);
+    }
+
+    public SchedulingVisualization(Axis<X> axisX, Axis<Y> axisY) {
+        this(axisX, axisY, FXCollections.<Series<X, Y>>observableArrayList());
     }
 
     @Override
@@ -80,7 +99,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
         for (Series<X, Y> currentSeries : getData()){
 
-            for (Data<X, Y> dataItem : currentSeries.getData()){
+            Iterator<Data<X,Y>> iterator = getDisplayedDataIterator(currentSeries);
+
+            while(iterator.hasNext()){
+                Data<X, Y> dataItem = iterator.next();
                 double x = getXAxis().getDisplayPosition(dataItem.getXValue());
                 double y = getYAxis().getDisplayPosition(dataItem.getYValue());
                 if (Double.isNaN(x) || Double.isNaN(y)) {
@@ -91,7 +113,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
                 if (node != null){
                     if (node instanceof StackPane){
-                        StackPane rectangle = (StackPane) dataItem.getNode();
+                        StackPane rectangle = (StackPane)dataItem.getNode();
 
                         if (rectangle.getShape() instanceof Rectangle){
                             shape = (Rectangle) rectangle.getShape();
@@ -143,13 +165,22 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                     }
                 }
             }
-            axisX.invalidateRange(dataX);
-            axisY.invalidateRange(dataY);
+            if (axisX.isAutoRanging()){
+                axisX.invalidateRange(dataX);
+            }
+            if (axisY.isAutoRanging()){
+                axisY.invalidateRange(dataY);
+            }
+
         }
     }
 
     private static int getLength(Object o){
         return ((DetailedInformation) o).getLength();
+    }
+
+    private static String getStyleClass( Object obj) {
+        return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
     }
 
     private Node createNodeVisual(Data<X, Y> data){
@@ -161,6 +192,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
             data.setNode(container);
         }
 
+        container.getStyleClass().add( getStyleClass( data.getExtraValue()));
         return container;
     }
 
