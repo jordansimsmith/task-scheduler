@@ -11,6 +11,7 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.schedule.astar.AStar;
+import task.scheduler.schedule.astar.IterativeDeepeningAStar;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,7 +63,6 @@ public class App {
             return;
         }
 
-        // produce schedule
         IScheduler scheduler = new AStar();
         logger.info("Starting ...");
         long time = System.currentTimeMillis();

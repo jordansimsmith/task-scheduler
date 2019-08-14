@@ -19,6 +19,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     private List<INode> free;
     private Map<INode, Tuple<Integer, Integer>> schedule;
     private Map<INode, Integer> parentCounter;
+    private Set<AStarSchedule> childStates;
 
     private int scheduledNodeCount;
 
@@ -148,5 +149,21 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
             return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
         }
         return false;
+    }
+
+    public int getHeuristicValue() {
+        return heuristicValue;
+    }
+
+    public Set<AStarSchedule> getChildStates() {
+        if(childStates == null) {
+            childStates = new HashSet<>();
+            for (INode node : getFree()){
+                for(int i = 1; i <= Config.getInstance().getNumberOfCores(); i++){
+                    childStates.add(expand(node, i));
+                }
+            }
+        }
+        return childStates;
     }
 }
