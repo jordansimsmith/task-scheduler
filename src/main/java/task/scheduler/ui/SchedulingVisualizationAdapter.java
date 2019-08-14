@@ -26,7 +26,9 @@ public class SchedulingVisualizationAdapter {
         return schedulingVisualizationAdapter;
     }
 
-    public  SchedulingVisualization createNewVisual(IGraph graph, ISchedule schedule){
+    public  SchedulingVisualization populateVisual(IGraph graph, ISchedule schedule){
+        clearSeriesList();
+
         final NumberAxis xAxis = new NumberAxis();
         final CategoryAxis yAxis = new CategoryAxis();
 
@@ -62,5 +64,8 @@ public class SchedulingVisualizationAdapter {
     }
 
     private void clearSeriesList(){
+        for (XYChart.Series s : seriesMap.values()){
+            s.getData().clear();
+        }
     }
 }
