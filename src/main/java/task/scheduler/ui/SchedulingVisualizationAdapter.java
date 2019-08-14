@@ -20,11 +20,11 @@ import java.util.Map;
 
 public class SchedulingVisualizationAdapter {
 
-    private static SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
+    static SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
     final NumberAxis xAxis = new NumberAxis();
     final CategoryAxis yAxis = new CategoryAxis();
     final SchedulingVisualization<Number,String> chart = new SchedulingVisualization<>(xAxis,yAxis);
-    private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
+    Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
 
 
     private SchedulingVisualizationAdapter(){
@@ -40,20 +40,19 @@ public class SchedulingVisualizationAdapter {
 
         for(INode node: graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(node.getProcessingCost(), "status-red");
-                    XYChart.Series k = new XYChart.Series();
-                    try {
-                         k = seriesMap.get(nodeSchedule.y);
-                        k.getData().add(new XYChart.Data(nodeSchedule.x, "Core" +  nodeSchedule.y, s));
-                    } catch (NullPointerException e){
-                        System.out.println("This is stupid");
-                    }
+            if (nodeSchedule != null) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(node.getProcessingCost(), "status-red");
+                        XYChart.Series k = new XYChart.Series();
 
-                }
-            });
+                        k = seriesMap.get(nodeSchedule.y);
+                        k.getData().add(new XYChart.Data(nodeSchedule.x, "Core" + nodeSchedule.y, s));
+
+                    }
+                });
+            }
 
         }
 
