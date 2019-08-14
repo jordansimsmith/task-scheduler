@@ -99,13 +99,13 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     }
 
     private void populateScheduleString() {
-        List<String> strings = new ArrayList<>();
-        for (Map.Entry<INode, Tuple<Integer, Integer>> entry: this.schedule.entrySet()) {
-            strings.add(entry.getKey().getLabel() + " " + entry.getValue().x);
-        }
-
         StringJoiner joiner = new StringJoiner(" ");
-        strings.stream().sorted().forEach(joiner::add);
+        for (INode node : AStar.sortedNodes) {
+            Tuple<Integer, Integer> nodeSchedule = this.schedule.get(node);
+            if (nodeSchedule != null) {
+                joiner.add(node.getLabel() + " " + nodeSchedule.x);
+            }
+        }
 
         this.scheduleString = joiner.toString();
     }

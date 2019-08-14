@@ -7,10 +7,12 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AStar implements IScheduler {
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
+    public static final List<INode> sortedNodes = new ArrayList<>();
 
     public AStar() {
     }
@@ -25,6 +27,9 @@ public class AStar implements IScheduler {
             computeCriticalPath(node, graph);
             parentCounter.put(node, node.getParents().size());
         }
+
+        sortedNodes.clear();
+        graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
 
         PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
         Set<String> closed = new HashSet<>();
