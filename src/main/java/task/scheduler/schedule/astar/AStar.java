@@ -6,17 +6,13 @@ import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
-import java.io.Serializable;
 import java.util.*;
 
 public class AStar implements IScheduler {
-    private PriorityQueue<AStarSchedule> solutions;
-
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
 
     public AStar() {
-
     }
 
     @Override
@@ -31,26 +27,26 @@ public class AStar implements IScheduler {
         }
 
         PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
-        Set<AStarSchedule> closed = new HashSet<>();
+        Set<Set<String>> closed = new HashSet<>();
         open.add(new AStarSchedule(graph.getStartNodes(), parentCounter));
 
-        while(!open.isEmpty()){
+        while (!open.isEmpty()) {
             AStarSchedule s = open.peek();
+            open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
                 return s; // optimal schedule found
             }
 
-            Set<AStarSchedule> childStates = new HashSet<>();
-            for (INode node : s.getFree()){
-                for(int i = 1; i <= Config.getInstance().getNumberOfCores(); i++){
-                    childStates.add(s.expand(node, i));
+            for (INode node : s.getFree()) {
+                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+                    AStarSchedule child = s.expand(node, i);
+                    if (!closed.contains(child.getScheduleString())) {
+                        open.add(child);
+                        closed.add(child.getScheduleString());
+                    }
                 }
             }
-
-            open.addAll(childStates);
-            closed.add(s);
-            open.remove(s);
         }
         return null;
     }
@@ -58,7 +54,7 @@ public class AStar implements IScheduler {
     private int getTotalNodeWeighting(IGraph graph) {
         int totalNodeWeighting = 0;
 
-        for(INode node : graph.getNodes()) {
+        for (INode node : graph.getNodes()) {
             totalNodeWeighting += node.getProcessingCost();
         }
 

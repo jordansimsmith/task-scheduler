@@ -49,7 +49,6 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         AStarSchedule s = new AStarSchedule();
 
         int lastNodeStartTime = minStartTime(node, processor);
-        lastNodeStartTime = Math.max(lastNodeStartTime,earliestTimes[processor-1]);
         s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + AStar.bottomLevelCache.get(node));
         s.idleTime = this.idleTime + lastNodeStartTime - this.earliestTimes[processor - 1];
         s.idleTimeHeuristicValue = (s.idleTime + AStar.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
@@ -94,24 +93,24 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
                 // parent on different processor
                 startTime = Math.max(startTime, nodeSchedule.x + parent.getProcessingCost() + entry.getValue());
             }
-            startTime = Math.max(startTime, this.earliestTimes[processor - 1]);
         }
+        startTime = Math.max(startTime, earliestTimes[processor - 1]);
         return startTime;
     }
 
-    private void populateScheduleString(){
+    private void populateScheduleString() {
         StringJoiner[] joiners = new StringJoiner[Config.getInstance().getNumberOfCores()];
-        for (int i = 0 ; i < joiners.length; i++) {
+        for (int i = 0; i < joiners.length; i++) {
             joiners[i] = new StringJoiner(" ");
         }
 
         // for each processor add node scheduled
-        for(Map.Entry<INode, Tuple<Integer, Integer>> entry : schedule.entrySet()){
+        for (Map.Entry<INode, Tuple<Integer, Integer>> entry : schedule.entrySet()) {
             joiners[entry.getValue().y - 1].add(String.valueOf(entry.getValue().x)).add(entry.getKey().getLabel());
         }
 
         // add strings to cached set
-        for(StringJoiner joiner : joiners){
+        for (StringJoiner joiner : joiners) {
             scheduleString.add(joiner.toString());
         }
     }
@@ -122,6 +121,10 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     public List<INode> getFree() {
         return free;
+    }
+
+    public Set<String> getScheduleString() {
+        return this.scheduleString;
     }
 
     @Override
@@ -138,10 +141,11 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     public int compareTo(AStarSchedule o) {
         return Integer.compare(this.heuristicValue, o.heuristicValue);
     }
-    
+
+
     @Override
     public boolean equals(Object o) {
-        if(o instanceof AStarSchedule){
+        if (o instanceof AStarSchedule) {
             o = (AStarSchedule) o;
             return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
         }
