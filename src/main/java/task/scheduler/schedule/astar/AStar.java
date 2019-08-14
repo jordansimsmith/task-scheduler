@@ -7,7 +7,6 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AStar implements IScheduler {
     public static int totalNodeWeighting;
@@ -59,6 +58,12 @@ public class AStar implements IScheduler {
         return null;
     }
 
+    /**
+     * Calculates and returns the total weight of the nodes in the given IGraph.
+     *
+     * @param graph of which to calculate the node weighting
+     * @return the sum of processing costs of all nodes in the given IGraph
+     */
     private int getTotalNodeWeighting(IGraph graph) {
         int totalNodeWeighting = 0;
 
@@ -143,6 +148,4 @@ public class AStar implements IScheduler {
 
         stack.push(node);
     }
-
-
 }

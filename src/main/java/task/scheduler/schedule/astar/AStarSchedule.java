@@ -83,6 +83,13 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         return s;
     }
 
+    /**
+     * Returns the earliest time at which the given node can be scheduled on the given processor.
+     *
+     * @param node      to be scheduled
+     * @param processor on which the node would be scheduled
+     * @return earliest time available at which the node can be scheduled
+     */
     private int minStartTime(INode node, int processor) {
         int startTime = 0;
         for (Map.Entry<INode, Integer> entry : node.getParents().entrySet()) {
@@ -98,6 +105,11 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         return startTime;
     }
 
+    /**
+     * Populates the scheduleString field by converting the schedule field into a string.
+     * The schedule field allows for a more efficient equality check of AStarSchedule and
+     * thus faster duplicate detection.
+     */
     private void populateScheduleString() {
         StringJoiner joiner = new StringJoiner(" ");
         for (INode node : AStar.sortedNodes) {
@@ -129,6 +141,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     @Override
     public int getTotalCost() {
+        // the use of streams here is appropriate as this method is only called once
         return Arrays.stream(earliestTimes).max().getAsInt();
     }
 
