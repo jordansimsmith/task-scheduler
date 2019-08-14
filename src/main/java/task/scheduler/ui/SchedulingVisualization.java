@@ -6,7 +6,29 @@ import javafx.scene.chart.Axis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
+
+    public static class DetailedInformation{
+        public int length;
+        public String styleClass;
+
+        public DetailedInformation(String styleClass, int length){
+            super();
+            this.length = length;
+            this.styleClass = styleClass;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public String getStyleClass() {
+            return styleClass;
+        }
+    }
 
     public SchedulingVisualization(Axis<X> axisX, Axis<Y> axisY, ObservableList<Series<X, Y>> nodes) {
         super(axisX, axisY);
@@ -51,6 +73,36 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     @Override
     protected void layoutPlotChildren() {
 
+
+    }
+
+    @Override
+    protected void updateAxisRange(){
+        final Axis<Y> axisY = getYAxis();
+        final Axis<X> axisX = getXAxis();
+        List<X>  dataX = new ArrayList<>();
+        List<Y>  dataY = new ArrayList<>();
+
+        if(axisX.isAutoRanging() || axisY.isAutoRanging()){
+            for (Series<X, Y> series : getData()){
+                for (Data<X, Y> data : series.getData()){
+                    if (axisX.isAutoRanging()){
+                        dataX.add(data.getXValue());
+                        dataX.add(axisX.toRealValue(axisX.toNumericValue(data.getXValue()) + getLength(data.getExtraValue())));
+                    }
+
+                    if (axisY.isAutoRanging()){
+                        dataY.add(data.getYValue());
+                    }
+                }
+            }
+            axisX.invalidateRange(dataX);
+            axisY.invalidateRange(dataY);
+        }
+    }
+
+    private static int getLength(Object o){
+        return ((DetailedInformation) o).getLength();
     }
 
     private Node createNodeVisual(Data<X, Y> data){
@@ -65,3 +117,4 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         return container;
     }
 }
+
