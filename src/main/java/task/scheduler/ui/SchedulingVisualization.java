@@ -3,10 +3,13 @@ package task.scheduler.ui;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 
+import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
@@ -30,6 +33,8 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         }
     }
 
+
+    private double nodeHeight = 10;
     public SchedulingVisualization(Axis<X> axisX, Axis<Y> axisY, ObservableList<Series<X, Y>> nodes) {
         super(axisX, axisY);
         setData(nodes);
@@ -73,6 +78,48 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     @Override
     protected void layoutPlotChildren() {
 
+        for (Series<X, Y> currentSeries : getData()){
+
+            for (Data<X, Y> dataItem : currentSeries.getData()){
+                double x = getXAxis().getDisplayPosition(dataItem.getXValue());
+                double y = getYAxis().getDisplayPosition(dataItem.getYValue());
+                if (Double.isNaN(x) || Double.isNaN(y)) {
+                    continue;
+                }
+                Rectangle shape;
+                Node node = dataItem.getNode();
+
+                if (node != null){
+                    if (node instanceof StackPane){
+                        StackPane rectangle = (StackPane) dataItem.getNode();
+
+                        if (rectangle.getShape() instanceof Rectangle){
+                            shape = (Rectangle) rectangle.getShape();
+                        } else if (rectangle.getShape() == null){
+                            shape = new Rectangle(getLength((dataItem.getExtraValue())),  nodeHeight);
+                        } else {
+                            return;
+                        }
+
+                        shape.setWidth(getLength(dataItem.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
+                        shape.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
+                        y -= nodeHeight / 2.0;
+
+                        rectangle.setShape(null);
+                        rectangle.setShape(shape);
+                        rectangle.setScaleShape(false);
+                        rectangle.setCenterShape(false);
+                        rectangle.setCacheShape(false);
+
+                        node.setLayoutX(x);
+                        node.setLayoutY(y);
+
+                    }
+                }
+            }
+
+
+        }
 
     }
 
@@ -115,6 +162,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         }
 
         return container;
+    }
+
+    public void setBlockHeight( double blockHeight) {
+        this.nodeHeight = blockHeight;
     }
 }
 
