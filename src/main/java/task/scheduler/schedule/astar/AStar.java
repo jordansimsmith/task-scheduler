@@ -27,14 +27,16 @@ public class AStar implements IScheduler {
         }
 
         PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
-        Set<Set<String>> closed = new HashSet<>();
+        Set<String> closed = new HashSet<>();
         open.add(new AStarSchedule(graph.getStartNodes(), parentCounter));
+        int searchCount = 0;
 
         while (!open.isEmpty()) {
             AStarSchedule s = open.peek();
             open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
+                System.out.println(searchCount + " states searched");
                 return s; // optimal schedule found
             }
 
@@ -44,6 +46,7 @@ public class AStar implements IScheduler {
                     if (!closed.contains(child.getScheduleString())) {
                         open.add(child);
                         closed.add(child.getScheduleString());
+                        searchCount++;
                     }
                 }
             }

@@ -14,7 +14,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     private int[] earliestTimes;
     private int idleTimeHeuristicValue;
     private int heuristicValue;
-    private final Set<String> scheduleString = new HashSet<>();
+    private String scheduleString = "";
 
     private List<INode> free;
     private Map<INode, Tuple<Integer, Integer>> schedule;
@@ -99,20 +99,15 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     }
 
     private void populateScheduleString() {
-        StringJoiner[] joiners = new StringJoiner[Config.getInstance().getNumberOfCores()];
-        for (int i = 0; i < joiners.length; i++) {
-            joiners[i] = new StringJoiner(" ");
+        List<String> strings = new ArrayList<>();
+        for (Map.Entry<INode, Tuple<Integer, Integer>> entry: this.schedule.entrySet()) {
+            strings.add(entry.getKey().getLabel() + " " + entry.getValue().x);
         }
 
-        // for each processor add node scheduled
-        for (Map.Entry<INode, Tuple<Integer, Integer>> entry : schedule.entrySet()) {
-            joiners[entry.getValue().y - 1].add(String.valueOf(entry.getValue().x)).add(entry.getKey().getLabel());
-        }
+        StringJoiner joiner = new StringJoiner(" ");
+        strings.stream().sorted().forEach(joiner::add);
 
-        // add strings to cached set
-        for (StringJoiner joiner : joiners) {
-            scheduleString.add(joiner.toString());
-        }
+        this.scheduleString = joiner.toString();
     }
 
     public int getScheduledNodeCount() {
@@ -123,7 +118,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
         return free;
     }
 
-    public Set<String> getScheduleString() {
+    public String getScheduleString() {
         return this.scheduleString;
     }
 
@@ -146,7 +141,6 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     @Override
     public boolean equals(Object o) {
         if (o instanceof AStarSchedule) {
-            o = (AStarSchedule) o;
             return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
         }
         return false;
