@@ -9,7 +9,7 @@ import task.scheduler.common.Tuple;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
-import task.scheduler.schedule.ValidScheduler;
+import task.scheduler.schedule.valid.ValidScheduler;
 
 import java.util.*;
 

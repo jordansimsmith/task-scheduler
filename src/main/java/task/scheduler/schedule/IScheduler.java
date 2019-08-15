@@ -14,4 +14,19 @@ public interface IScheduler {
      * @return Schedule which is built according to the scheduling algorithm
      */
     ISchedule execute(IGraph graph);
+
+    /**
+     * Schedulers search the search space, schedule by schedule. getCurrentSchedule gets the current
+     * schedule being considered. This method should be safe to invoke from another thread.
+     *
+     * @return the current partial schedule.
+     */
+    ISchedule getCurrentSchedule();
+
+    /**
+     * Returns the number of states/schedules searched. This method should be safe to invoke from another thread.
+     *
+     * @return the number of schedules searched so far.
+     */
+    int getSchedulesSearched();
 }

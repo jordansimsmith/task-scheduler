@@ -1,8 +1,10 @@
-package task.scheduler.schedule;
+package task.scheduler.schedule.valid;
 
 
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
+import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
 
@@ -11,6 +13,8 @@ import java.util.*;
  * regardless of how many process there are. This is done for the first milestone.
  */
 public class ValidScheduler implements IScheduler {
+
+    private ISchedule currentSchedule = new ValidSchedulerSchedule();
 
     public ValidScheduler() {
     }
@@ -38,8 +42,19 @@ public class ValidScheduler implements IScheduler {
             schedule.addSchedule(node, startTime, 1);
             startTime += node.getProcessingCost();
         }
-        return schedule;
 
+        this.currentSchedule = schedule;
+        return schedule;
+    }
+
+    @Override
+    public ISchedule getCurrentSchedule() {
+        return this.currentSchedule;
+    }
+
+    @Override
+    public int getSchedulesSearched() {
+        return 0;
     }
 
     /**

@@ -5,105 +5,161 @@ import task.scheduler.common.Tuple;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class AStarSchedule implements ISchedule {
+public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
-    private List<INode> schedulable;
-    private Map<INode, Tuple<Integer, Integer>> scheduled;
-
+    private int maxBottomLevelCost;
+    private int idleTime;
     private int[] earliestTimes;
-    private int cost = 0;
-    private int nodesScheduled = 0;
+    private int idleTimeHeuristicValue;
+    private int heuristicValue;
+    private String scheduleString = "";
 
-    public AStarSchedule() {
-        this.schedulable = new ArrayList<>();
-        this.scheduled = new HashMap<>();
+    private List<INode> free;
+    private Map<INode, Tuple<Integer, Integer>> schedule;
+    private Map<INode, Integer> parentCounter;
+
+    private int scheduledNodeCount;
+
+    private AStarSchedule() {
+    }
+
+    /**
+     * Constructor for creating the initial state.
+     *
+     * @param free          List of nodes that can be immediately scheduled. i.e. start nodes of the graph.
+     * @param parentCounter Map of whether children have unresolved dependencies. Initially in-degree for each node.
+     */
+    public AStarSchedule(List<INode> free, Map<INode, Integer> parentCounter) {
+        this.free = free;
+        this.parentCounter = parentCounter;
+        this.schedule = new HashMap<>();
         this.earliestTimes = new int[Config.getInstance().getNumberOfCores()];
     }
 
-    public AStarSchedule(Map<INode, Tuple<Integer, Integer>> map, List<INode> list, int[] times, int cost) {
-        this.schedulable = list;
-        this.scheduled = map;
-        this.earliestTimes = times;
-        this.cost = cost;
-        this.nodesScheduled = map.size();
+    /**
+     * Expands the partial solution, generating a new child by scheduling a given node on a given processor.
+     *
+     * @param node      to be scheduled.
+     * @param processor to schedule the node on (1 indexed)
+     * @return the newly created child.
+     */
+    public AStarSchedule expand(INode node, int processor) {
+        AStarSchedule s = new AStarSchedule();
 
+        int lastNodeStartTime = minStartTime(node, processor);
+        s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + AStar.bottomLevelCache.get(node));
+        s.idleTime = this.idleTime + lastNodeStartTime - this.earliestTimes[processor - 1];
+        s.idleTimeHeuristicValue = (s.idleTime + AStar.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
+
+        s.earliestTimes = this.earliestTimes.clone();
+        s.earliestTimes[processor - 1] = lastNodeStartTime + node.getProcessingCost();
+
+        List<INode> free = new ArrayList<>(this.free);
+        free.remove(node);
+        Map<INode, Integer> parentCounter = new HashMap<>(this.parentCounter);
+        for (INode child : node.getChildren().keySet()) {
+            // decrement unresolved dependencies to child
+            int count = parentCounter.get(child);
+            parentCounter.put(child, --count);
+
+            // is now free
+            if (count == 0) {
+                free.add(child);
+            }
+        }
+        s.scheduledNodeCount = scheduledNodeCount + 1;
+        Map<INode, Tuple<Integer, Integer>> schedule = new HashMap<>(this.schedule);
+        schedule.put(node, new Tuple<>(lastNodeStartTime, processor));
+
+        s.free = free;
+        s.parentCounter = parentCounter;
+        s.schedule = schedule;
+
+        s.heuristicValue = Math.max(s.maxBottomLevelCost, s.idleTimeHeuristicValue);
+        s.populateScheduleString();
+
+        return s;
     }
 
-    public void setSchedulable(List<INode> nodes) {
-        this.schedulable = nodes;
+    /**
+     * Returns the earliest time at which the given node can be scheduled on the given processor.
+     *
+     * @param node      to be scheduled
+     * @param processor on which the node would be scheduled
+     * @return earliest time available at which the node can be scheduled
+     */
+    private int minStartTime(INode node, int processor) {
+        int startTime = 0;
+        for (Map.Entry<INode, Integer> entry : node.getParents().entrySet()) {
+            INode parent = entry.getKey();
+            Tuple<Integer, Integer> nodeSchedule = this.schedule.get(parent);
+
+            if (nodeSchedule.y != processor) {
+                // parent on different processor
+                startTime = Math.max(startTime, nodeSchedule.x + parent.getProcessingCost() + entry.getValue());
+            }
+        }
+        startTime = Math.max(startTime, earliestTimes[processor - 1]);
+        return startTime;
     }
 
-    @Override
-    public int getTotalCost() {
-        return cost;
+    /**
+     * Populates the scheduleString field by converting the schedule field into a string.
+     * The schedule field allows for a more efficient equality check of AStarSchedule and
+     * thus faster duplicate detection.
+     */
+    private void populateScheduleString() {
+        StringJoiner joiner = new StringJoiner(" ");
+        for (INode node : AStar.sortedNodes) {
+            Tuple<Integer, Integer> nodeSchedule = this.schedule.get(node);
+            if (nodeSchedule != null) {
+                joiner.add(node.getLabel() + " " + nodeSchedule.x);
+            }
+        }
+
+        this.scheduleString = joiner.toString();
+    }
+
+    public int getScheduledNodeCount() {
+        return scheduledNodeCount;
+    }
+
+    public List<INode> getFree() {
+        return free;
+    }
+
+    public String getScheduleString() {
+        return this.scheduleString;
     }
 
     @Override
     public Tuple<Integer, Integer> getNodeSchedule(INode node) {
-        return scheduled.get(node);
+        return this.schedule.get(node);
     }
 
-    public List<INode> getSchedulable() {
-        return new ArrayList<>(schedulable);
+    @Override
+    public int getTotalCost() {
+        // the use of streams here is appropriate as this method is only called once
+        return Arrays.stream(earliestTimes).max().getAsInt();
     }
 
-    public Map<INode, Tuple<Integer, Integer>> getScheduled() {
-        return new HashMap<>(scheduled);
+    @Override
+    public int compareTo(AStarSchedule o) {
+        return Integer.compare(this.heuristicValue, o.heuristicValue);
     }
 
-    public int[] getEarliestTimes() {
-        int[] copy = new int[this.earliestTimes.length];
-        System.arraycopy(this.earliestTimes, 0, copy, 0, this.earliestTimes.length);
-        return copy;
+    @Override
+    public int hashCode() {
+        return this.scheduleString.hashCode();
     }
 
-    public int getCost() {
-        return cost;
-    }
-
-    public int getNodesScheduled() {
-        return nodesScheduled;
-    }
-
-    public void scheduleNode(INode node, int processor) {
-        this.schedulable.remove(node);
-        this.nodesScheduled++;
-        Map<INode, Integer> parents = node.getParents();
-        int latest = 0;
-        for (Map.Entry<INode, Integer> parent : parents.entrySet()) {
-            Tuple<Integer, Integer> time = getNodeSchedule(parent.getKey());
-            if (time.y == processor) {
-                latest = Math.max(latest, (time.x + parent.getKey().getProcessingCost()));
-            } else {
-                latest = Math.max(latest, (time.x + parent.getKey().getProcessingCost() + parent.getValue()));
-            }
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof AStarSchedule) {
+            return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
         }
-        // assuming first processor is 1
-        latest = Math.max(latest, this.earliestTimes[processor - 1]);
-        this.scheduled.put(node, new Tuple<>(latest, processor));
-        this.earliestTimes[processor - 1] = latest + node.getProcessingCost();
-        cost = Math.max(earliestTimes[processor - 1], cost);
-        updateSchedule(node);
-    }
-
-    private void updateSchedule(INode node) {
-        Map<INode, Integer> children = node.getChildren();
-        for (INode child : children.keySet()) {
-            boolean canAdd = true;
-            for (INode parent : child.getParents().keySet()) {
-                if (!this.scheduled.containsKey(parent)) {
-                    canAdd = false;
-                    break;
-                }
-            }
-            if (canAdd) {
-                this.schedulable.add(child);
-            }
-        }
+        return false;
     }
 }
