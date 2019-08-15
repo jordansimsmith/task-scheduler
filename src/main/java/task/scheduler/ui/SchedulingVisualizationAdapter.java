@@ -15,6 +15,7 @@ import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 
 import javax.naming.directory.SearchResult;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +84,8 @@ public class SchedulingVisualizationAdapter {
             chart.getData().add(s);
         }
 
-        chart.getStylesheets().add(getClass().getResource("ganttchart.css").toExternalForm());
+        File file = new File("src/main/resources/styles/gantt.css");
+        chart.getStylesheets().add("file:///" + file.getAbsolutePath());
     }
 
 
