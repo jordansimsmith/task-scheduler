@@ -18,11 +18,11 @@ import java.util.Map;
 
 public class SchedulingVisualizationAdapter {
 
-    static SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
-    final NumberAxis xAxis = new NumberAxis();
-    final CategoryAxis yAxis = new CategoryAxis();
-    final SchedulingVisualization<Number,String> chart = new SchedulingVisualization<>(xAxis,yAxis);
-    Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
+    static private SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
+    final private NumberAxis xAxis = new NumberAxis();
+    final private CategoryAxis yAxis = new CategoryAxis();
+    final private SchedulingVisualization<Number,String> chart = new SchedulingVisualization<>(xAxis,yAxis);
+    private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
 
 
     private SchedulingVisualizationAdapter(){
@@ -59,7 +59,7 @@ public class SchedulingVisualizationAdapter {
         return this.chart;
     }
 
-    public void setUpVisual(){
+    private void setUpVisual(){
         xAxis.setLabel("");
         xAxis.setTickLabelFill(Color.CHOCOLATE);
         xAxis.setMinorTickCount(4);
@@ -86,7 +86,7 @@ public class SchedulingVisualizationAdapter {
     }
 
 
-    public void clearSeriesList(){
+    private void clearSeriesList(){
         for (XYChart.Series s : seriesMap.values()){
             Platform.runLater(new Runnable() {
                 @Override

@@ -23,9 +23,9 @@ import java.util.List;
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     public static class DetailedInformation{
-        public int length;
-        public String styleSheet;
-        public String label;
+        private int length;
+        private String styleSheet;
+        private String label;
 
         public  DetailedInformation(int length, String styleSheet, String label){
             super();
