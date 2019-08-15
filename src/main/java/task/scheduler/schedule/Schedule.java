@@ -3,7 +3,6 @@ package task.scheduler.schedule;
 import task.scheduler.common.Config;
 import task.scheduler.common.Tuple;
 import task.scheduler.graph.INode;
-import task.scheduler.schedule.astar.AStar;
 
 import java.util.*;
 
