@@ -64,7 +64,7 @@ public class App {
 
         // produce schedule
         SchedulerFactory factory = new SchedulerFactory();
-        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
         logger.info("Starting ...");
         long time = System.currentTimeMillis();
         ISchedule output = scheduler.execute(input);

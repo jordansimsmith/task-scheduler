@@ -1,6 +1,7 @@
 package task.scheduler.schedule;
 
 import task.scheduler.schedule.astar.AStar;
+import task.scheduler.schedule.bnb.BNB;
 import task.scheduler.schedule.valid.ValidScheduler;
 
 /**
@@ -10,7 +11,7 @@ import task.scheduler.schedule.valid.ValidScheduler;
 public class SchedulerFactory {
 
     public enum SchedulerType {
-        VALID, ASTAR
+        VALID, ASTAR, BNB
     }
 
     public SchedulerFactory() {
@@ -28,6 +29,8 @@ public class SchedulerFactory {
                 return new ValidScheduler();
             case ASTAR:
                 return new AStar();
+            case BNB:
+                return new BNB();
             default:
                 throw new RuntimeException("createSchedular case not implemented for " + type);
         }
