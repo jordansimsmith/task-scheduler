@@ -1,8 +1,6 @@
 package task.scheduler.ui;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.Chart;
 import javafx.scene.chart.NumberAxis;
@@ -14,7 +12,6 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 
-import javax.naming.directory.SearchResult;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;

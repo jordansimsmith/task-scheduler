@@ -151,16 +151,14 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                         rectangle.setCacheShape(false);
 
                         node.translateXProperty().setValue((getLength(dataItem.getExtraValue())/2.0) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
+                        node.translateYProperty().setValue((nodeHeight)/2.0 * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
                         node.setLayoutX(x);
                         node.setLayoutY(y);
 
                     }
                 }
             }
-
-
         }
-
     }
 
     @Override
