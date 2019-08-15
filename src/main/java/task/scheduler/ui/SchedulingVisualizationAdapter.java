@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class SchedulingVisualizationAdapter {
 
-    static private SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
-    final private NumberAxis xAxis = new NumberAxis();
-    final private CategoryAxis yAxis = new CategoryAxis();
-    final private SchedulingVisualization<Number, String> chart = new SchedulingVisualization<>(xAxis, yAxis);
+    private static SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
+    private final NumberAxis xAxis = new NumberAxis();
+    private final CategoryAxis yAxis = new CategoryAxis();
+    private final SchedulingVisualization<Number, String> chart = new SchedulingVisualization<>(xAxis, yAxis);
     private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
 
 
@@ -39,15 +39,12 @@ public class SchedulingVisualizationAdapter {
         for (INode node : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
             if (nodeSchedule != null) {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(node.getProcessingCost(), "status-red", node.getLabel());
-                        XYChart.Series k = new XYChart.Series();
-                        k = seriesMap.get(nodeSchedule.y);
-                        k.getData().add(new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s));
+                Platform.runLater(() -> {
+                    SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(node.getProcessingCost(), "status-red", node.getLabel());
+                    XYChart.Series k = new XYChart.Series();
+                    k = seriesMap.get(nodeSchedule.y);
+                    k.getData().add(new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s));
 
-                    }
                 });
             }
 
@@ -88,12 +85,7 @@ public class SchedulingVisualizationAdapter {
 
     private void clearSeriesList() {
         for (XYChart.Series s : seriesMap.values()) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    s.getData().clear();
-                }
-            });
+            Platform.runLater(() -> s.getData().clear());
         }
     }
 }

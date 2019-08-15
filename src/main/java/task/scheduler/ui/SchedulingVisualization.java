@@ -22,6 +22,7 @@ import java.util.List;
  * @param <Y>
  */
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
+    private double nodeHeight = 10;
 
     public static class DetailedInformation {
         private int length;
@@ -60,8 +61,6 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         }
     }
 
-
-    private double nodeHeight = 10;
 
     public SchedulingVisualization(Axis<X> axisX, Axis<Y> axisY, ObservableList<Series<X, Y>> nodes) {
         super(axisX, axisY);
