@@ -17,17 +17,18 @@ import java.util.List;
 
 /**
  * Based on the example provided here https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch
+ *
  * @param <X>
  * @param <Y>
  */
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
-    public static class DetailedInformation{
+    public static class DetailedInformation {
         private int length;
         private String styleSheet;
         private String label;
 
-        public  DetailedInformation(int length, String styleSheet, String label){
+        public DetailedInformation(int length, String styleSheet, String label) {
             super();
             this.length = length;
             this.styleSheet = styleSheet;
@@ -61,6 +62,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
 
     private double nodeHeight = 10;
+
     public SchedulingVisualization(Axis<X> axisX, Axis<Y> axisY, ObservableList<Series<X, Y>> nodes) {
         super(axisX, axisY);
         setData(nodes);
@@ -72,7 +74,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void dataItemAdded(Series<X, Y> series, int i, Data<X, Y> data) {
-        Node node  = createNodeVisual(data);
+        Node node = createNodeVisual(data);
         getPlotChildren().add(node);
     }
 
@@ -89,7 +91,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void seriesAdded(Series<X, Y> series, int i) {
-        for (Data<X, Y> data : series.getData()){
+        for (Data<X, Y> data : series.getData()) {
             Node node = createNodeVisual(data);
             getPlotChildren().add(node);
         }
@@ -97,7 +99,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void seriesRemoved(Series<X, Y> series) {
-        for (Data<X, Y> data : series.getData()){
+        for (Data<X, Y> data : series.getData()) {
             Node node = data.getNode();
             getPlotChildren().remove(node);
         }
@@ -108,11 +110,11 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     @Override
     protected void layoutPlotChildren() {
 
-        for (Series<X, Y> currentSeries : getData()){
+        for (Series<X, Y> currentSeries : getData()) {
 
-            Iterator<Data<X,Y>> iterator = getDisplayedDataIterator(currentSeries);
+            Iterator<Data<X, Y>> iterator = getDisplayedDataIterator(currentSeries);
 
-            while(iterator.hasNext()){
+            while (iterator.hasNext()) {
                 Data<X, Y> dataItem = iterator.next();
                 double x = getXAxis().getDisplayPosition(dataItem.getXValue());
                 double y = getYAxis().getDisplayPosition(dataItem.getYValue());
@@ -122,20 +124,20 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                 Rectangle shape;
                 Node node = dataItem.getNode();
 
-                if (node != null){
-                    if (node instanceof StackPane){
-                        StackPane rectangle = (StackPane)dataItem.getNode();
+                if (node != null) {
+                    if (node instanceof StackPane) {
+                        StackPane rectangle = (StackPane) dataItem.getNode();
 
-                        if (rectangle.getShape() instanceof Rectangle){
+                        if (rectangle.getShape() instanceof Rectangle) {
                             shape = (Rectangle) rectangle.getShape();
-                        } else if (rectangle.getShape() == null){
-                            shape = new Rectangle(getLength((dataItem.getExtraValue())),  nodeHeight);
+                        } else if (rectangle.getShape() == null) {
+                            shape = new Rectangle(getLength((dataItem.getExtraValue())), nodeHeight);
                         } else {
                             return;
                         }
 
-                        shape.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
-                        shape.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
+                        shape.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
+                        shape.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
                         y -= nodeHeight / 2.0;
 
                         Text text = new Text(getLabel(dataItem.getExtraValue()));
@@ -150,8 +152,8 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
                         rectangle.setCacheShape(false);
 
-                        node.translateXProperty().setValue((getLength(dataItem.getExtraValue())/2.0) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
-                        node.translateYProperty().setValue((nodeHeight)/2.0 * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
+                        node.translateXProperty().setValue((getLength(dataItem.getExtraValue()) / 2.0) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
+                        node.translateYProperty().setValue((nodeHeight) / 2.0 * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
                         node.setLayoutX(x);
                         node.setLayoutY(y);
 
@@ -162,61 +164,61 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     }
 
     @Override
-    protected void updateAxisRange(){
+    protected void updateAxisRange() {
         final Axis<Y> axisY = getYAxis();
         final Axis<X> axisX = getXAxis();
-        List<X>  dataX = new ArrayList<>();
-        List<Y>  dataY = new ArrayList<>();
+        List<X> dataX = new ArrayList<>();
+        List<Y> dataY = new ArrayList<>();
 
-        if(axisX.isAutoRanging() || axisY.isAutoRanging()){
-            for (Series<X, Y> series : getData()){
-                for (Data<X, Y> data : series.getData()){
-                    if (axisX.isAutoRanging()){
+        if (axisX.isAutoRanging() || axisY.isAutoRanging()) {
+            for (Series<X, Y> series : getData()) {
+                for (Data<X, Y> data : series.getData()) {
+                    if (axisX.isAutoRanging()) {
                         dataX.add(data.getXValue());
                         dataX.add(axisX.toRealValue(axisX.toNumericValue(data.getXValue()) + getLength(data.getExtraValue())));
                     }
 
-                    if (axisY.isAutoRanging()){
+                    if (axisY.isAutoRanging()) {
                         dataY.add(data.getYValue());
                     }
                 }
             }
-            if (axisX.isAutoRanging()){
+            if (axisX.isAutoRanging()) {
                 axisX.invalidateRange(dataX);
             }
-            if (axisY.isAutoRanging()){
+            if (axisY.isAutoRanging()) {
                 axisY.invalidateRange(dataY);
             }
 
         }
     }
 
-    private static int getLength(Object o){
+    private static int getLength(Object o) {
         return ((DetailedInformation) o).getLength();
     }
 
-    private static String getLabel(Object o){
-        return ((DetailedInformation)o).getLabel();
+    private static String getLabel(Object o) {
+        return ((DetailedInformation) o).getLabel();
     }
 
-    private static String getStyleClass( Object obj) {
+    private static String getStyleClass(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
     }
 
-    private Node createNodeVisual(Data<X, Y> data){
+    private Node createNodeVisual(Data<X, Y> data) {
 
         Node container = data.getNode();
 
-        if (container == null){
+        if (container == null) {
             container = new StackPane();
             data.setNode(container);
         }
 
-        container.getStyleClass().add( getStyleClass( data.getExtraValue()));
+        container.getStyleClass().add(getStyleClass(data.getExtraValue()));
         return container;
     }
 
-    public void setBlockHeight( double blockHeight) {
+    public void setBlockHeight(double blockHeight) {
         this.nodeHeight = blockHeight;
     }
 }

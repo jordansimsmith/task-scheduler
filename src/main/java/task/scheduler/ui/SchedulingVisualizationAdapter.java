@@ -29,8 +29,6 @@ public class SchedulingVisualizationAdapter {
         setUpVisual();
     }
 
-    ;
-
     public static SchedulingVisualizationAdapter getInstance() {
         return schedulingVisualizationAdapter;
     }
