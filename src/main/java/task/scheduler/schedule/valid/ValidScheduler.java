@@ -1,8 +1,10 @@
-package task.scheduler.schedule;
+package task.scheduler.schedule.valid;
 
 
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
+import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
 
