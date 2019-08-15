@@ -21,22 +21,24 @@ public class SchedulingVisualizationAdapter {
     static private SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
     final private NumberAxis xAxis = new NumberAxis();
     final private CategoryAxis yAxis = new CategoryAxis();
-    final private SchedulingVisualization<Number,String> chart = new SchedulingVisualization<>(xAxis,yAxis);
+    final private SchedulingVisualization<Number, String> chart = new SchedulingVisualization<>(xAxis, yAxis);
     private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
 
 
-    private SchedulingVisualizationAdapter(){
+    private SchedulingVisualizationAdapter() {
         setUpVisual();
-    };
+    }
 
-    public static SchedulingVisualizationAdapter getInstance(){
+    ;
+
+    public static SchedulingVisualizationAdapter getInstance() {
         return schedulingVisualizationAdapter;
     }
 
-    public void populateVisual(IGraph graph, ISchedule schedule){
+    public void populateVisual(IGraph graph, ISchedule schedule) {
         clearSeriesList();
 
-        for(INode node: graph.getNodes()) {
+        for (INode node : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
             if (nodeSchedule != null) {
                 Platform.runLater(new Runnable() {
@@ -55,11 +57,11 @@ public class SchedulingVisualizationAdapter {
 
     }
 
-    public Chart getChart(){
+    public Chart getChart() {
         return this.chart;
     }
 
-    private void setUpVisual(){
+    private void setUpVisual() {
         xAxis.setLabel("");
         xAxis.setTickLabelFill(Color.CHOCOLATE);
         xAxis.setMinorTickCount(4);
@@ -70,14 +72,14 @@ public class SchedulingVisualizationAdapter {
 
         chart.setTitle("Scheduling");
         chart.setLegendVisible(false);
-        chart.setBlockHeight( 50);
+        chart.setBlockHeight(50);
 
         for (int p = 1; p <= Config.getInstance().getNumberOfCores(); p++) {
             final XYChart.Series series = new XYChart.Series();
             seriesMap.put(p, series);
         }
 
-        for (XYChart.Series s : seriesMap.values()){
+        for (XYChart.Series s : seriesMap.values()) {
             chart.getData().add(s);
         }
 
@@ -86,8 +88,8 @@ public class SchedulingVisualizationAdapter {
     }
 
 
-    private void clearSeriesList(){
-        for (XYChart.Series s : seriesMap.values()){
+    private void clearSeriesList() {
+        for (XYChart.Series s : seriesMap.values()) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
