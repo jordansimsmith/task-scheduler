@@ -2,14 +2,15 @@ package task.scheduler.ui;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
-
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,11 +25,13 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     public static class DetailedInformation{
         public int length;
         public String styleSheet;
+        public String label;
 
-        public  DetailedInformation(int length, String styleSheet){
+        public  DetailedInformation(int length, String styleSheet, String label){
             super();
             this.length = length;
             this.styleSheet = styleSheet;
+            this.label = label;
         }
 
         public int getLength() {
@@ -45,6 +48,14 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
         public void setStyleSheet(String styleSheet) {
             this.styleSheet = styleSheet;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
         }
     }
 
@@ -123,16 +134,23 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                             return;
                         }
 
-                        shape.setWidth(getLength(dataItem.getExtraValue()) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
+                        shape.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         shape.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getYAxis()).getScale()) : 1));
                         y -= nodeHeight / 2.0;
 
-                        rectangle.setShape(null);
+                        Text text = new Text(getLabel(dataItem.getExtraValue()));
+
                         rectangle.setShape(shape);
+
+                        rectangle.setAlignment(Pos.CENTER);
+                        rectangle.getChildren().add(text);
+
+
                         rectangle.setScaleShape(false);
-                        rectangle.setCenterShape(false);
+
                         rectangle.setCacheShape(false);
 
+                        node.translateXProperty().setValue((getLength(dataItem.getExtraValue())/2.0) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis)getXAxis()).getScale()) : 1));
                         node.setLayoutX(x);
                         node.setLayoutY(y);
 
@@ -177,6 +195,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     private static int getLength(Object o){
         return ((DetailedInformation) o).getLength();
+    }
+
+    private static String getLabel(Object o){
+        return ((DetailedInformation)o).getLabel();
     }
 
     private static String getStyleClass( Object obj) {

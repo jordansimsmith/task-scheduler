@@ -44,9 +44,8 @@ public class SchedulingVisualizationAdapter {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(node.getProcessingCost(), "status-red");
+                        SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(node.getProcessingCost(), "status-red", node.getLabel());
                         XYChart.Series k = new XYChart.Series();
-
                         k = seriesMap.get(nodeSchedule.y);
                         k.getData().add(new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s));
 
