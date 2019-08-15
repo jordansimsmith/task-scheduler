@@ -7,12 +7,14 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AStar implements IScheduler {
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static final List<INode> sortedNodes = new ArrayList<>();
+
+    private ISchedule currentSchedule;
+    private int schedulesSearched;
 
     public AStar() {
     }
@@ -34,14 +36,13 @@ public class AStar implements IScheduler {
         PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
         Set<String> closed = new HashSet<>();
         open.add(new AStarSchedule(graph.getStartNodes(), parentCounter));
-        int searchCount = 0;
 
         while (!open.isEmpty()) {
             AStarSchedule s = open.peek();
             open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
-                System.out.println(searchCount + " states searched");
+                System.out.println(this.schedulesSearched + " states searched");
                 return s; // optimal schedule found
             }
 
@@ -51,12 +52,23 @@ public class AStar implements IScheduler {
                     if (!closed.contains(child.getScheduleString())) {
                         open.add(child);
                         closed.add(child.getScheduleString());
-                        searchCount++;
+                        this.schedulesSearched++;
+                        this.currentSchedule = child;
                     }
                 }
             }
         }
         return null;
+    }
+
+    @Override
+    public ISchedule getCurrentSchedule() {
+        return this.currentSchedule;
+    }
+
+    @Override
+    public int getSchedulesSearched() {
+        return this.schedulesSearched;
     }
 
     private int getTotalNodeWeighting(IGraph graph) {

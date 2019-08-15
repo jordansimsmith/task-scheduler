@@ -16,5 +16,10 @@ public interface ISchedule {
      */
     Tuple<Integer, Integer> getNodeSchedule(INode node);
 
+    /**
+     * Method getTotalCost gets the total cost of the schedule.
+     *
+     * @return int for the total cost.
+     */
     int getTotalCost();
 }
