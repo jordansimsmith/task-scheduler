@@ -63,13 +63,14 @@ public class App {
         }
 
         // produce schedule
-        IScheduler scheduler = new AStar();
+        SchedulerFactory factory = new SchedulerFactory();
+        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
         logger.info("Starting ...");
         long time = System.currentTimeMillis();
         ISchedule output = scheduler.execute(input);
         long deltaTime = System.currentTimeMillis() - time;
         logger.info("... Finished");
-        logger.info("In " + deltaTime+ "ms");
+        logger.info("In " + deltaTime + "ms");
         logger.info("Schedule cost: " + output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
