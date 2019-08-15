@@ -18,21 +18,14 @@ public class AStar implements IScheduler {
 
     @Override
     public ISchedule execute(IGraph graph) {
-        totalNodeWeighting = getTotalNodeWeighting(graph);
-        Map<INode, Integer> parentCounter = new HashMap<>();
-
-        bottomLevelCache.clear();
-        for (INode node : graph.getNodes()) {
-            computeCriticalPath(node, graph);
-            parentCounter.put(node, node.getParents().size());
-        }
-
-        sortedNodes.clear();
-        graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
+        populateTotalNodeWeighting(graph);
+        populateBottomLevelCache(graph);
+        populateSortedNodes(graph);
 
         PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
         Set<String> closed = new HashSet<>();
-        open.add(new AStarSchedule(graph.getStartNodes(), parentCounter));
+
+        open.add(new AStarSchedule(graph.getStartNodes(), getParentCountMap(graph)));
         int searchCount = 0;
 
         while (!open.isEmpty()) {
@@ -47,6 +40,8 @@ public class AStar implements IScheduler {
             for (INode node : s.getFree()) {
                 for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
                     AStarSchedule child = s.expand(node, i);
+
+                    // do not add duplicate states to the priority queue
                     if (!closed.contains(child.getScheduleString())) {
                         open.add(child);
                         closed.add(child.getScheduleString());
@@ -59,20 +54,60 @@ public class AStar implements IScheduler {
     }
 
     /**
-     * Calculates and returns the total weight of the nodes in the given IGraph.
+     * Populates the sortedNodes field with all INodes of the given graph sorted according to their
+     * node label.
      *
-     * @param graph of which to calculate the node weighting
-     * @return the sum of processing costs of all nodes in the given IGraph
+     * @param graph of which to populate the sortedNodes field with
      */
-    private int getTotalNodeWeighting(IGraph graph) {
-        int totalNodeWeighting = 0;
+    private void populateSortedNodes(IGraph graph) {
+        // the use of streams here is justified because it is only called once
+        graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
+    }
 
+    /**
+     * Returns a map of INode to a parent count Integer. The parent count Integer represents the
+     * remaining number of parents the INode has. The map contains this information for all INodes
+     * of the given IGraph.
+     *
+     * @param graph for which to calculate the parentCountMap
+     * @return a parentCountMap
+     */
+    private Map<INode, Integer> getParentCountMap(IGraph graph) {
+        Map<INode, Integer> parentCount = new HashMap<>();
+
+        for (INode node : graph.getNodes()) {
+            parentCount.put(node, node.getParents().size());
+        }
+        return parentCount;
+    }
+
+    /**
+     * Calculates and populates the totalNodeWeighting field with sum of the
+     * processing costs of the INodes in the given IGraph.
+     *
+     * @param graph of which to calculate the total node weighting
+     */
+    private void populateTotalNodeWeighting(IGraph graph) {
         for (INode node : graph.getNodes()) {
             totalNodeWeighting += node.getProcessingCost();
         }
-
-        return totalNodeWeighting;
     }
+
+
+    /**
+     * Populates the bottomLevelCache field using the given IGraph object. The bottomLevelCache
+     * is a map of all INodes of the graph to their bottom level Integer. The bottom level of an
+     * INode is the critical path from the INode.
+     *
+     * @param graph the IGraph of which to calculate the bottomLevelCache
+     */
+    private void populateBottomLevelCache(IGraph graph) {
+        bottomLevelCache.clear();
+        for (INode node : graph.getNodes()) {
+            computeCriticalPath(node, graph);
+        }
+    }
+
 
     /**
      * computeCriticalPath is used to compute the greatest cost path from the provided source node.
