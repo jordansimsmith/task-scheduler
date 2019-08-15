@@ -1,13 +1,13 @@
-package task.scheduler.schedule.astar;
+package task.scheduler.schedule;
 
 import task.scheduler.common.Config;
 import task.scheduler.common.Tuple;
 import task.scheduler.graph.INode;
-import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.astar.AStar;
 
 import java.util.*;
 
-public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
+public class Schedule implements ISchedule, Comparable<Schedule> {
 
     private int maxBottomLevelCost;
     private int idleTime;
@@ -22,7 +22,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     private int scheduledNodeCount;
 
-    private AStarSchedule() {
+    private Schedule() {
     }
 
     /**
@@ -31,7 +31,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
      * @param free          List of nodes that can be immediately scheduled. i.e. start nodes of the graph.
      * @param parentCounter Map of whether children have unresolved dependencies. Initially in-degree for each node.
      */
-    public AStarSchedule(List<INode> free, Map<INode, Integer> parentCounter) {
+    public Schedule(List<INode> free, Map<INode, Integer> parentCounter) {
         this.free = free;
         this.parentCounter = parentCounter;
         this.schedule = new HashMap<>();
@@ -45,13 +45,13 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
      * @param processor to schedule the node on (1 indexed)
      * @return the newly created child.
      */
-    public AStarSchedule expand(INode node, int processor) {
-        AStarSchedule s = new AStarSchedule();
+    public Schedule expand(INode node, int processor) {
+        Schedule s = new Schedule();
 
         int lastNodeStartTime = minStartTime(node, processor);
-        s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + AStar.bottomLevelCache.get(node));
+        s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + SchedulerState.bottomLevelCache.get(node));
         s.idleTime = this.idleTime + lastNodeStartTime - this.earliestTimes[processor - 1];
-        s.idleTimeHeuristicValue = (s.idleTime + AStar.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
+        s.idleTimeHeuristicValue = (s.idleTime + SchedulerState.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
 
         s.earliestTimes = this.earliestTimes.clone();
         s.earliestTimes[processor - 1] = lastNodeStartTime + node.getProcessingCost();
@@ -107,12 +107,12 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     /**
      * Populates the scheduleString field by converting the schedule field into a string.
-     * The schedule field allows for a more efficient equality check of AStarSchedule and
+     * The schedule field allows for a more efficient equality check of Schedule and
      * thus faster duplicate detection.
      */
     private void populateScheduleString() {
         StringJoiner joiner = new StringJoiner(" ");
-        for (INode node : AStar.sortedNodes) {
+        for (INode node : SchedulerState.sortedNodes) {
             Tuple<Integer, Integer> nodeSchedule = this.schedule.get(node);
             if (nodeSchedule != null) {
                 joiner.add(node.getLabel() + " " + nodeSchedule.x);
@@ -146,7 +146,7 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
     }
 
     @Override
-    public int compareTo(AStarSchedule o) {
+    public int compareTo(Schedule o) {
         return Integer.compare(this.heuristicValue, o.heuristicValue);
     }
 
@@ -157,8 +157,8 @@ public class AStarSchedule implements ISchedule, Comparable<AStarSchedule> {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof AStarSchedule) {
-            return this.scheduleString.equals(((AStarSchedule) o).scheduleString);
+        if (o instanceof Schedule) {
+            return this.scheduleString.equals(((Schedule) o).scheduleString);
         }
         return false;
     }
