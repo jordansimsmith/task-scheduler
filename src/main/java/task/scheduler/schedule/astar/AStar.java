@@ -1,5 +1,8 @@
 package task.scheduler.schedule.astar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import task.scheduler.App;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
@@ -9,6 +12,7 @@ import task.scheduler.schedule.IScheduler;
 import java.util.*;
 
 public class AStar implements IScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(AStar.class);
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static final List<INode> sortedNodes = new ArrayList<>();
@@ -33,7 +37,7 @@ public class AStar implements IScheduler {
             open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
-                System.out.println(searchCount + " states searched");
+                logger.info(searchCount + " states searched");
                 return s; // optimal schedule found
             }
 
