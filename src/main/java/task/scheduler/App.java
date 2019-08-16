@@ -2,7 +2,10 @@ package task.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.scheduler.common.*;
+import task.scheduler.common.ArgumentParser;
+import task.scheduler.common.Config;
+import task.scheduler.common.FileWriter;
+import task.scheduler.common.InputValidator;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
@@ -10,7 +13,6 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
-import task.scheduler.schedule.astar.AStar;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,9 +64,16 @@ public class App {
             return;
         }
 
-        // produce schedule
+        // construct scheduler
         SchedulerFactory factory = new SchedulerFactory();
-        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
+        IScheduler scheduler;
+        // multithreading
+        if (Config.getInstance().getNumberOfThreads() > 1) {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
+        } else {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        }
+
         logger.info("Starting ...");
         long time = System.currentTimeMillis();
         ISchedule output = scheduler.execute(input);
