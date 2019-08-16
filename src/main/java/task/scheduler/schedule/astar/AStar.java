@@ -16,6 +16,7 @@ public class AStar implements IScheduler {
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static final List<INode> sortedNodes = new ArrayList<>();
+    private static SchedulerState state = SchedulerState.NOT_STARTED;
 
     private ISchedule currentSchedule;
     private int schedulesSearched;
@@ -25,6 +26,8 @@ public class AStar implements IScheduler {
 
     @Override
     public ISchedule execute(IGraph graph) {
+        state = SchedulerState.RUNNING;
+
         populateTotalNodeWeighting(graph);
         populateBottomLevelCache(graph);
         populateSortedNodes(graph);
@@ -58,6 +61,8 @@ public class AStar implements IScheduler {
                 }
             }
         }
+
+        state = SchedulerState.FINISHED;
         return null;
     }
 
@@ -190,6 +195,11 @@ public class AStar implements IScheduler {
         }
 
         stack.push(node);
+    }
+
+    @Override
+    public SchedulerState getCurrentState() {
+        return this.state;
     }
 
     @Override

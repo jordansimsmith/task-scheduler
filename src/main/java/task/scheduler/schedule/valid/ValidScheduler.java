@@ -16,6 +16,8 @@ public class ValidScheduler implements IScheduler {
 
     private ISchedule currentSchedule = new ValidSchedulerSchedule();
 
+    private SchedulerState state = SchedulerState.NOT_STARTED;
+
     public ValidScheduler() {
     }
 
@@ -25,6 +27,8 @@ public class ValidScheduler implements IScheduler {
      */
     @Override
     public ISchedule execute(IGraph graph) {
+        this.state = SchedulerState.RUNNING;
+
         List<INode> startNodes = graph.getStartNodes();
         Map<INode, Map<INode, Integer>> dependencies = new HashMap<>();
 
@@ -44,7 +48,13 @@ public class ValidScheduler implements IScheduler {
         }
 
         this.currentSchedule = schedule;
+        this.state = SchedulerState.FINISHED;
         return schedule;
+    }
+
+    @Override
+    public SchedulerState getCurrentState() {
+        return this.state;
     }
 
     @Override
