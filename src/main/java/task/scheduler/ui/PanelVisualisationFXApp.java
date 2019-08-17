@@ -8,10 +8,18 @@ import javafx.stage.Stage;
 
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Encapsulates a JavaFX application that can be accessed after its creation
+ */
 public class PanelVisualisationFXApp extends Application {
-    public static final CountDownLatch latch = new CountDownLatch(1);
-    public static PanelVisualisationFXApp fxApp = null;
+    private static final CountDownLatch latch = new CountDownLatch(1);
+    private static PanelVisualisationFXApp fxApp = null;
 
+    /**
+     * Waits until the JavaFX application is ready, then returns the app
+     * WARNING: Does not init app, will hang permanently if app not initialized
+     * @return
+     */
     public static PanelVisualisationFXApp waitForInit()    {
         try {
             latch.await();
@@ -21,7 +29,7 @@ public class PanelVisualisationFXApp extends Application {
         return fxApp;
     }
 
-    public static void setFxApp(PanelVisualisationFXApp app)    {
+    private static void setFxApp(PanelVisualisationFXApp app)    {
         fxApp = app;
         latch.countDown();
     }

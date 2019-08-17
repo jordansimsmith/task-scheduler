@@ -10,11 +10,7 @@ import task.scheduler.schedule.ISchedule;
 public class PanelVisualization implements  IVisualization {
     private IGraph graph;
 
-    // Visualization panels
-    private SchedulingVisualizationAdapter schedulingVisualizationAdapter;
-    private InputGraphGenerator inputGraphGenerator;
-
-    // Stage
+    // Encapsulated JavaFX app
     PanelVisualisationFXApp fxApp;
 
     /**
@@ -22,6 +18,8 @@ public class PanelVisualization implements  IVisualization {
      * @param graph
      */
     public PanelVisualization(IGraph graph) {
+        this.graph = graph;
+
         new Thread()    {
             @Override
             public void run()   {
@@ -29,12 +27,8 @@ public class PanelVisualization implements  IVisualization {
             }
         }.start();
 
-        PanelVisualisationFXApp app = PanelVisualisationFXApp.waitForInit();
-        app.launchFX();
-
-        this.graph = graph;
-        this.schedulingVisualizationAdapter = SchedulingVisualizationAdapter.getInstance();
-
+        fxApp = PanelVisualisationFXApp.waitForInit();
+        fxApp.launchFX();
     }
 
     /**
@@ -44,6 +38,5 @@ public class PanelVisualization implements  IVisualization {
      */
     @Override
     public void pushSchedule(ISchedule schedule) {
-        schedulingVisualizationAdapter.populateVisual(graph, schedule);
     }
 }
