@@ -49,9 +49,9 @@ public class SchedulingVisualizationAdapter {
                     SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(nodeMap.get(node));
                     XYChart.Series series = seriesMap.get(nodeSchedule.y);
                     XYChart.Data data = new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s);
-                    series.getData().add(data);
-                    setSelectionListener(graph, node, schedule, data);
 
+                    series.getData().add(data);
+                    data.getNode().setOnMouseClicked(event -> setSelectionListener(graph, node, schedule, data));
                 });
 
             }
@@ -71,7 +71,7 @@ public class SchedulingVisualizationAdapter {
     }
 
     private void setSelectionListener(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
-        data.getNode().setOnMouseClicked(event ->  {
+        System.out.println("works");
             currentSelectedNode = node;
             //Only one item can be selected
             clearPreviousSelection(graph, schedule);
@@ -79,14 +79,14 @@ public class SchedulingVisualizationAdapter {
             changeParentAndChildNodeColour(graph, node, schedule, data);
 
             populateVisual(graph, schedule);
-        });
+
     }
 
     private void changeParentAndChildNodeColour(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
         //Getting all parent nodes and changing their color
         for(INode curNode : graph.getNodes()){
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
-            if (nodeSchedule != null) {
+            if (nodeSchedule != null && nodeMap.get(curNode) != null) {
                 if (node.getParents().keySet().contains(curNode)){
                     //Setting the colour for parent node
                     nodeMap.get(curNode).setParent(true);
@@ -103,9 +103,11 @@ public class SchedulingVisualizationAdapter {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
             if (nodeSchedule != null) {
                 VisualNode n = nodeMap.get(curNode);
-                n.setSelected(false);
-                n.setChild(false);
-                n.setParent(false);
+                if (n != null) {
+                    n.setSelected(false);
+                    n.setChild(false);
+                    n.setParent(false);
+                }
 
             }
         }
