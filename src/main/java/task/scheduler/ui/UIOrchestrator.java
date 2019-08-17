@@ -64,6 +64,7 @@ public class UIOrchestrator implements Runnable {
      */
     private void businessLogic() {
         logger.info(watchedScheduler.getCurrentState().toString());
+        visualization.pushState(watchedScheduler.getCurrentState());
         visualization.pushSchedule(watchedScheduler.getCurrentSchedule());
     }
 }

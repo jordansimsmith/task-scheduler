@@ -2,6 +2,7 @@ package task.scheduler.ui;
 
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
 
 /**
  * Visualization of several panels as designed during planning
@@ -42,4 +43,15 @@ public class PanelVisualization implements  IVisualization {
             fxApp.pushSchedule(graph, schedule);
         }
     }
+
+    /**
+     * Pushes a new state to be rendered
+     */
+    @Override
+    public void pushState(IScheduler.SchedulerState newState) {
+        if (fxApp != null) {
+            fxApp.pushState(newState);
+        }
+    }
+
 }

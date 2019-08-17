@@ -1,6 +1,7 @@
 package task.scheduler.ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,6 +10,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
+import task.scheduler.common.Config;
+import task.scheduler.schedule.IScheduler;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -18,6 +21,10 @@ import java.util.concurrent.CountDownLatch;
 public class PanelVisualisationFXApp extends Application {
     private static final CountDownLatch latch = new CountDownLatch(1);
     private static PanelVisualisationFXApp fxApp = null;
+
+    private Stage stage;
+
+    private IScheduler.SchedulerState schedulerState;
 
     // Views
     private SchedulingVisualizationAdapter scheduleVisualization;
@@ -41,11 +48,12 @@ public class PanelVisualisationFXApp extends Application {
     }
 
     public PanelVisualisationFXApp()  {
+        schedulerState = IScheduler.SchedulerState.NOT_STARTED;
         setFxApp(this);
     }
 
     /**
-     * Pushes an updated schedule to be rendered by FXML
+     * Pushes an updated schedule to be rendered
      * @param graph
      * @param schedule
      */
@@ -56,11 +64,23 @@ public class PanelVisualisationFXApp extends Application {
     }
 
     /**
+     * Pushes the current state of the program to be displayed
+     */
+    protected void pushState(IScheduler.SchedulerState state)   {
+        this.schedulerState = state;
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                stage.setTitle(getTitle());
+            }
+        });
+    }
+
+    /**
      * FXML entry point
      */
     @Override
     public void start(Stage stage) throws Exception {
-
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/panel_view.fxml"));
 
         Scene scene = new Scene(root, 1280, 720);
@@ -70,8 +90,10 @@ public class PanelVisualisationFXApp extends Application {
 
         setUpScheduleView(root);
 
+        stage.setTitle(getTitle());
         stage.show();
 
+        this.stage = stage;
         latch.countDown();
     }
 
@@ -90,6 +112,33 @@ public class PanelVisualisationFXApp extends Application {
         AnchorPane.setRightAnchor(chart, 0.0);
 
         scheduleView.getChildren().add(chart);
+    }
+
+    /**
+     * Gets appropriate title at any point in time
+     * @return
+     */
+    private String getTitle()   {
+        String title = "Visualisation of ";
+        title += Config.getInstance().getInputFile().toString();
+        title += " - ";
+
+        switch (schedulerState) {
+            case RUNNING:
+                title += "Running";
+                break;
+            case NOT_STARTED:
+                title += "Not Started";
+                break;
+            case FINISHED:
+                title += "Finished";
+                break;
+            case STOPPED:
+                title += "Stopped";
+                break;
+        }
+
+        return title;
     }
 
 }
