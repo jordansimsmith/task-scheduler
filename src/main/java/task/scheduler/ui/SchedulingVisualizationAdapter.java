@@ -24,6 +24,7 @@ public class SchedulingVisualizationAdapter {
     private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
     private Map<INode, VisualNode> nodeMap = new HashMap<>();
     private INode currentSelectedNode;
+    private int[] shadePicker = {0,0,0,0};
 
 
     private SchedulingVisualizationAdapter() {
@@ -118,7 +119,8 @@ public class SchedulingVisualizationAdapter {
         String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish" };
         //As there are 7 shades of each colour
         Random rand = new Random();
-        int shade = rand.nextInt(7) + 1;
+        int shade = (shadePicker[pVal % 4] % 7) + 1;
+        shadePicker[pVal % 4]++;
         return colours[pVal%4] + shade;
     }
 
