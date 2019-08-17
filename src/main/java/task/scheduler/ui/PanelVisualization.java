@@ -19,6 +19,7 @@ public class PanelVisualization implements  IVisualization {
      */
     public PanelVisualization(IGraph graph) {
         this.graph = graph;
+        fxApp = null;
 
         new Thread()    {
             @Override
@@ -28,7 +29,6 @@ public class PanelVisualization implements  IVisualization {
         }.start();
 
         fxApp = PanelVisualisationFXApp.waitForInit();
-        fxApp.launchFX();
     }
 
     /**
@@ -38,5 +38,8 @@ public class PanelVisualization implements  IVisualization {
      */
     @Override
     public void pushSchedule(ISchedule schedule) {
+        if (fxApp != null)  {
+            fxApp.pushSchedule(graph, schedule);
+        }
     }
 }

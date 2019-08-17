@@ -79,7 +79,7 @@ public class SchedulingVisualizationAdapter {
         }
 
         File file = new File("src/main/resources/styles/gantt.css");
-        chart.getStylesheets().add("file:///" + file.getAbsolutePath());
+        chart.getStylesheets().add(file.getAbsolutePath());
     }
 
 
