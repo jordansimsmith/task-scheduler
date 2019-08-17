@@ -9,8 +9,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
@@ -50,6 +52,9 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
             return visualNode.getLabel();
         }
 
+        public VisualNode getVisualNode(){
+            return this.visualNode;
+        }
     }
 
 
@@ -130,12 +135,12 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                         rectangle.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
                         y -= nodeHeight / 2.0;
 
-                        Text text = new Text(getLabel(dataItem.getExtraValue()));
+                        VBox labels = setUpLabels(dataItem);
 
                         shape.setShape(rectangle);
 
                         shape.setAlignment(Pos.CENTER);
-                        shape.getChildren().add(text);
+                        shape.getChildren().add(labels);
                         shape.setScaleShape(false);
                         shape.setCacheShape(false);
 
@@ -148,6 +153,30 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                 }
             }
         }
+    }
+
+
+    private VBox setUpLabels(Data<X, Y> dataItem){
+        Text text = new Text(getLabel(dataItem.getExtraValue()));
+        text.setTextAlignment(TextAlignment.CENTER);
+        VBox vBox = new VBox(text);
+        VisualNode visualNode = getVisualNode(dataItem.getExtraValue());
+
+        if (visualNode.isParent()){
+            Text identifier = new Text("Parent");
+            identifier.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(identifier);
+        } else if (visualNode.isChild()){
+            Text identifier = new Text("Child");
+            identifier.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(identifier);
+        } else if (visualNode.isSelected()){
+            Text identifier = new Text("Selected");
+            identifier.setTextAlignment(TextAlignment.CENTER);
+            vBox.getChildren().add(identifier);
+        }
+        vBox.setAlignment(Pos.CENTER);
+        return vBox;
     }
 
     @Override
@@ -190,6 +219,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     private static String getStyleClass(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
+    }
+
+    private static VisualNode getVisualNode(Object obj) {
+        return ((SchedulingVisualization.DetailedInformation) obj).getVisualNode();
     }
 
     private static void setStyleClass(Object obj, String styleClass) {
