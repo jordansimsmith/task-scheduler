@@ -8,8 +8,7 @@ import javafx.css.CssMetaData;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.FontSmoothingType;
@@ -137,7 +136,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                         rectangle.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
                         y -= nodeHeight / 2.0;
 
-                        VBox labels = setUpLabels(dataItem);
+                        VBox labels = setUpLabels(dataItem, shape);
 
                         shape.setShape(rectangle);
 
@@ -158,7 +157,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     }
 
 
-    private VBox setUpLabels(Data<X, Y> dataItem){
+    private VBox setUpLabels(Data<X, Y> dataItem, StackPane pane){
         Text text = new Text(getLabel(dataItem.getExtraValue()));
         text.setTextAlignment(TextAlignment.CENTER);
         text.setFontSmoothingType(FontSmoothingType.LCD);
@@ -167,27 +166,27 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
         if (visualNode.isParent()){
             Text identifier = new Text("Parent");
-            identifier.setTextAlignment(TextAlignment.CENTER);
-            text.setFill(Color.WHITE);
-            identifier.setFill(Color.WHITE);
-            identifier.setFontSmoothingType(FontSmoothingType.LCD);
-        vBox.getChildren().add(identifier);
+            setTextProperties(identifier, vBox,pane, text );
         } else if (visualNode.isChild()){
             Text identifier = new Text("Child");
-            identifier.setTextAlignment(TextAlignment.CENTER);
-            text.setFill(Color.WHITE);
-            identifier.setFill(Color.WHITE);
-            identifier.setFontSmoothingType(FontSmoothingType.LCD);
-            vBox.getChildren().add(identifier);
+            setTextProperties(identifier, vBox,pane, text );
+
         } else if (visualNode.isSelected()){
             Text identifier = new Text("Selected");
-            identifier.setTextAlignment(TextAlignment.CENTER);
-            identifier.setFill(Color.WHITE);
-            text.setFill(Color.WHITE);
-            identifier.setFontSmoothingType(FontSmoothingType.LCD);
-            vBox.getChildren().add(identifier);
+            setTextProperties(identifier, vBox,pane, text );
+
         }
         vBox.setAlignment(Pos.CENTER);
+        return vBox;
+    }
+
+    private VBox setTextProperties(Text identifier, VBox vBox, StackPane pane, Text text){
+        identifier.setTextAlignment(TextAlignment.CENTER);
+        text.setFill(Color.WHITE);
+        identifier.setFill(Color.WHITE);
+        identifier.setFontSmoothingType(FontSmoothingType.LCD);
+        vBox.getChildren().add(identifier);
+        pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DOTTED, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         return vBox;
     }
 
