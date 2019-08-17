@@ -1,21 +1,49 @@
-.status-red {
-    -fx-background-color:rgba(128,0,0,0.7);
-}
-.status-green {
-    -fx-background-color:rgba(0,128,0,0.7);
-}
-.status-blue {
-    -fx-background-color:rgba(0,0,128,0.7);
-}
 
 .status-selected {
-    -fx-background-color: rgba(0, 0, 128, 0.7);
+    -fx-background-color: rgba(0, 0, 73, 0.91);
 }
 
 .status-parent{
-    -fx-background-color: rgba(97, 10, 128, 0.7);
+    -fx-background-color: rgba(72, 26, 98, 0.93);
 }
 
 .status-child {
-    -fx-background-color: rgba(11, 128, 7, 0.7);
+    -fx-background-color: rgba(11, 65, 7, 0.91);
 }
+
+
+.status-blueish1 {-fx-background-color:#c5cae9; }
+.status-blueish2 {-fx-background-color:#9fa8da; }
+.status-blueish3 {-fx-background-color:#7986cb; }
+.status-blueish4 {-fx-background-color:#5c6bc0; }
+.status-blueish5 {-fx-background-color:#3949ab; }
+.status-blueish6 {-fx-background-color:#3f51b5; }
+.status-blueish7 {-fx-background-color:#303f9f; }
+
+.status-greenish1 { -fx-background-color:#f2f7d9; }
+.status-greenish2 { -fx-background-color:#e6efb3; }
+.status-greenish3 { -fx-background-color:#d9e78d; }
+.status-greenish4 { -fx-background-color:#cddf68; }
+.status-greenish5 { -fx-background-color:#b8d02c; }
+.status-greenish6 { -fx-background-color:#a3b927; }
+.status-greenish7 { -fx-background-color:#8fa222; }
+
+
+.status-pinkish1 {-fx-background-color:#f2e3ed; }
+.status-pinkish2 {-fx-background-color:#e4c6db; }
+.status-pinkish3 {-fx-background-color:#d7aac9; }
+.status-pinkish4 {-fx-background-color:#c98db6;}
+.status-pinkish5 {-fx-background-color:#b25c97; }
+.status-pinkish6 {-fx-background-color:#a44d88; }
+.status-pinkish7 {-fx-background-color:#8f4377; }
+
+.status-orangish1 {-fx-background-color:#fcddd5; }
+.status-orangish2 {-fx-background-color:#fabaab; }
+.status-orangish3 {-fx-background-color:#f79880; }
+.status-orangish4 {-fx-background-color:#f47656; }
+.status-orangish5 {-fx-background-color:#f03e11; }
+.status-orangish6 {-fx-background-color:#d7360e; }
+.status-orangish7 {-fx-background-color:#bc2f0c; }
+
+
+

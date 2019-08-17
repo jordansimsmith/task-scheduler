@@ -10,7 +10,9 @@ import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
@@ -159,20 +161,30 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     private VBox setUpLabels(Data<X, Y> dataItem){
         Text text = new Text(getLabel(dataItem.getExtraValue()));
         text.setTextAlignment(TextAlignment.CENTER);
+        text.setFontSmoothingType(FontSmoothingType.LCD);
         VBox vBox = new VBox(text);
         VisualNode visualNode = getVisualNode(dataItem.getExtraValue());
 
         if (visualNode.isParent()){
             Text identifier = new Text("Parent");
             identifier.setTextAlignment(TextAlignment.CENTER);
-            vBox.getChildren().add(identifier);
+            text.setFill(Color.WHITE);
+            identifier.setFill(Color.WHITE);
+            identifier.setFontSmoothingType(FontSmoothingType.LCD);
+        vBox.getChildren().add(identifier);
         } else if (visualNode.isChild()){
             Text identifier = new Text("Child");
             identifier.setTextAlignment(TextAlignment.CENTER);
+            text.setFill(Color.WHITE);
+            identifier.setFill(Color.WHITE);
+            identifier.setFontSmoothingType(FontSmoothingType.LCD);
             vBox.getChildren().add(identifier);
         } else if (visualNode.isSelected()){
             Text identifier = new Text("Selected");
             identifier.setTextAlignment(TextAlignment.CENTER);
+            identifier.setFill(Color.WHITE);
+            text.setFill(Color.WHITE);
+            identifier.setFontSmoothingType(FontSmoothingType.LCD);
             vBox.getChildren().add(identifier);
         }
         vBox.setAlignment(Pos.CENTER);

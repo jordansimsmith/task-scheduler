@@ -12,6 +12,7 @@ import task.scheduler.schedule.ISchedule;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class SchedulingVisualizationAdapter {
 
@@ -42,7 +43,7 @@ public class SchedulingVisualizationAdapter {
 
                 if (nodeMap.get(node) == null){
                     nodeMap.put(node, new VisualNode(node));
-                    setColor(node);
+                    setColor(node, nodeSchedule.y);
                 }
 
                 Platform.runLater(() -> {
@@ -51,7 +52,7 @@ public class SchedulingVisualizationAdapter {
                     XYChart.Data data = new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s);
 
                     series.getData().add(data);
-                    data.getNode().setOnMouseClicked(event -> setSelectionListener(graph, node, schedule, data));
+                    data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, node, schedule, data));
                 });
 
             }
@@ -60,18 +61,18 @@ public class SchedulingVisualizationAdapter {
 
     }
 
-    private void setColor(INode node){
+    private void setColor(INode node, int pVal){
 
         //Checking if a node has been selected and if that selected node has a parent that was not put on the graph
         if (currentSelectedNode != null && nodeMap.get(currentSelectedNode).getParents().keySet().contains(node)){
             nodeMap.get(node).setParent(true);
         } else {
-            nodeMap.get(node).setColour("status-red");
+            String color = pickColour(pVal);
+            nodeMap.get(node).setColour(color);
         }
     }
 
-    private void setSelectionListener(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
-        System.out.println("works");
+    private void setSelectionListenerAction(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
             currentSelectedNode = node;
             //Only one item can be selected
             clearPreviousSelection(graph, schedule);
@@ -111,6 +112,14 @@ public class SchedulingVisualizationAdapter {
 
             }
         }
+    }
+
+    public String pickColour(int pVal){
+        String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish" };
+        //As there are 7 shades of each colour
+        Random rand = new Random();
+        int shade = rand.nextInt(7) + 1;
+        return colours[pVal%4] + shade;
     }
 
     public Chart getChart() {
