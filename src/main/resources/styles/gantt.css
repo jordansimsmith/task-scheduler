@@ -7,3 +7,15 @@
 .status-blue {
     -fx-background-color:rgba(0,0,128,0.7);
 }
+
+.status-selected {
+    -fx-background-color: rgba(0, 0, 128, 0.7);
+}
+
+.status-parent{
+    -fx-background-color: rgba(97, 10, 128, 0.7);
+}
+
+.status-child {
+    -fx-background-color: rgba(11, 128, 7, 0.7);
+}

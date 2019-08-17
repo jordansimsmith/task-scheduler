@@ -22,6 +22,7 @@ public class SchedulingVisualizationAdapter {
 
     private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
     private Map<INode, VisualNode> nodeMap = new HashMap<>();
+    private INode currentSelectedNode;
 
 
     private SchedulingVisualizationAdapter() {
@@ -38,9 +39,10 @@ public class SchedulingVisualizationAdapter {
         for (INode node : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
             if (nodeSchedule != null) {
+
                 if (nodeMap.get(node) == null){
                     nodeMap.put(node, new VisualNode(node));
-                    nodeMap.get(node).setColour("status-red");
+                    setColor(node);
                 }
 
                 Platform.runLater(() -> {
@@ -48,10 +50,7 @@ public class SchedulingVisualizationAdapter {
                     XYChart.Series series = seriesMap.get(nodeSchedule.y);
                     XYChart.Data data = new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s);
                     series.getData().add(data);
-                    data.getNode().setOnMouseClicked(event ->  {
-                        nodeMap.get(node).setColour( "status-blue");
-                        populateVisual(graph, schedule);
-                    });
+                    setSelectionListener(graph, node, schedule, data);
 
                 });
 
@@ -61,6 +60,56 @@ public class SchedulingVisualizationAdapter {
 
     }
 
+    private void setColor(INode node){
+
+        //Checking if a node has been selected and if that selected node has a parent that was not put on the graph
+        if (currentSelectedNode != null && nodeMap.get(currentSelectedNode).getParents().keySet().contains(node)){
+            nodeMap.get(node).setParent(true);
+        } else {
+            nodeMap.get(node).setColour("status-red");
+        }
+    }
+
+    private void setSelectionListener(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
+        data.getNode().setOnMouseClicked(event ->  {
+            currentSelectedNode = node;
+            //Only one item can be selected
+            clearPreviousSelection(graph, schedule);
+            nodeMap.get(node).setSelected(true);
+            changeParentAndChildNodeColour(graph, node, schedule, data);
+
+            populateVisual(graph, schedule);
+        });
+    }
+
+    private void changeParentAndChildNodeColour(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
+        //Getting all parent nodes and changing their color
+        for(INode curNode : graph.getNodes()){
+            Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
+            if (nodeSchedule != null) {
+                if (node.getParents().keySet().contains(curNode)){
+                    //Setting the colour for parent node
+                    nodeMap.get(curNode).setParent(true);
+                } else if (node.getChildren().keySet().contains(curNode)){
+                    //Setting the colour for child node
+                    nodeMap.get(curNode).setChild(true);
+                }
+            }
+        }
+    }
+
+    private void clearPreviousSelection(IGraph graph, ISchedule schedule){
+        for(INode curNode : graph.getNodes()) {
+            Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
+            if (nodeSchedule != null) {
+                VisualNode n = nodeMap.get(curNode);
+                n.setSelected(false);
+                n.setChild(false);
+                n.setParent(false);
+
+            }
+        }
+    }
 
     public Chart getChart() {
         return this.chart;
