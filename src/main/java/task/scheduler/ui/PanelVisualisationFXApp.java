@@ -35,7 +35,6 @@ public class PanelVisualisationFXApp extends Application {
 
     private static void setFxApp(PanelVisualisationFXApp app)    {
         fxApp = app;
-        latch.countDown();
     }
 
     public PanelVisualisationFXApp()  {
@@ -64,6 +63,8 @@ public class PanelVisualisationFXApp extends Application {
         Scene scene = new Scene(chart, 720, 640);
         stage.setScene(scene);
         stage.show();
+
+        latch.countDown();
     }
 
 }

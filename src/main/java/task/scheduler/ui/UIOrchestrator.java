@@ -38,7 +38,8 @@ public class UIOrchestrator implements Runnable {
         while (true)    {
             long start = System.currentTimeMillis();
             if (Thread.currentThread().isInterrupted()) {
-                logger.info("UI Thread received interrupt, shutting down.");
+                logger.info("UI Thread received interrupt, will push once and shut down.");
+                this.businessLogic();
                 break;
             }
 
@@ -49,7 +50,9 @@ public class UIOrchestrator implements Runnable {
                 long sleep = interval - (System.currentTimeMillis() - start);
                 Thread.sleep(sleep > 0 ? sleep : 1);
             } catch (InterruptedException e)    {
-                logger.info("UI Thread received interrupt, breaking.");
+                this.businessLogic();
+                logger.info("UI Thread received interrupt, will push once and shut down.");
+                this.businessLogic();
                 break;
             }
 
