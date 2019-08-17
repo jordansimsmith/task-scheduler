@@ -64,8 +64,8 @@ public class SchedulingVisualizationAdapter {
     private void setColor(INode node, int pVal){
 
         //Checking if a node has been selected and if that selected node has a parent that was not put on the graph
-        if (currentSelectedNode != null && nodeMap.get(currentSelectedNode).getParents().keySet().contains(node)){
-            nodeMap.get(node).setParent(true);
+        if (currentSelectedNode != null && currentSelectedNode.getChildren().get(node) != null){
+            nodeMap.get(node).setChild(true);
         } else {
             String color = pickColour(pVal);
             nodeMap.get(node).setColour(color);
