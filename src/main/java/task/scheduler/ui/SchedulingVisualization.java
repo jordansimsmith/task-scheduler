@@ -1,16 +1,18 @@
 package task.scheduler.ui;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.css.CssMetaData;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.chart.Axis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
+import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,43 +24,32 @@ import java.util.List;
  * @param <Y>
  */
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
-    private double nodeHeight = 10;
+    private double nodeHeight = 5;
 
     public static class DetailedInformation {
-        private int length;
-        private String styleSheet;
-        private String label;
+        private VisualNode visualNode;
 
-        public DetailedInformation(int length, String styleSheet, String label) {
+        public DetailedInformation(VisualNode visualNode) {
             super();
-            this.length = length;
-            this.styleSheet = styleSheet;
-            this.label = label;
+            this.visualNode = visualNode;
         }
 
         public int getLength() {
-            return length;
-        }
-
-        public void setLength(int length) {
-            this.length = length;
+            return visualNode.getProcessingCost();
         }
 
         public String getStyleSheet() {
-            return styleSheet;
+            return visualNode.getColour();
         }
 
         public void setStyleSheet(String styleSheet) {
-            this.styleSheet = styleSheet;
+            this.visualNode.setColour(styleSheet);
         }
 
         public String getLabel() {
-            return label;
+            return visualNode.getLabel();
         }
 
-        public void setLabel(String label) {
-            this.label = label;
-        }
     }
 
 
@@ -85,7 +76,6 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void dataItemChanged(Data<X, Y> data) {
-
     }
 
     @Override
@@ -111,6 +101,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
         for (Series<X, Y> currentSeries : getData()) {
 
+
             Iterator<Data<X, Y>> iterator = getDisplayedDataIterator(currentSeries);
 
             while (iterator.hasNext()) {
@@ -120,36 +111,33 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                 if (Double.isNaN(x) || Double.isNaN(y)) {
                     continue;
                 }
-                Rectangle shape;
+                Rectangle rectangle;
                 Node node = dataItem.getNode();
 
                 if (node != null) {
                     if (node instanceof StackPane) {
-                        StackPane rectangle = (StackPane) dataItem.getNode();
+                        StackPane shape = (StackPane) dataItem.getNode();
 
-                        if (rectangle.getShape() instanceof Rectangle) {
-                            shape = (Rectangle) rectangle.getShape();
-                        } else if (rectangle.getShape() == null) {
-                            shape = new Rectangle(getLength((dataItem.getExtraValue())), nodeHeight);
+                        if (shape.getShape() instanceof Rectangle) {
+                            rectangle = (Rectangle) shape.getShape();
+                        } else if (shape.getShape() == null) {
+                            rectangle = new Rectangle(getLength((dataItem.getExtraValue())), nodeHeight);
                         } else {
                             return;
                         }
 
-                        shape.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
-                        shape.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
+                        rectangle.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
+                        rectangle.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
                         y -= nodeHeight / 2.0;
 
                         Text text = new Text(getLabel(dataItem.getExtraValue()));
 
-                        rectangle.setShape(shape);
+                        shape.setShape(rectangle);
 
-                        rectangle.setAlignment(Pos.CENTER);
-                        rectangle.getChildren().add(text);
-
-
-                        rectangle.setScaleShape(false);
-
-                        rectangle.setCacheShape(false);
+                        shape.setAlignment(Pos.CENTER);
+                        shape.getChildren().add(text);
+                        shape.setScaleShape(false);
+                        shape.setCacheShape(false);
 
                         node.translateXProperty().setValue((getLength(dataItem.getExtraValue()) / 2.0) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
                         node.translateYProperty().setValue((nodeHeight) / 2.0 * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
@@ -202,6 +190,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     private static String getStyleClass(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
+    }
+
+    private static void setStyleClass(Object obj, String styleClass) {
+         ((SchedulingVisualization.DetailedInformation) obj).setStyleSheet(styleClass);
     }
 
     private Node createNodeVisual(Data<X, Y> data) {

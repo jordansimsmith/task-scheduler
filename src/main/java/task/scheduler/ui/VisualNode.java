@@ -3,6 +3,7 @@ package task.scheduler.ui;
 import task.scheduler.graph.INode;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class VisualNode implements INode {
     INode node;
@@ -40,5 +41,11 @@ public class VisualNode implements INode {
         this.node = node;
     }
 
+    public String getColour() {
+            return colour;
+    }
 
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
 }
