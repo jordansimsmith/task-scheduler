@@ -44,6 +44,7 @@ public class AStar implements IScheduler {
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
                 logger.info(searchCount + " states searched");
+                state = SchedulerState.FINISHED;
                 return s; // optimal schedule found
             }
 
@@ -62,7 +63,7 @@ public class AStar implements IScheduler {
             }
         }
 
-        state = SchedulerState.FINISHED;
+        state = SchedulerState.STOPPED;
         return null;
     }
 
