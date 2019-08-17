@@ -1,8 +1,11 @@
 package task.scheduler.ui;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
@@ -57,14 +60,36 @@ public class PanelVisualisationFXApp extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        scheduleVisualization = SchedulingVisualizationAdapter.getInstance();
-        Chart chart = scheduleVisualization.getChart();
 
-        Scene scene = new Scene(chart, 720, 640);
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/panel_view.fxml"));
+
+        Scene scene = new Scene(root, 1280, 720);
+        stage.setMinWidth(480);
+        stage.setMinHeight(360);
         stage.setScene(scene);
+
+        setUpScheduleView(root);
+
         stage.show();
 
         latch.countDown();
+    }
+
+    /**
+     * Inserts schedule in #schedule_preview anchor view
+     * @param root
+     */
+    private void setUpScheduleView(Parent root)    {
+        scheduleVisualization = SchedulingVisualizationAdapter.getInstance();
+        Chart chart = scheduleVisualization.getChart();
+
+        AnchorPane scheduleView = (AnchorPane) root.lookup("#schedule_preview");
+        AnchorPane.setTopAnchor(chart, 0.0);
+        AnchorPane.setBottomAnchor(chart, 0.0);
+        AnchorPane.setLeftAnchor(chart, 0.0);
+        AnchorPane.setRightAnchor(chart, 0.0);
+
+        scheduleView.getChildren().add(chart);
     }
 
 }
