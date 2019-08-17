@@ -11,6 +11,7 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.schedule.astar.AStar;
+import task.scheduler.ui.PanelVisualization;
 import task.scheduler.ui.UIOrchestrator;
 
 import java.io.FileOutputStream;
@@ -71,7 +72,7 @@ public class App {
         // Start visuals
         Thread ui = null;
         if (config.isVisualise())   {
-            ui = new Thread(new UIOrchestrator(scheduler, 1000));
+            ui = new Thread(new UIOrchestrator(scheduler, new PanelVisualization(input), 1000));
             ui.start();
         }
 

@@ -3,6 +3,7 @@ package task.scheduler.ui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import task.scheduler.App;
+import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.IScheduler;
 
 /**
@@ -16,13 +17,16 @@ public class UIOrchestrator implements Runnable {
     private IScheduler watchedScheduler;
     private int interval;
 
+    private IVisualization visualization;
+
     /**
      * @param watchedScheduler Scheduler to poll for information
      * @param interval Period (in ms) to poll
      */
-    public UIOrchestrator(IScheduler watchedScheduler, int interval)   {
+    public UIOrchestrator(IScheduler watchedScheduler, IVisualization visualization, int interval)   {
         this.watchedScheduler = watchedScheduler;
         this.interval = interval;
+        this.visualization = visualization;
     }
 
     /**
@@ -57,5 +61,6 @@ public class UIOrchestrator implements Runnable {
      */
     private void businessLogic() {
         logger.info(watchedScheduler.getCurrentState().toString());
+        visualization.pushSchedule(watchedScheduler.getCurrentSchedule());
     }
 }
