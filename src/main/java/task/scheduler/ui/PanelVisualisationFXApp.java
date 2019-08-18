@@ -143,6 +143,8 @@ public class PanelVisualisationFXApp extends Application {
         AnchorPane.setRightAnchor(inputImage, 0.0);
 
         inputView.getChildren().add(inputImage);
+        inputImage.fitHeightProperty().bind(inputView.heightProperty());
+        inputImage.fitWidthProperty().bind(inputView.widthProperty());
     }
 
     /**
@@ -171,5 +173,4 @@ public class PanelVisualisationFXApp extends Application {
 
         return title;
     }
-
 }
