@@ -6,6 +6,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,6 +38,9 @@ public class PanelVisualisationFXApp extends Application {
     private Parent root;
     private SchedulingVisualizationAdapter scheduleVisualization;
     private InputGraphGenerator inputGraphGenerator;
+
+    private XYChart.Series<Number, Number> ramUsage;
+    private double startTime;
 
     /**
      * Waits until the JavaFX application is ready, then returns the app
@@ -94,6 +100,18 @@ public class PanelVisualisationFXApp extends Application {
     }
 
     /**
+     * Pushes the current ram and cpu stats to be displayed
+     */
+    protected void pushStats(double ramUsageP, double cpuUsageP)   {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                ramUsage.getData().add(new XYChart.Data<>(System.currentTimeMillis() - startTime, ramUsageP));
+            }
+        });
+    }
+
+    /**
      * FXML entry point
      */
     @Override
@@ -109,12 +127,31 @@ public class PanelVisualisationFXApp extends Application {
 
         setUpScheduleView(root);
         setUpProgressBar(root);
+        setUpResourceViews(root);
 
         stage.setTitle(getTitle());
         stage.show();
 
         this.stage = stage;
         latch.countDown();
+    }
+
+    /**
+     * Sets up CPU and RAM views
+     */
+    private void setUpResourceViews(Parent root) {
+        NumberAxis xAxis = new NumberAxis();
+        xAxis.setLabel("Time Ago");
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel(" % Utilisation ");
+
+        LineChart<Number, Number> RAMChart = new LineChart<>(xAxis, yAxis);
+
+        startTime = System.currentTimeMillis();
+        ramUsage = new XYChart.Series<>();
+        RAMChart.getData().add(ramUsage);
+
+        ((AnchorPane) root.lookup("#ram_usage")).getChildren().add(RAMChart);
     }
 
     /**
