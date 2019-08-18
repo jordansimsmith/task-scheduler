@@ -39,7 +39,7 @@ public class PanelVisualization implements  IVisualization {
      */
     @Override
     public void pushSchedule(ISchedule schedule) {
-        if (fxApp != null)  {
+        if (fxApp != null && schedule != null)  {
             fxApp.pushSchedule(graph, schedule);
         }
     }
