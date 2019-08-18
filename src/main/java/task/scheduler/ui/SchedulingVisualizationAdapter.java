@@ -28,7 +28,7 @@ public class SchedulingVisualizationAdapter {
     private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
     private Map<INode, VisualNode> nodeMap = new HashMap<>();
     private INode currentSelectedNode;
-    private int[] shadePicker = {0,0,0,0};
+    private int[] shadePicker = {0, 0, 0, 0};
 
 
     private SchedulingVisualizationAdapter() {
@@ -42,7 +42,8 @@ public class SchedulingVisualizationAdapter {
     /**
      * PopulateVisual is called when the Gantt Chart created by the SchedulingVIsualizationAdapter needs to be updated
      * with new scheduling data
-     * @param graph IGraph input that is used to retrieve all the nodes in the generated graph
+     *
+     * @param graph    IGraph input that is used to retrieve all the nodes in the generated graph
      * @param schedule ISchedule used to get the scheduled processor for a node
      */
     public void populateVisual(IGraph graph, ISchedule schedule) {
@@ -52,7 +53,7 @@ public class SchedulingVisualizationAdapter {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
             if (nodeSchedule != null) {
 
-                if (nodeMap.get(node) == null){
+                if (nodeMap.get(node) == null) {
                     nodeMap.put(node, new VisualNode(node));
                     setColor(node, nodeSchedule.y);
                 }
@@ -75,12 +76,11 @@ public class SchedulingVisualizationAdapter {
     /**
      * Sets the default colour of a new node and checks if the new node is the parent of the selected node. If it is then
      * the new VisualNodes isParent parameter is set to true.
-     *
      */
-    private void setColor(INode node, int pVal){
+    private void setColor(INode node, int pVal) {
 
         //Checking if a node has been selected and if that selected node has a parent that was not put on the graph
-        if (currentSelectedNode != null && currentSelectedNode.getChildren().get(node) != null){
+        if (currentSelectedNode != null && currentSelectedNode.getChildren().get(node) != null) {
             nodeMap.get(node).setChild(true);
         }
 
@@ -91,32 +91,30 @@ public class SchedulingVisualizationAdapter {
 
     /**
      * Sets onClickListener for when a scheduled box is clicked.
-     *
      */
-    private void setSelectionListenerAction(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
-            currentSelectedNode = node;
-            //Only one item can be selected
-            clearPreviousSelection(graph, schedule);
-            nodeMap.get(node).setSelected(true);
-            changeParentAndChildNodeColour(graph, node, schedule, data);
+    private void setSelectionListenerAction(IGraph graph, INode node, ISchedule schedule, XYChart.Data data) {
+        currentSelectedNode = node;
+        //Only one item can be selected
+        clearPreviousSelection(graph, schedule);
+        nodeMap.get(node).setSelected(true);
+        changeParentAndChildNodeColour(graph, node, schedule, data);
 
-            populateVisual(graph, schedule);
+        populateVisual(graph, schedule);
 
     }
 
     /**
      * Helper method for onClickListener that changed the state of a visual node by stating if it is a parent or child
-     *
      */
-    private void changeParentAndChildNodeColour(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
+    private void changeParentAndChildNodeColour(IGraph graph, INode node, ISchedule schedule, XYChart.Data data) {
         //Getting all parent nodes and changing their color
-        for(INode curNode : graph.getNodes()){
+        for (INode curNode : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
             if (nodeSchedule != null && nodeMap.get(curNode) != null) {
-                if (node.getParents().keySet().contains(curNode)){
+                if (node.getParents().keySet().contains(curNode)) {
                     //Setting the colour for parent node
                     nodeMap.get(curNode).setParent(true);
-                } else if (node.getChildren().keySet().contains(curNode)){
+                } else if (node.getChildren().keySet().contains(curNode)) {
                     //Setting the colour for child node
                     nodeMap.get(curNode).setChild(true);
                 }
@@ -126,10 +124,9 @@ public class SchedulingVisualizationAdapter {
 
     /**
      * Clears all parent, child or selected states from all nodes that are shcenduled
-     *
      */
-    private void clearPreviousSelection(IGraph graph, ISchedule schedule){
-        for(INode curNode : graph.getNodes()) {
+    private void clearPreviousSelection(IGraph graph, ISchedule schedule) {
+        for (INode curNode : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
             if (nodeSchedule != null) {
                 VisualNode n = nodeMap.get(curNode);
@@ -145,19 +142,19 @@ public class SchedulingVisualizationAdapter {
 
     /**
      * Helper method helps pink a random colour specified in the css stylesheet file
-     *
      */
-    public String pickColour(int pVal){
-        String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish" };
+    public String pickColour(int pVal) {
+        String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish"};
         //As there are 7 shades of each colour
         Random rand = new Random();
         int shade = (shadePicker[pVal % 4] % 6) + 1;
         shadePicker[pVal % 4]++;
-        return colours[pVal%4] + shade;
+        return colours[pVal % 4] + shade;
     }
 
     /**
      * Returns the chart generated
+     *
      * @return
      */
     public Chart getChart() {
@@ -165,7 +162,7 @@ public class SchedulingVisualizationAdapter {
     }
 
     /**
-     *Sets up the chart that contains the Gantt Chart schedule at instantiation
+     * Sets up the chart that contains the Gantt Chart schedule at instantiation
      */
     private void setUpVisual() {
         xAxis.setLabel("");

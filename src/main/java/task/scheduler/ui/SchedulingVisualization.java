@@ -54,7 +54,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
             return visualNode.getLabel();
         }
 
-        public VisualNode getVisualNode(){
+        public VisualNode getVisualNode() {
             return this.visualNode;
         }
     }
@@ -158,30 +158,30 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     }
 
 
-    private VBox setUpLabels(Data<X, Y> dataItem, StackPane pane){
+    private VBox setUpLabels(Data<X, Y> dataItem, StackPane pane) {
         Text text = new Text(getLabel(dataItem.getExtraValue()));
         text.setTextAlignment(TextAlignment.CENTER);
         text.setFontSmoothingType(FontSmoothingType.LCD);
         VBox vBox = new VBox(text);
         VisualNode visualNode = getVisualNode(dataItem.getExtraValue());
 
-        if (visualNode.isParent()){
+        if (visualNode.isParent()) {
             Text identifier = new Text("Parent");
-            setTextProperties(identifier, vBox,pane, text );
-        } else if (visualNode.isChild()){
+            setTextProperties(identifier, vBox, pane, text);
+        } else if (visualNode.isChild()) {
             Text identifier = new Text("Child");
-            setTextProperties(identifier, vBox,pane, text );
+            setTextProperties(identifier, vBox, pane, text);
 
-        } else if (visualNode.isSelected()){
+        } else if (visualNode.isSelected()) {
             Text identifier = new Text("Selected");
-            setTextProperties(identifier, vBox,pane, text );
+            setTextProperties(identifier, vBox, pane, text);
 
         }
         vBox.setAlignment(Pos.CENTER);
         return vBox;
     }
 
-    private VBox setTextProperties(Text identifier, VBox vBox, StackPane pane, Text text){
+    private VBox setTextProperties(Text identifier, VBox vBox, StackPane pane, Text text) {
         identifier.setTextAlignment(TextAlignment.CENTER);
         text.setFill(Color.WHITE);
         identifier.setFill(Color.WHITE);
@@ -222,35 +222,35 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
     }
 
     /**
-     *Method takes an ExtraData object from chart and returns the length information for a scheduled node
+     * Method takes an ExtraData object from chart and returns the length information for a scheduled node
      */
     private static int getLength(Object o) {
         return ((DetailedInformation) o).getLength();
     }
 
     /**
-     *Method takes an ExtraData object from chart and returns the label information for a scheduled node
+     * Method takes an ExtraData object from chart and returns the label information for a scheduled node
      */
     private static String getLabel(Object o) {
         return ((DetailedInformation) o).getLabel();
     }
 
     /**
-     *Method takes an ExtraData object from chart and returns the style information for a scheduled node
+     * Method takes an ExtraData object from chart and returns the style information for a scheduled node
      */
     private static String getStyleClass(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
     }
 
     /**
-     *Method takes an ExtraData object from chart and returns the visual node for a scheduled node
+     * Method takes an ExtraData object from chart and returns the visual node for a scheduled node
      */
     private static VisualNode getVisualNode(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getVisualNode();
     }
 
     private static void setStyleClass(Object obj, String styleClass) {
-         ((SchedulingVisualization.DetailedInformation) obj).setStyleSheet(styleClass);
+        ((SchedulingVisualization.DetailedInformation) obj).setStyleSheet(styleClass);
     }
 
     /**
@@ -271,6 +271,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     /**
      * Sets the height of the node block that gets displayed
+     *
      * @param blockHeight
      */
     public void setBlockHeight(double blockHeight) {

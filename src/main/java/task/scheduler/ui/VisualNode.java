@@ -13,7 +13,7 @@ public class VisualNode implements INode {
     String colour;
     boolean selected, parent, child;
 
-    public VisualNode(INode node){
+    public VisualNode(INode node) {
         this.node = node;
     }
 
@@ -50,11 +50,11 @@ public class VisualNode implements INode {
      * chart at the beginning
      */
     public String getColour() {
-        if (selected){
+        if (selected) {
             return "status-selected";
-        } else if (parent){
+        } else if (parent) {
             return "status-parent";
-        } else if (child){
+        } else if (child) {
             return "status-child";
         } else {
             return colour;
@@ -63,6 +63,7 @@ public class VisualNode implements INode {
 
     /**
      * Sets the default colour of the VisualNode
+     *
      * @param colour
      */
     public void setColour(String colour) {
