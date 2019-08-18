@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Class SchedulingVisualizationAdapter is used to create, generate and update a Gantt Chart that is used to job visualization
+ * on CPU cores.
+ */
 public class SchedulingVisualizationAdapter {
 
     private static SchedulingVisualizationAdapter schedulingVisualizationAdapter = new SchedulingVisualizationAdapter();
@@ -35,6 +39,12 @@ public class SchedulingVisualizationAdapter {
         return schedulingVisualizationAdapter;
     }
 
+    /**
+     * PopulateVisual is called when the Gantt Chart created by the SchedulingVIsualizationAdapter needs to be updated
+     * with new scheduling data
+     * @param graph IGraph input that is used to retrieve all the nodes in the generated graph
+     * @param schedule ISchedule used to get the scheduled processor for a node
+     */
     public void populateVisual(IGraph graph, ISchedule schedule) {
         clearSeriesList();
 
@@ -62,6 +72,11 @@ public class SchedulingVisualizationAdapter {
 
     }
 
+    /**
+     * Sets the default colour of a new node and checks if the new node is the parent of the selected node. If it is then
+     * the new VisualNodes isParent parameter is set to true.
+     *
+     */
     private void setColor(INode node, int pVal){
 
         //Checking if a node has been selected and if that selected node has a parent that was not put on the graph
@@ -74,6 +89,10 @@ public class SchedulingVisualizationAdapter {
 
     }
 
+    /**
+     * Sets onClickListener for when a scheduled box is clicked.
+     *
+     */
     private void setSelectionListenerAction(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
             currentSelectedNode = node;
             //Only one item can be selected
@@ -85,6 +104,10 @@ public class SchedulingVisualizationAdapter {
 
     }
 
+    /**
+     * Helper method for onClickListener that changed the state of a visual node by stating if it is a parent or child
+     *
+     */
     private void changeParentAndChildNodeColour(IGraph graph, INode node, ISchedule schedule, XYChart.Data data){
         //Getting all parent nodes and changing their color
         for(INode curNode : graph.getNodes()){
@@ -101,6 +124,10 @@ public class SchedulingVisualizationAdapter {
         }
     }
 
+    /**
+     * Clears all parent, child or selected states from all nodes that are shcenduled
+     *
+     */
     private void clearPreviousSelection(IGraph graph, ISchedule schedule){
         for(INode curNode : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
@@ -116,6 +143,10 @@ public class SchedulingVisualizationAdapter {
         }
     }
 
+    /**
+     * Helper method helps pink a random colour specified in the css stylesheet file
+     *
+     */
     public String pickColour(int pVal){
         String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish" };
         //As there are 7 shades of each colour
@@ -125,10 +156,17 @@ public class SchedulingVisualizationAdapter {
         return colours[pVal%4] + shade;
     }
 
+    /**
+     * Returns the chart generated
+     * @return
+     */
     public Chart getChart() {
         return this.chart;
     }
 
+    /**
+     *Sets up the chart that contains the Gantt Chart schedule at instantiation
+     */
     private void setUpVisual() {
         xAxis.setLabel("");
         xAxis.setTickLabelFill(Color.CHOCOLATE);
@@ -156,7 +194,9 @@ public class SchedulingVisualizationAdapter {
         chart.getStylesheets().add("file:///" + file.getAbsolutePath());
     }
 
-
+    /**
+     * Clears all the nodes from the series. Called every time the series is populated.
+     */
     private void clearSeriesList() {
         for (XYChart.Series s : seriesMap.values()) {
             Platform.runLater(() -> s.getData().clear());

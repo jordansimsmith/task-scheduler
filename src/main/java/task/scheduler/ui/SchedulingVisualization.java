@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * SchedulingVisualization overrides XYChart to enable Gantt Chart type scheduling
  * Based on the example provided here https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch
  *
  * @param <X>
@@ -220,18 +221,30 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         }
     }
 
+    /**
+     *Method takes an ExtraData object from chart and returns the length information for a scheduled node
+     */
     private static int getLength(Object o) {
         return ((DetailedInformation) o).getLength();
     }
 
+    /**
+     *Method takes an ExtraData object from chart and returns the label information for a scheduled node
+     */
     private static String getLabel(Object o) {
         return ((DetailedInformation) o).getLabel();
     }
 
+    /**
+     *Method takes an ExtraData object from chart and returns the style information for a scheduled node
+     */
     private static String getStyleClass(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
     }
 
+    /**
+     *Method takes an ExtraData object from chart and returns the visual node for a scheduled node
+     */
     private static VisualNode getVisualNode(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getVisualNode();
     }
@@ -240,6 +253,9 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
          ((SchedulingVisualization.DetailedInformation) obj).setStyleSheet(styleClass);
     }
 
+    /**
+     * Creates a new node that gets added to the chart getting generated
+     */
     private Node createNodeVisual(Data<X, Y> data) {
 
         Node container = data.getNode();
@@ -253,6 +269,10 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         return container;
     }
 
+    /**
+     * Sets the height of the node block that gets displayed
+     * @param blockHeight
+     */
     public void setBlockHeight(double blockHeight) {
         this.nodeHeight = blockHeight;
     }

@@ -4,6 +4,10 @@ import task.scheduler.graph.INode;
 
 import java.util.Map;
 
+/**
+ * VisualNode implements INode and it is a wrapper class for INode with added information that allows it to keep state
+ * on the chart
+ */
 public class VisualNode implements INode {
     INode node;
     String colour;
@@ -41,6 +45,10 @@ public class VisualNode implements INode {
         this.node = node;
     }
 
+    /**
+     * Returns the colour for the VisualNode. The string returned is a reference to the stylesheet object added to the
+     * chart at the beginning
+     */
     public String getColour() {
         if (selected){
             return "status-selected";
@@ -53,19 +61,32 @@ public class VisualNode implements INode {
         }
     }
 
+    /**
+     * Sets the default colour of the VisualNode
+     * @param colour
+     */
     public void setColour(String colour) {
         this.colour = colour;
     }
 
-    //Only one item can be selected at a time
+
+    /**
+     * Set to true by the setOnClicked() listener if this VisualNode is clicked on the graph
+     */
     public void setSelected(Boolean selected) {
         this.selected = selected;
     }
 
+    /**
+     * Set to true by the setOnClicked() listener if this VisualNode is the parent of the node clicked on the graph
+     */
     public void setParent(Boolean parent) {
         this.parent = parent;
     }
 
+    /**
+     * Set to true by the setOnClicked() listener if this VisualNode is the child of the node clicked on the graph
+     */
     public void setChild(Boolean child) {
         this.child = child;
     }
