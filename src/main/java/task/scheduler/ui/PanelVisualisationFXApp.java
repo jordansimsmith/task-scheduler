@@ -6,9 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
@@ -98,18 +100,31 @@ public class PanelVisualisationFXApp extends Application {
     public void start(Stage stage) throws Exception {
         root = FXMLLoader.load(getClass().getResource("/fxml/panel_view.fxml"));
 
+        root.setStyle("-fx-background-color: white");
+
         Scene scene = new Scene(root, 1280, 720);
         stage.setMinWidth(480);
         stage.setMinHeight(360);
         stage.setScene(scene);
 
         setUpScheduleView(root);
+        setUpProgressBar(root);
 
         stage.setTitle(getTitle());
         stage.show();
 
         this.stage = stage;
         latch.countDown();
+    }
+
+    /**
+     * Sets up progress bar
+     * Bounds to appropriate size
+     */
+    private void setUpProgressBar(Parent root)  {
+        ProgressBar progressBar = (ProgressBar) root.lookup("#progress_bar");
+
+        progressBar.prefWidthProperty().bind(((BorderPane) progressBar.getParent()).widthProperty().multiply(0.8));
     }
 
     /**
