@@ -151,7 +151,10 @@ public class PanelVisualisationFXApp extends Application {
         ramUsage = new XYChart.Series<>();
         RAMChart.getData().add(ramUsage);
 
-        ((AnchorPane) root.lookup("#ram_usage")).getChildren().add(RAMChart);
+        AnchorPane ramWindow = (AnchorPane) root.lookup("#ram_usage");
+        ramWindow.getChildren().add(RAMChart);
+
+        RAMChart.prefWidthProperty().bind(ramWindow.widthProperty());
     }
 
     /**
