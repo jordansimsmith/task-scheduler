@@ -6,8 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.Chart;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import task.scheduler.graph.Graph;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.common.Config;
@@ -27,7 +30,9 @@ public class PanelVisualisationFXApp extends Application {
     private IScheduler.SchedulerState schedulerState;
 
     // Views
+    private Parent root;
     private SchedulingVisualizationAdapter scheduleVisualization;
+    private InputGraphGenerator inputGraphGenerator;
 
     /**
      * Waits until the JavaFX application is ready, then returns the app
@@ -54,12 +59,22 @@ public class PanelVisualisationFXApp extends Application {
 
     /**
      * Pushes an updated schedule to be rendered
+     * Also renders graph the first time it is made available
      * @param graph
      * @param schedule
      */
     protected void pushSchedule(IGraph graph, ISchedule schedule)  {
         if (scheduleVisualization != null)  {
             scheduleVisualization.populateVisual(graph, schedule);
+        }
+
+        if (inputGraphGenerator == null)    {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    setUpInputView(root, graph);
+                }
+            });
         }
     }
 
@@ -81,7 +96,7 @@ public class PanelVisualisationFXApp extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/panel_view.fxml"));
+        root = FXMLLoader.load(getClass().getResource("/fxml/panel_view.fxml"));
 
         Scene scene = new Scene(root, 1280, 720);
         stage.setMinWidth(480);
@@ -112,6 +127,22 @@ public class PanelVisualisationFXApp extends Application {
         AnchorPane.setRightAnchor(chart, 0.0);
 
         scheduleView.getChildren().add(chart);
+    }
+
+    /**
+     * Generates and inserts input graph view
+     */
+    private void setUpInputView(Parent root, IGraph graph) {
+        inputGraphGenerator = new InputGraphGenerator(graph);
+        ImageView inputImage = inputGraphGenerator.getGraph();
+
+        AnchorPane inputView = (AnchorPane) root.lookup("#input_preview");
+        AnchorPane.setTopAnchor(inputImage, 0.0);
+        AnchorPane.setBottomAnchor(inputImage, 0.0);
+        AnchorPane.setLeftAnchor(inputImage, 0.0);
+        AnchorPane.setRightAnchor(inputImage, 0.0);
+
+        inputView.getChildren().add(inputImage);
     }
 
     /**
