@@ -72,8 +72,8 @@ public class SchedulingVisualizationAdapter {
                 XYChart.Series series = seriesMap.get(visualNode.getScheduledProcessor());
                 XYChart.Data data = new XYChart.Data(visualNode.getStartPos(), "P" + visualNode.getScheduledProcessor(), s);
                 series.getData().add(data);
-                data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, visualNode.getNode(), schedule, data));
-                setColor(visualNode.getNode(), visualNode.getScheduledProcessor());
+                data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, visualNode, schedule, data));
+                setColor(visualNode, visualNode.getScheduledProcessor());
             });
         }
 
@@ -83,29 +83,29 @@ public class SchedulingVisualizationAdapter {
      * Sets the default colour of a new node and checks if the new node is the parent of the selected node. If it is then
      * the new VisualNodes isParent parameter is set to true.
      */
-    private void setColor(INode node, int pVal) {
+    private void setColor(VisualNode node, int pVal) {
 
         //Checking if a node has been selected and if that selected node has a parent that was not put on the graph
         if (currentSelectedNode != null && currentSelectedNode.getChildren().get(node) != null) {
-            nodeMap.get(node).setChild(true);
+            node.setChild(true);
         }
 
         String color = pickColour(pVal);
-        nodeMap.get(node).setColour(color);
+        node.setColour(color);
 
     }
 
     /**
      * Sets onClickListener for when a scheduled box is clicked.
      */
-    private void setSelectionListenerAction(IGraph graph, INode node, ISchedule schedule, XYChart.Data data) {
+    private void setSelectionListenerAction(IGraph graph, VisualNode node, ISchedule schedule, XYChart.Data data) {
         clearPreviousSelection(graph, schedule);
 
         //Only highlight if node has not been selected otherwise the map is cleared
         if (node != currentSelectedNode){
             currentSelectedNode = node;
             //Only one item can be selected
-            nodeMap.get(node).setSelected(true);
+            node.setSelected(true);
             changeParentAndChildNodeColour(graph, node, schedule, data);
 
         } else {
