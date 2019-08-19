@@ -62,15 +62,19 @@ public class SchedulingVisualizationAdapter {
         ArrayList<VisualNode> visualNodesList = new ArrayList<>(nodeMap.values());
         Collections.sort(visualNodesList);
         for (VisualNode visualNode : visualNodesList) {
-            //Adding nodes to the series that is added the chart
-            Platform.runLater(() -> {
-                SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(visualNode);
-                XYChart.Series series = seriesMap.get(visualNode.getScheduledProcessor());
-                XYChart.Data data = new XYChart.Data(visualNode.getStartPos(), "P" + visualNode.getScheduledProcessor(), s);
-                series.getData().add(data);
-                data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, visualNode, schedule, data));
+            Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(visualNode.getNode());
+            if (nodeSchedule != null) {
+                //Adding nodes to the series that is added the chart
                 setColor(visualNode, visualNode.getScheduledProcessor());
-            });
+                Platform.runLater(() -> {
+                    SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(visualNode);
+                    XYChart.Series series = seriesMap.get(visualNode.getScheduledProcessor());
+                    XYChart.Data data = new XYChart.Data(visualNode.getStartPos(), "P" + visualNode.getScheduledProcessor(), s);
+                    series.getData().add(data);
+                    data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, visualNode, schedule, data));
+
+                });
+            }
         }
 
     }
@@ -150,7 +154,7 @@ public class SchedulingVisualizationAdapter {
     }
 
     /**
-     * Helper method helps pink a random colour specified in the css stylesheet file
+     * Helper method helps piCk a random colour specified in the css stylesheet file
      */
     public String pickColour(int pVal) {
         String[] colours = {"status-blueish", "status-greenish", "status-pinkish", "status-orangish"};
@@ -195,6 +199,7 @@ public class SchedulingVisualizationAdapter {
         for (XYChart.Series s : seriesMap.values()) {
             chart.getData().add(s);
         }
+        chart.setAnimated(false);
 
         chart.getStylesheets().add(getClass().getResource("/styles/gantt.css").toExternalForm());
     }
@@ -207,8 +212,6 @@ public class SchedulingVisualizationAdapter {
             Platform.runLater(() -> s.getData().clear());
         }
         //Clearing shade array
-        for (Integer i : shadePicker.keySet()) {
-            shadePicker.put(i, 0);
-        }
+        shadePicker.replaceAll((i, v) -> 0);
     }
 }
