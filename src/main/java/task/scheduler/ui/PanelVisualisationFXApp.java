@@ -38,6 +38,8 @@ public class PanelVisualisationFXApp extends Application {
     private Parent root;
     private SchedulingVisualizationAdapter scheduleVisualization;
     private InputGraphGenerator inputGraphGenerator;
+    // Used to check if we should launch input graphing process when we get a graph
+    private boolean startingInputGen;
 
     private XYChart.Series<Number, Number> ramUsage;
     private double startTime;
@@ -76,7 +78,8 @@ public class PanelVisualisationFXApp extends Application {
             scheduleVisualization.populateVisual(graph, schedule);
         }
 
-        if (inputGraphGenerator == null)    {
+        if (!startingInputGen)    {
+            startingInputGen = true;
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -186,11 +189,27 @@ public class PanelVisualisationFXApp extends Application {
 
     /**
      * Generates and inserts input graph view
+     * Generation of graph done in another thread due to blocking
      */
     private void setUpInputView(Parent root, IGraph graph) {
-        inputGraphGenerator = new InputGraphGenerator(graph);
-        ImageView inputImage = inputGraphGenerator.getGraph();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                inputGraphGenerator = new InputGraphGenerator(graph);
+                ImageView inputImage = inputGraphGenerator.getGraph();
 
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        insertInputViewImage(root, inputImage);
+                    }
+                });
+
+            }
+        }).start();
+    }
+
+    private void insertInputViewImage(Parent root, ImageView inputImage)  {
         AnchorPane inputView = (AnchorPane) root.lookup("#input_preview");
         AnchorPane.setTopAnchor(inputImage, 0.0);
         AnchorPane.setBottomAnchor(inputImage, 0.0);
