@@ -19,7 +19,10 @@ import java.util.Set;
 
 import static guru.nidi.graphviz.model.Factory.*;
 
-
+/**
+ * Produces a static visualization of the graph that can be fetched at any time
+ * Saves graph to file for temporary storage
+ */
 public class InputGraphGenerator {
     private IGraph graph;
     private Image image;
@@ -38,7 +41,7 @@ public class InputGraphGenerator {
     /**
      * The generateGraph() method adds the nodes of the INode graph and adds them to the DAG diagram representing the graph
      */
-    public void generateGraph() {
+    private void generateGraph() {
         MutableGraph g = mutGraph("Graph1").setDirected(true).use((gr, ctx) -> {
 
             List<INode> nodes = graph.getNodes();
