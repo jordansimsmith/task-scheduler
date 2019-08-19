@@ -109,7 +109,7 @@ public class PanelVisualisationFXApp extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ramUsage.getData().add(new XYChart.Data<>((System.currentTimeMillis() - startTime)/1000, ramUsageP/1024));
+                ramUsage.getData().add(new XYChart.Data<>((System.currentTimeMillis() - startTime)/1000, ramUsageP/ (1024*1024)));
             }
         });
     }
@@ -144,9 +144,9 @@ public class PanelVisualisationFXApp extends Application {
      */
     private void setUpResourceViews(Parent root) {
         NumberAxis xAxis = new NumberAxis();
-        xAxis.setLabel("Time Ago");
+        xAxis.setLabel("Time (s)");
         NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel(" % Utilisation ");
+        yAxis.setLabel(" RAM Usage (MByte) ");
 
         LineChart<Number, Number> RAMChart = new LineChart<>(xAxis, yAxis);
 
