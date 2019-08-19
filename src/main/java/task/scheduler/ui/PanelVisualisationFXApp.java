@@ -106,7 +106,7 @@ public class PanelVisualisationFXApp extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ramUsage.getData().add(new XYChart.Data<>(System.currentTimeMillis() - startTime, ramUsageP));
+                ramUsage.getData().add(new XYChart.Data<>((System.currentTimeMillis() - startTime)/1000, ramUsageP/1024));
             }
         });
     }

@@ -17,4 +17,9 @@ public interface IVisualization {
      * Pushes a new state to be rendered
      */
     void pushState(IScheduler.SchedulerState newState);
+
+    /**
+     * Pushes updated system resource usage information for graphs
+     */
+    void pushStats(double ramUsage, double cpuUsage);
 }

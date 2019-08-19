@@ -66,5 +66,8 @@ public class UIOrchestrator implements Runnable {
         logger.info(watchedScheduler.getCurrentState().toString());
         visualization.pushState(watchedScheduler.getCurrentState());
         visualization.pushSchedule(watchedScheduler.getCurrentSchedule());
+
+        Runtime runtime = Runtime.getRuntime();
+        visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), 0);
     }
 }

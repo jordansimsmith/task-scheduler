@@ -54,4 +54,14 @@ public class PanelVisualization implements  IVisualization {
         }
     }
 
+    /**
+     * Pushes CPU/RAM usage information
+     */
+    @Override
+    public void pushStats(double ram, double cpu)   {
+        if (fxApp != null) {
+            fxApp.pushStats(ram, cpu);
+        }
+    }
+
 }
