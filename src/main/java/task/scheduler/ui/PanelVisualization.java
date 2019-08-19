@@ -11,7 +11,7 @@ public class PanelVisualization implements  IVisualization {
     private IGraph graph;
 
     // Encapsulated JavaFX app
-    PanelVisualisationFXApp fxApp;
+    private PanelVisualisationFXApp fxApp;
 
     /**
      * Graph to be visualised
