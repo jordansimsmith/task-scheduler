@@ -10,8 +10,9 @@ public interface IVisualization {
     /**
      * Pushes a new schedule to be rendered
      * @param schedule
+     * @param schedulesSearched
      */
-    void pushSchedule(ISchedule schedule);
+    void pushSchedule(ISchedule schedule, int schedulesSearched);
 
     /**
      * Pushes a new state to be rendered

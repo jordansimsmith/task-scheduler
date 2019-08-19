@@ -36,11 +36,12 @@ public class PanelVisualization implements  IVisualization {
      * Pushes a new schedule to be rendered
      *
      * @param schedule
+     * @param schedulesSearched
      */
     @Override
-    public void pushSchedule(ISchedule schedule) {
+    public void pushSchedule(ISchedule schedule, int schedulesSearched) {
         if (fxApp != null && schedule != null)  {
-            fxApp.pushSchedule(graph, schedule);
+            fxApp.pushSchedule(graph, schedule, schedulesSearched);
         }
     }
 

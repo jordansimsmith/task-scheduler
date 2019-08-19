@@ -63,9 +63,8 @@ public class UIOrchestrator implements Runnable {
      * Polls execution thread(s) for information, and provides to UI
      */
     private void businessLogic() {
-        logger.info(watchedScheduler.getCurrentState().toString());
         visualization.pushState(watchedScheduler.getCurrentState());
-        visualization.pushSchedule(watchedScheduler.getCurrentSchedule());
+        visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
 
         Runtime runtime = Runtime.getRuntime();
         visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), 0);

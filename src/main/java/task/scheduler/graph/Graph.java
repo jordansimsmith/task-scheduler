@@ -1,5 +1,6 @@
 package task.scheduler.graph;
 
+import task.scheduler.common.Config;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
@@ -107,5 +108,24 @@ public class Graph implements IGraph {
     @Override
     public int getNodeCount() {
         return nodes.size();
+    }
+
+    /**
+     * Log of the upper bound on the number of potential schedules
+     * Does the arithmetic in log (log(a*b) = log(a) + log(b) to avoid dealing with really large numbers
+     * @return
+     */
+    @Override
+    public double getSchedulesUpperBoundLog() {
+        double P = Config.getInstance().getNumberOfCores();
+        int n = nodes.size();
+        double nFactorialLog = 0;
+
+        while (n > 0)   {
+            nFactorialLog +=  Math.log(n);
+            n--;
+        }
+
+        return Math.log(Math.pow(P, nodes.size())) + nFactorialLog;
     }
 }

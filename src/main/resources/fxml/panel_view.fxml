@@ -28,7 +28,7 @@
             <AnchorPane id="schedule_preview" prefHeight="200.0" prefWidth="200.0" />
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                <top>
-                  <Label text="Progress" BorderPane.alignment="CENTER">
+                  <Label text="Progress - Log Scale on States Searched vs Upper Bound" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </BorderPane.margin>

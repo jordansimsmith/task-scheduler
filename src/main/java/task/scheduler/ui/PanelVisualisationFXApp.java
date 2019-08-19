@@ -25,6 +25,13 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Encapsulates a JavaFX application that can be accessed after its creation
+ *
+ * Panel Visualisation visualises several components.
+ *  - The input graph
+ *  - Schedules
+ *  - A progress bar (log)
+ *  - CPU usage
+ *  - RAM usage
  */
 public class PanelVisualisationFXApp extends Application {
     private static final CountDownLatch latch = new CountDownLatch(1);
@@ -38,6 +45,8 @@ public class PanelVisualisationFXApp extends Application {
     private Parent root;
     private SchedulingVisualizationAdapter scheduleVisualization;
     private InputGraphGenerator inputGraphGenerator;
+    private ProgressBar progressBar;
+
     // Used to check if we should launch input graphing process when we get a graph
     private boolean startingInputGen;
 
@@ -69,12 +78,13 @@ public class PanelVisualisationFXApp extends Application {
     }
 
     /**
-     * Pushes an updated schedule to be rendered
+     * Pushes an updated schedule to be rendered, with progress information
      * Also renders graph the first time it is made available
      * @param graph
      * @param schedule
+     * @param schedulesSearched
      */
-    protected void pushSchedule(IGraph graph, ISchedule schedule)  {
+    protected void pushSchedule(IGraph graph, ISchedule schedule, int schedulesSearched)  {
         if (scheduleVisualization != null)  {
             scheduleVisualization.populateVisual(graph, schedule);
         }
@@ -88,6 +98,16 @@ public class PanelVisualisationFXApp extends Application {
                 }
             });
         }
+
+        // Progress estimate is calculated using log, due to the fact most search space will never be visited
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(graph.getSchedulesUpperBoundLog());
+                System.out.println(Math.log(schedulesSearched));
+                progressBar.setProgress((Math.log(schedulesSearched))/graph.getSchedulesUpperBoundLog());
+            }
+        });
     }
 
     /**
@@ -170,7 +190,7 @@ public class PanelVisualisationFXApp extends Application {
      * Bounds to appropriate size
      */
     private void setUpProgressBar(Parent root)  {
-        ProgressBar progressBar = (ProgressBar) root.lookup("#progress_bar");
+        progressBar = (ProgressBar) root.lookup("#progress_bar");
 
         progressBar.prefWidthProperty().bind(((BorderPane) progressBar.getParent()).widthProperty().multiply(0.8));
     }
