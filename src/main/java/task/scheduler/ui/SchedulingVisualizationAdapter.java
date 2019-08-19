@@ -154,7 +154,7 @@ public class SchedulingVisualizationAdapter {
     }
 
     /**
-     * Helper method helps piCk a random colour specified in the css stylesheet file
+     * Helper method helps pick a random colour specified in the css stylesheet file
      */
     public String pickColour(int pVal) {
         String[] colours = {"status-blueish", "status-greenish", "status-pinkish", "status-orangish"};
