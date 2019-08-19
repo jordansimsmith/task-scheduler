@@ -1,6 +1,5 @@
 package task.scheduler.ui;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import javafx.application.Platform;
 import javafx.scene.chart.*;
 import javafx.scene.paint.Color;
@@ -9,8 +8,6 @@ import task.scheduler.common.Tuple;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
-
-import java.io.File;
 import java.util.*;
 
 /**
@@ -28,7 +25,6 @@ public class SchedulingVisualizationAdapter {
     private Map<INode, VisualNode> nodeMap = new HashMap<>();
     private INode currentSelectedNode;
     private Map<Integer, Integer> shadePicker = new HashMap<>();
-
 
 
     private SchedulingVisualizationAdapter() {
@@ -65,7 +61,7 @@ public class SchedulingVisualizationAdapter {
         //Setting colours on the nodes
         ArrayList<VisualNode> visualNodesList = new ArrayList<>(nodeMap.values());
         Collections.sort(visualNodesList);
-        for (VisualNode visualNode : visualNodesList){
+        for (VisualNode visualNode : visualNodesList) {
             //Adding nodes to the series that is added the chart
             Platform.runLater(() -> {
                 SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(visualNode);
@@ -102,7 +98,7 @@ public class SchedulingVisualizationAdapter {
         clearPreviousSelection(graph, schedule);
 
         //Only highlight if node has not been selected otherwise the map is cleared
-        if (node != currentSelectedNode){
+        if (node != currentSelectedNode) {
             currentSelectedNode = node;
             //Only one item can be selected
             node.setSelected(true);
@@ -211,7 +207,7 @@ public class SchedulingVisualizationAdapter {
             Platform.runLater(() -> s.getData().clear());
         }
         //Clearing shade array
-        for (Integer i : shadePicker.keySet()){
+        for (Integer i : shadePicker.keySet()) {
             shadePicker.put(i, 0);
         }
     }
