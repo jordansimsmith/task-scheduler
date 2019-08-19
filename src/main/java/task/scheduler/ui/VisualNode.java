@@ -8,10 +8,12 @@ import java.util.Map;
  * VisualNode implements INode and it is a wrapper class for INode with added information that allows it to keep state
  * on the chart
  */
-public class VisualNode implements INode {
+public class VisualNode implements Comparable<VisualNode>, INode  {
     private INode node;
     private String colour;
     private boolean selected, parent, child;
+    private int startPos;
+    private int scheduledProcessor;
 
     public VisualNode(INode node) {
         this.node = node;
@@ -102,5 +104,27 @@ public class VisualNode implements INode {
 
     public boolean isChild() {
         return child;
+    }
+
+    public int getStartPos() {
+        return startPos;
+    }
+
+    public void setStartPos(int startPos) {
+        this.startPos = startPos;
+    }
+
+    public int getScheduledProcessor() {
+        return scheduledProcessor;
+    }
+
+    public void setScheduledProcessor(int scheduledProcessor) {
+        this.scheduledProcessor = scheduledProcessor;
+    }
+
+    @Override
+    public int compareTo(VisualNode o) {
+        return Integer.compare(this.startPos, o.startPos);
+
     }
 }

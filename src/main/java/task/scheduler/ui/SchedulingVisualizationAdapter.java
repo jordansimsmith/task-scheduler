@@ -1,5 +1,6 @@
 package task.scheduler.ui;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import javafx.application.Platform;
 import javafx.scene.chart.*;
 import javafx.scene.paint.Color;
@@ -10,9 +11,7 @@ import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Class SchedulingVisualizationAdapter is used to create, generate and update a Gantt Chart that is used to job visualization
@@ -28,7 +27,8 @@ public class SchedulingVisualizationAdapter {
     private Map<Integer, XYChart.Series> seriesMap = new HashMap<>();
     private Map<INode, VisualNode> nodeMap = new HashMap<>();
     private INode currentSelectedNode;
-    private int[] shadePicker = {0, 0, 0, 0};
+    private Map<Integer, Integer> shadePicker = new HashMap<>();
+
 
 
     private SchedulingVisualizationAdapter() {
@@ -49,26 +49,32 @@ public class SchedulingVisualizationAdapter {
     public void populateVisual(IGraph graph, ISchedule schedule) {
         clearSeriesList();
 
+        //Loop to add any new nodes to the graph or set new starting position or the node
         for (INode node : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(node);
             if (nodeSchedule != null) {
-
                 if (nodeMap.get(node) == null) {
                     nodeMap.put(node, new VisualNode(node));
-                    setColor(node, nodeSchedule.y);
                 }
-
-                Platform.runLater(() -> {
-                    SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(nodeMap.get(node));
-                    XYChart.Series series = seriesMap.get(nodeSchedule.y);
-                    XYChart.Data data = new XYChart.Data(nodeSchedule.x, "P" + nodeSchedule.y, s);
-
-                    series.getData().add(data);
-                    data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, node, schedule, data));
-                });
-
+                nodeMap.get(node).setStartPos(nodeSchedule.x);
+                nodeMap.get(node).setScheduledProcessor(nodeSchedule.y);
             }
 
+        }
+
+        //Setting colours on the nodes
+        ArrayList<VisualNode> visualNodesList = new ArrayList<>(nodeMap.values());
+        Collections.sort(visualNodesList);
+        for (VisualNode visualNode : visualNodesList){
+            //Adding nodes to the series that is added the chart
+            Platform.runLater(() -> {
+                SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(visualNode);
+                XYChart.Series series = seriesMap.get(visualNode.getScheduledProcessor());
+                XYChart.Data data = new XYChart.Data(visualNode.getStartPos(), "P" + visualNode.getScheduledProcessor(), s);
+                series.getData().add(data);
+                data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, visualNode.getNode(), schedule, data));
+                setColor(visualNode.getNode(), visualNode.getScheduledProcessor());
+            });
         }
 
     }
@@ -93,13 +99,20 @@ public class SchedulingVisualizationAdapter {
      * Sets onClickListener for when a scheduled box is clicked.
      */
     private void setSelectionListenerAction(IGraph graph, INode node, ISchedule schedule, XYChart.Data data) {
-        currentSelectedNode = node;
-        //Only one item can be selected
         clearPreviousSelection(graph, schedule);
-        nodeMap.get(node).setSelected(true);
-        changeParentAndChildNodeColour(graph, node, schedule, data);
 
+        //Only highlight if node has not been selected otherwise the map is cleared
+        if (node != currentSelectedNode){
+            currentSelectedNode = node;
+            //Only one item can be selected
+            nodeMap.get(node).setSelected(true);
+            changeParentAndChildNodeColour(graph, node, schedule, data);
+
+        } else {
+            currentSelectedNode = null;
+        }
         populateVisual(graph, schedule);
+
 
     }
 
@@ -111,10 +124,10 @@ public class SchedulingVisualizationAdapter {
         for (INode curNode : graph.getNodes()) {
             Tuple<Integer, Integer> nodeSchedule = schedule.getNodeSchedule(curNode);
             if (nodeSchedule != null && nodeMap.get(curNode) != null) {
-                if (node.getParents().keySet().contains(curNode)) {
+                if (node.getParents().containsKey(curNode)) {
                     //Setting the colour for parent node
                     nodeMap.get(curNode).setParent(true);
-                } else if (node.getChildren().keySet().contains(curNode)) {
+                } else if (node.getChildren().containsKey(curNode)) {
                     //Setting the colour for child node
                     nodeMap.get(curNode).setChild(true);
                 }
@@ -144,10 +157,10 @@ public class SchedulingVisualizationAdapter {
      * Helper method helps pink a random colour specified in the css stylesheet file
      */
     public String pickColour(int pVal) {
-        String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish"};
+        String[] colours = {"status-blueish", "status-greenish", "status-pinkish", "status-orangish"};
         //As there are 6 shades of each colour
-        int shade = (shadePicker[pVal % 4] % 6) + 1;
-        shadePicker[pVal % 4]++;
+        int shade = (shadePicker.get(pVal) % 6) + 1;
+        shadePicker.put(pVal, shadePicker.get(pVal) + 1);
         return colours[pVal % 4] + shade;
     }
 
@@ -180,6 +193,7 @@ public class SchedulingVisualizationAdapter {
         for (int p = 1; p <= Config.getInstance().getNumberOfCores(); p++) {
             final XYChart.Series series = new XYChart.Series();
             seriesMap.put(p, series);
+            shadePicker.put(p, 0);
         }
 
         for (XYChart.Series s : seriesMap.values()) {
@@ -195,6 +209,10 @@ public class SchedulingVisualizationAdapter {
     private void clearSeriesList() {
         for (XYChart.Series s : seriesMap.values()) {
             Platform.runLater(() -> s.getData().clear());
+        }
+        //Clearing shade array
+        for (Integer i : shadePicker.keySet()){
+            shadePicker.put(i, 0);
         }
     }
 }
