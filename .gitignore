@@ -31,3 +31,6 @@ target/
 
 # file used for building dependency reduced jar
 dependency-reduced-pom.xml
+
+# ignore images created by graphviz
+.tmp/
