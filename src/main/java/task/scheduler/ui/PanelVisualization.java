@@ -3,6 +3,7 @@ package task.scheduler.ui;
 import javafx.application.Application;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
 
 /**
  * Visualization of several panels as designed during planning
@@ -31,11 +32,33 @@ public class PanelVisualization implements  IVisualization {
      * Pushes a new schedule to be rendered
      *
      * @param schedule
+     * @param schedulesSearched
      */
     @Override
-    public void pushSchedule(ISchedule schedule) {
+    public void pushSchedule(ISchedule schedule, int schedulesSearched) {
         if (fxApp != null && schedule != null)  {
-            fxApp.pushSchedule(graph, schedule);
+            fxApp.pushSchedule(graph, schedule, schedulesSearched);
         }
     }
+
+    /**
+     * Pushes a new state to be rendered
+     */
+    @Override
+    public void pushState(IScheduler.SchedulerState newState) {
+        if (fxApp != null) {
+            fxApp.pushState(newState);
+        }
+    }
+
+    /**
+     * Pushes CPU/RAM usage information
+     */
+    @Override
+    public void pushStats(double ram, double cpu)   {
+        if (fxApp != null) {
+            fxApp.pushStats(ram, cpu);
+        }
+    }
+
 }
