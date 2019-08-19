@@ -7,57 +7,53 @@ import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
+ * SchedulingVisualization overrides XYChart to enable Gantt Chart type scheduling
  * Based on the example provided here https://stackoverflow.com/questions/27975898/gantt-chart-from-scratch
  *
  * @param <X>
  * @param <Y>
  */
 public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
-    private double nodeHeight = 10;
+    private double nodeHeight = 5;
 
     public static class DetailedInformation {
-        private int length;
-        private String styleSheet;
-        private String label;
+        private VisualNode visualNode;
 
-        public DetailedInformation(int length, String styleSheet, String label) {
+        public DetailedInformation(VisualNode visualNode) {
             super();
-            this.length = length;
-            this.styleSheet = styleSheet;
-            this.label = label;
+            this.visualNode = visualNode;
         }
 
         public int getLength() {
-            return length;
-        }
-
-        public void setLength(int length) {
-            this.length = length;
+            return visualNode.getProcessingCost();
         }
 
         public String getStyleSheet() {
-            return styleSheet;
+            return visualNode.getColour();
         }
 
         public void setStyleSheet(String styleSheet) {
-            this.styleSheet = styleSheet;
+            this.visualNode.setColour(styleSheet);
         }
 
         public String getLabel() {
-            return label;
+            return visualNode.getLabel();
         }
 
-        public void setLabel(String label) {
-            this.label = label;
+        public VisualNode getVisualNode() {
+            return this.visualNode;
         }
     }
 
@@ -85,7 +81,6 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
     @Override
     protected void dataItemChanged(Data<X, Y> data) {
-
     }
 
     @Override
@@ -111,6 +106,7 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
 
         for (Series<X, Y> currentSeries : getData()) {
 
+
             Iterator<Data<X, Y>> iterator = getDisplayedDataIterator(currentSeries);
 
             while (iterator.hasNext()) {
@@ -120,36 +116,33 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                 if (Double.isNaN(x) || Double.isNaN(y)) {
                     continue;
                 }
-                Rectangle shape;
+                Rectangle rectangle;
                 Node node = dataItem.getNode();
 
                 if (node != null) {
                     if (node instanceof StackPane) {
-                        StackPane rectangle = (StackPane) dataItem.getNode();
+                        StackPane shape = (StackPane) dataItem.getNode();
 
-                        if (rectangle.getShape() instanceof Rectangle) {
-                            shape = (Rectangle) rectangle.getShape();
-                        } else if (rectangle.getShape() == null) {
-                            shape = new Rectangle(getLength((dataItem.getExtraValue())), nodeHeight);
+                        if (shape.getShape() instanceof Rectangle) {
+                            rectangle = (Rectangle) shape.getShape();
+                        } else if (shape.getShape() == null) {
+                            rectangle = new Rectangle(getLength((dataItem.getExtraValue())), nodeHeight);
                         } else {
                             return;
                         }
 
-                        shape.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
-                        shape.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
+                        rectangle.setWidth((getLength(dataItem.getExtraValue())) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
+                        rectangle.setHeight(nodeHeight * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
                         y -= nodeHeight / 2.0;
 
-                        Text text = new Text(getLabel(dataItem.getExtraValue()));
+                        VBox labels = setUpLabels(dataItem, shape);
 
-                        rectangle.setShape(shape);
+                        shape.setShape(rectangle);
 
-                        rectangle.setAlignment(Pos.CENTER);
-                        rectangle.getChildren().add(text);
-
-
-                        rectangle.setScaleShape(false);
-
-                        rectangle.setCacheShape(false);
+                        shape.setAlignment(Pos.CENTER);
+                        shape.getChildren().add(labels);
+                        shape.setScaleShape(false);
+                        shape.setCacheShape(false);
 
                         node.translateXProperty().setValue((getLength(dataItem.getExtraValue()) / 2.0) * ((getXAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getXAxis()).getScale()) : 1));
                         node.translateYProperty().setValue((nodeHeight) / 2.0 * ((getYAxis() instanceof NumberAxis) ? Math.abs(((NumberAxis) getYAxis()).getScale()) : 1));
@@ -160,6 +153,40 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
                 }
             }
         }
+    }
+
+
+    private VBox setUpLabels(Data<X, Y> dataItem, StackPane pane) {
+        Text text = new Text(getLabel(dataItem.getExtraValue()));
+        text.setTextAlignment(TextAlignment.CENTER);
+        text.setFontSmoothingType(FontSmoothingType.LCD);
+        VBox vBox = new VBox(text);
+        VisualNode visualNode = getVisualNode(dataItem.getExtraValue());
+
+        if (visualNode.isParent()) {
+            Text identifier = new Text("Parent");
+            setTextProperties(identifier, vBox, pane, text);
+        } else if (visualNode.isChild()) {
+            Text identifier = new Text("Child");
+            setTextProperties(identifier, vBox, pane, text);
+
+        } else if (visualNode.isSelected()) {
+            Text identifier = new Text("Selected");
+            setTextProperties(identifier, vBox, pane, text);
+
+        }
+        vBox.setAlignment(Pos.CENTER);
+        return vBox;
+    }
+
+    private VBox setTextProperties(Text identifier, VBox vBox, StackPane pane, Text text) {
+        identifier.setTextAlignment(TextAlignment.CENTER);
+        text.setFill(Color.WHITE);
+        identifier.setFill(Color.WHITE);
+        identifier.setFontSmoothingType(FontSmoothingType.LCD);
+        vBox.getChildren().add(identifier);
+        pane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DOTTED, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        return vBox;
     }
 
     @Override
@@ -192,18 +219,41 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         }
     }
 
+    /**
+     * Method takes an ExtraData object from chart and returns the length information for a scheduled node
+     */
     private static int getLength(Object o) {
         return ((DetailedInformation) o).getLength();
     }
 
+    /**
+     * Method takes an ExtraData object from chart and returns the label information for a scheduled node
+     */
     private static String getLabel(Object o) {
         return ((DetailedInformation) o).getLabel();
     }
 
+    /**
+     * Method takes an ExtraData object from chart and returns the style information for a scheduled node
+     */
     private static String getStyleClass(Object obj) {
         return ((SchedulingVisualization.DetailedInformation) obj).getStyleSheet();
     }
 
+    /**
+     * Method takes an ExtraData object from chart and returns the visual node for a scheduled node
+     */
+    private static VisualNode getVisualNode(Object obj) {
+        return ((SchedulingVisualization.DetailedInformation) obj).getVisualNode();
+    }
+
+    private static void setStyleClass(Object obj, String styleClass) {
+        ((SchedulingVisualization.DetailedInformation) obj).setStyleSheet(styleClass);
+    }
+
+    /**
+     * Creates a new node that gets added to the chart getting generated
+     */
     private Node createNodeVisual(Data<X, Y> data) {
 
         Node container = data.getNode();
@@ -217,6 +267,11 @@ public class SchedulingVisualization<X, Y> extends XYChart<X, Y> {
         return container;
     }
 
+    /**
+     * Sets the height of the node block that gets displayed
+     *
+     * @param blockHeight
+     */
     public void setBlockHeight(double blockHeight) {
         this.nodeHeight = blockHeight;
     }
