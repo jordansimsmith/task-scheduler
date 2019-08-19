@@ -1,5 +1,6 @@
 package task.scheduler.ui;
 
+import javafx.application.Application;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
@@ -22,12 +23,7 @@ public class PanelVisualization implements  IVisualization {
         this.graph = graph;
         fxApp = null;
 
-        new Thread()    {
-            @Override
-            public void run()   {
-                javafx.application.Application.launch(PanelVisualisationFXApp.class);
-            }
-        }.start();
+        new Thread(() -> Application.launch(PanelVisualisationFXApp.class)).start();
 
         fxApp = PanelVisualisationFXApp.waitForInit();
     }
