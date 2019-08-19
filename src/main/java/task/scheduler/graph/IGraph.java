@@ -28,4 +28,10 @@ public interface IGraph {
      * @return an int for the number of nodes.
      */
     int getNodeCount();
+
+    /**
+     * Returns the theoretical upper bound on the number of schedules that could be searched for this graph
+     * @return logged double of the result
+     */
+    double getSchedulesUpperBoundLog();
 }
