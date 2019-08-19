@@ -153,6 +153,7 @@ public class PanelVisualisationFXApp extends Application {
         yAxis.setLabel(" RAM Usage (MByte) ");
 
         LineChart<Number, Number> RAMChart = new LineChart<>(xAxis, yAxis);
+        RAMChart.setLegendVisible(false);
 
         ramUsage = new XYChart.Series<>();
         RAMChart.getData().add(ramUsage);
@@ -161,6 +162,7 @@ public class PanelVisualisationFXApp extends Application {
         ramWindow.getChildren().add(RAMChart);
 
         RAMChart.prefWidthProperty().bind(ramWindow.widthProperty());
+        RAMChart.prefHeightProperty().bind(ramWindow.heightProperty());
     }
 
     /**
