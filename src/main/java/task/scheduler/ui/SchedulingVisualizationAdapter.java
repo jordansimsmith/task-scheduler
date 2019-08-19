@@ -145,8 +145,7 @@ public class SchedulingVisualizationAdapter {
      */
     public String pickColour(int pVal) {
         String[] colours = {"status-greenish", "status-blueish", "status-pinkish", "status-orangish"};
-        //As there are 7 shades of each colour
-        Random rand = new Random();
+        //As there are 6 shades of each colour
         int shade = (shadePicker[pVal % 4] % 6) + 1;
         shadePicker[pVal % 4]++;
         return colours[pVal % 4] + shade;

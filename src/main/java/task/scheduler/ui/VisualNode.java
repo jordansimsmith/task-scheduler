@@ -9,9 +9,9 @@ import java.util.Map;
  * on the chart
  */
 public class VisualNode implements INode {
-    INode node;
-    String colour;
-    boolean selected, parent, child;
+    private INode node;
+    private String colour;
+    private boolean selected, parent, child;
 
     public VisualNode(INode node) {
         this.node = node;
