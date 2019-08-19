@@ -41,8 +41,9 @@ public class PanelVisualisationFXApp extends Application {
     // Used to check if we should launch input graphing process when we get a graph
     private boolean startingInputGen;
 
+    // Ram measurement graph and starting time for measurements
     private XYChart.Series<Number, Number> ramUsage;
-    private double startTime;
+    private double ramStartTime;
 
     /**
      * Waits until the JavaFX application is ready, then returns the app
@@ -109,7 +110,10 @@ public class PanelVisualisationFXApp extends Application {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                ramUsage.getData().add(new XYChart.Data<>((System.currentTimeMillis() - startTime)/1000, ramUsageP/ (1024*1024)));
+                if (ramStartTime < 1)   {
+                    ramStartTime = System.currentTimeMillis();
+                }
+                ramUsage.getData().add(new XYChart.Data<>((System.currentTimeMillis() - ramStartTime)/1000, ramUsageP/ (1024*1024)));
             }
         });
     }
@@ -150,7 +154,6 @@ public class PanelVisualisationFXApp extends Application {
 
         LineChart<Number, Number> RAMChart = new LineChart<>(xAxis, yAxis);
 
-        startTime = System.currentTimeMillis();
         ramUsage = new XYChart.Series<>();
         RAMChart.getData().add(ramUsage);
 
