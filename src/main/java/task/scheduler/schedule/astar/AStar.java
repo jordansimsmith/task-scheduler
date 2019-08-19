@@ -36,15 +36,15 @@ public class AStar implements IScheduler {
         Set<String> closed = new HashSet<>();
 
         open.add(new AStarSchedule(graph.getStartNodes(), getParentCountMap(graph)));
-        int searchCount = 0;
 
         while (!open.isEmpty()) {
             AStarSchedule s = open.peek();
             open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
-                logger.info(searchCount + " states searched");
+                logger.info(this.schedulesSearched + " states searched");
                 state = SchedulerState.FINISHED;
+                currentSchedule = s;
                 return s; // optimal schedule found
             }
 
