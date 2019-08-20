@@ -1,5 +1,6 @@
 package task.scheduler.ui;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.Chart;
@@ -10,7 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import task.scheduler.App;
 import task.scheduler.common.Config;
@@ -22,8 +22,6 @@ import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
 public class FXController implements Initializable, IVisualization {
-    @FXML
-    private VBox root;
 
     @FXML
     private Pane inputGraphPane;
@@ -50,34 +48,41 @@ public class FXController implements Initializable, IVisualization {
 
     @Override
     public void pushSchedule(ISchedule schedule, int schedulesSearched) {
-        // update partial schedule displayed
-        if (schedule != null) {
-            this.scheduleVisualiser.populateVisual(App.input, schedule);
-        }
+        Platform.runLater(() -> {
+            if (schedule != null) {
+                // update partial schedule displayed
+                this.scheduleVisualiser.populateVisual(App.input, schedule);
 
-        // update progress bar
-        this.progressBar.setProgress(Math.log(schedulesSearched) / App.input.getSchedulesUpperBoundLog());
+                // update current cost label
+                this.currentCostLabel.setText(String.valueOf(schedule.getTotalCost()));
+            }
 
-        // update current cost label
-        this.currentCostLabel.setText(String.valueOf(schedulesSearched));
+            // update progress bar
+            this.progressBar.setProgress(Math.log(schedulesSearched) / App.input.getSchedulesUpperBoundLog());
+
+        });
     }
 
     @Override
     public void pushState(IScheduler.SchedulerState newState) {
         // update scheduler state and set title
-        this.schedulerState = newState;
-        Stage stage = (Stage) this.root.getScene().getWindow();
-        stage.setTitle(getTitle());
+        Platform.runLater(() -> {
+            this.schedulerState = newState;
+            Stage stage = (Stage) this.outputGraphPane.getScene().getWindow();
+            stage.setTitle(getTitle());
+        });
     }
 
     @Override
     public void pushStats(double ramUsage, double cpuUsage) {
         // update memory graph
-        if (this.memoryStartTime < 1) {
-            memoryStartTime = System.currentTimeMillis();
-        }
-        double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
-        this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
+        Platform.runLater(() -> {
+            if (this.memoryStartTime < 1) {
+                memoryStartTime = System.currentTimeMillis();
+            }
+            double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
+            this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
+        });
     }
 
     @Override
@@ -106,6 +111,8 @@ public class FXController implements Initializable, IVisualization {
         inputGraph.fitWidthProperty().bind(this.inputGraphPane.widthProperty());
         inputGraph.fitHeightProperty().bind(this.inputGraphPane.heightProperty());
 
+        // set up orchestrator to poll model for updates
+        new Thread(new UIOrchestrator(App.scheduler, this, 1000)).start();
     }
 
     private String getTitle() {

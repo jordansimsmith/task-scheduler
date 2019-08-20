@@ -25,6 +25,7 @@ import java.io.IOException;
 public class App extends Application {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
     public static IGraph input; // TODO: share this using better practice
+    public static IScheduler scheduler;
 
     public static void main(String[] args) {
         logger.info("Task Scheduler starting.");
@@ -71,7 +72,7 @@ public class App extends Application {
 
         // Get scheduler
         SchedulerFactory factory = new SchedulerFactory();
-        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
 
 
         // Start visuals
