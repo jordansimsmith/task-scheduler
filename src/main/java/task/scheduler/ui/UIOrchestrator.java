@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import task.scheduler.App;
 import task.scheduler.graph.IGraph;
+import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 /**
@@ -56,6 +57,10 @@ public class UIOrchestrator implements Runnable {
                 break;
             }
 
+            IScheduler.SchedulerState currentState = this.watchedScheduler.getCurrentState();
+            if (currentState == IScheduler.SchedulerState.STOPPED || currentState == IScheduler.SchedulerState.FINISHED) {
+                break;
+            }
         }
     }
 
