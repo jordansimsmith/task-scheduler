@@ -18,14 +18,16 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
+import task.scheduler.ui.FXController;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class App extends Application {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
-    public static IGraph input; // TODO: share this using better practice
-    public static IScheduler scheduler;
+
+    private static IGraph graph;
+    private static IScheduler scheduler;
 
     public static void main(String[] args) {
         logger.info("Task Scheduler starting.");
@@ -50,7 +52,7 @@ public class App extends Application {
 
         // parse input file
         try {
-            input = new Graph(config.getInputFile());
+            graph = new Graph(config.getInputFile());
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -63,7 +65,7 @@ public class App extends Application {
         // validation
         InputValidator validator = new InputValidator();
         try {
-            validator.validateGraph(input);
+            validator.validateGraph(graph);
         } catch (GraphException e) {
             logger.error("Validation failure. Check your graph!");
             e.printStackTrace();
@@ -83,7 +85,7 @@ public class App extends Application {
         // Execute
         logger.info("Starting ...");
         long time = System.currentTimeMillis();
-        ISchedule output = scheduler.execute(input);
+        ISchedule output = scheduler.execute(graph);
         long deltaTime = System.currentTimeMillis() - time;
         logger.info("... Finished");
         logger.info("In " + deltaTime + "ms");
@@ -91,7 +93,7 @@ public class App extends Application {
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
-            fileWriter.writeScheduledGraphToFile(input, output);
+            fileWriter.writeScheduledGraphToFile(graph, output);
         } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -102,9 +104,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/new_panel_view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/new_panel_view.fxml"));
+        FXController controller = new FXController(graph, scheduler);
+        loader.setController(controller);
         stage.setTitle("Task Scheduler");
-        stage.setScene(new Scene(root, 1280, 720));
+        stage.setScene(new Scene(loader.load(), 1280, 720));
         stage.show();
     }
 }
