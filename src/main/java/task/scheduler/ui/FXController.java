@@ -10,12 +10,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import task.scheduler.App;
+import task.scheduler.common.Config;
+import task.scheduler.schedule.ISchedule;
+import task.scheduler.schedule.IScheduler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.StringJoiner;
 
-public class FXController implements Initializable {
+public class FXController implements Initializable, IVisualization {
+    @FXML
+    private VBox root;
 
     @FXML
     private Pane inputGraphPane;
@@ -36,11 +44,45 @@ public class FXController implements Initializable {
     private Pane memoryPane;
 
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
+    private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
+    private IScheduler.SchedulerState schedulerState;
+    private double memoryStartTime;
+
+    @Override
+    public void pushSchedule(ISchedule schedule, int schedulesSearched) {
+        // update partial schedule displayed
+        if (schedule != null) {
+            this.scheduleVisualiser.populateVisual(App.input, schedule);
+        }
+
+        // update progress bar
+        this.progressBar.setProgress(Math.log(schedulesSearched) / App.input.getSchedulesUpperBoundLog());
+
+        // update current cost label
+        this.currentCostLabel.setText(String.valueOf(schedulesSearched));
+    }
+
+    @Override
+    public void pushState(IScheduler.SchedulerState newState) {
+        // update scheduler state and set title
+        this.schedulerState = newState;
+        Stage stage = (Stage) this.root.getScene().getWindow();
+        stage.setTitle(getTitle());
+    }
+
+    @Override
+    public void pushStats(double ramUsage, double cpuUsage) {
+        // update memory graph
+        if (this.memoryStartTime < 1) {
+            memoryStartTime = System.currentTimeMillis();
+        }
+        double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
+        this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // initialise schedule visualiser
-        SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
         Chart outputGraph = scheduleVisualiser.getChart();
         this.outputGraphPane.getChildren().add(outputGraph);
         outputGraph.prefWidthProperty().bind(this.outputGraphPane.widthProperty());
@@ -63,5 +105,17 @@ public class FXController implements Initializable {
         this.inputGraphPane.getChildren().add(inputGraph);
         inputGraph.fitWidthProperty().bind(this.inputGraphPane.widthProperty());
         inputGraph.fitHeightProperty().bind(this.inputGraphPane.heightProperty());
+
+    }
+
+    private String getTitle() {
+        StringJoiner joiner = new StringJoiner(" ");
+        joiner.add("Task Scheduler");
+        joiner.add("-");
+        joiner.add(Config.getInstance().getInputFile().getPath());
+        joiner.add("-");
+        joiner.add(this.schedulerState.toString());
+
+        return joiner.toString();
     }
 }

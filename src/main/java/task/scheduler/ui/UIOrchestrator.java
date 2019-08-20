@@ -12,7 +12,7 @@ import task.scheduler.schedule.IScheduler;
  * Stops in response to interruption
  */
 public class UIOrchestrator implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger logger = LoggerFactory.getLogger(UIOrchestrator.class);
 
     private IScheduler watchedScheduler;
     private int interval;
