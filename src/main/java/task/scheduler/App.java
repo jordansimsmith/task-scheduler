@@ -1,8 +1,16 @@
 package task.scheduler;
 
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.scheduler.common.*;
+import task.scheduler.common.ArgumentParser;
+import task.scheduler.common.Config;
+import task.scheduler.common.FileWriter;
+import task.scheduler.common.InputValidator;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
@@ -10,15 +18,13 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
-import task.scheduler.schedule.astar.AStar;
-import task.scheduler.ui.PanelVisualization;
-import task.scheduler.ui.UIOrchestrator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class App {
+public class App extends Application {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
+    public static IGraph input; // TODO: share this using better practice
 
     public static void main(String[] args) {
         logger.info("Task Scheduler starting.");
@@ -42,7 +48,6 @@ public class App {
         logger.info("The results will be saved to " + config.getOutputFile().getPath());
 
         // parse input file
-        IGraph input;
         try {
             input = new Graph(config.getInputFile());
         } catch (IOException e) {
@@ -70,10 +75,8 @@ public class App {
 
 
         // Start visuals
-        Thread ui = null;
-        if (config.isVisualise())   {
-            ui = new Thread(new UIOrchestrator(scheduler, new PanelVisualization(input), 1000));
-            ui.start();
+        if (config.isVisualise()) {
+            new Thread(() -> launch(args)).start();
         }
 
         // Execute
@@ -85,10 +88,6 @@ public class App {
         logger.info("In " + deltaTime + "ms");
         logger.info("Schedule cost: " + output.getTotalCost());
 
-        if (ui != null) {
-            ui.interrupt();
-        }
-
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {
             fileWriter.writeScheduledGraphToFile(input, output);
@@ -98,5 +97,13 @@ public class App {
         }
 
         logger.info("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/new_panel_view.fxml"));
+        stage.setTitle("Task Scheduler");
+        stage.setScene(new Scene(root, 1280, 720));
+        stage.show();
     }
 }
