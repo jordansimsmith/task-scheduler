@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
-import task.scheduler.schedule.ValidScheduler;
+import task.scheduler.schedule.valid.ValidScheduler;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;

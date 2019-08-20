@@ -1,5 +1,7 @@
 package task.scheduler.schedule.astar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
@@ -7,33 +9,30 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AStar implements IScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(AStar.class);
+
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static final List<INode> sortedNodes = new ArrayList<>();
+
+    private ISchedule currentSchedule;
+    private int schedulesSearched;
 
     public AStar() {
     }
 
     @Override
     public ISchedule execute(IGraph graph) {
-        totalNodeWeighting = getTotalNodeWeighting(graph);
-        Map<INode, Integer> parentCounter = new HashMap<>();
-
-        bottomLevelCache.clear();
-        for (INode node : graph.getNodes()) {
-            computeCriticalPath(node, graph);
-            parentCounter.put(node, node.getParents().size());
-        }
-
-        sortedNodes.clear();
-        graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
+        populateTotalNodeWeighting(graph);
+        populateBottomLevelCache(graph);
+        populateSortedNodes(graph);
 
         PriorityQueue<AStarSchedule> open = new PriorityQueue<>();
         Set<String> closed = new HashSet<>();
-        open.add(new AStarSchedule(graph.getStartNodes(), parentCounter));
+
+        open.add(new AStarSchedule(graph.getStartNodes(), getParentCountMap(graph)));
         int searchCount = 0;
 
         while (!open.isEmpty()) {
@@ -41,17 +40,20 @@ public class AStar implements IScheduler {
             open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
-                System.out.println(searchCount + " states searched");
+                logger.info(searchCount + " states searched");
                 return s; // optimal schedule found
             }
 
             for (INode node : s.getFree()) {
                 for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
                     AStarSchedule child = s.expand(node, i);
+
+                    // do not add duplicate states to the priority queue
                     if (!closed.contains(child.getScheduleString())) {
                         open.add(child);
                         closed.add(child.getScheduleString());
-                        searchCount++;
+                        this.schedulesSearched++;
+                        this.currentSchedule = child;
                     }
                 }
             }
@@ -59,15 +61,61 @@ public class AStar implements IScheduler {
         return null;
     }
 
-    private int getTotalNodeWeighting(IGraph graph) {
-        int totalNodeWeighting = 0;
+    /**
+     * Populates the sortedNodes field with all INodes of the given graph sorted according to their
+     * node label.
+     *
+     * @param graph of which to populate the sortedNodes field with
+     */
+    private void populateSortedNodes(IGraph graph) {
+        // the use of streams here is justified because it is only called once
+        graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
+    }
 
+    /**
+     * Returns a map of INode to a parent count Integer. The parent count Integer represents the
+     * remaining number of parents the INode has. The map contains this information for all INodes
+     * of the given IGraph.
+     *
+     * @param graph for which to calculate the parentCountMap
+     * @return a parentCountMap
+     */
+    private Map<INode, Integer> getParentCountMap(IGraph graph) {
+        Map<INode, Integer> parentCount = new HashMap<>();
+
+        for (INode node : graph.getNodes()) {
+            parentCount.put(node, node.getParents().size());
+        }
+        return parentCount;
+    }
+
+    /**
+     * Calculates and populates the totalNodeWeighting field with sum of the
+     * processing costs of the INodes in the given IGraph.
+     *
+     * @param graph of which to calculate the total node weighting
+     */
+    private void populateTotalNodeWeighting(IGraph graph) {
         for (INode node : graph.getNodes()) {
             totalNodeWeighting += node.getProcessingCost();
         }
-
-        return totalNodeWeighting;
     }
+
+
+    /**
+     * Populates the bottomLevelCache field using the given IGraph object. The bottomLevelCache
+     * is a map of all INodes of the graph to their bottom level Integer. The bottom level of an
+     * INode is the critical path from the INode.
+     *
+     * @param graph the IGraph of which to calculate the bottomLevelCache
+     */
+    private void populateBottomLevelCache(IGraph graph) {
+        bottomLevelCache.clear();
+        for (INode node : graph.getNodes()) {
+            computeCriticalPath(node, graph);
+        }
+    }
+
 
     /**
      * computeCriticalPath is used to compute the greatest cost path from the provided source node.
@@ -144,5 +192,13 @@ public class AStar implements IScheduler {
         stack.push(node);
     }
 
+    @Override
+    public ISchedule getCurrentSchedule() {
+        return this.currentSchedule;
+    }
 
+    @Override
+    public int getSchedulesSearched() {
+        return this.schedulesSearched;
+    }
 }
