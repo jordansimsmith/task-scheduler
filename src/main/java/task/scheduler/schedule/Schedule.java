@@ -18,7 +18,6 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
     private List<INode> free;
     private Map<INode, Tuple<Integer, Integer>> schedule;
     private Map<INode, Integer> parentCounter;
-    private Set<AStarSchedule> childStates;
 
     private int scheduledNodeCount;
 
@@ -49,9 +48,9 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
         Schedule s = new Schedule();
 
         int lastNodeStartTime = minStartTime(node, processor);
-        s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + SchedulerState.bottomLevelCache.get(node));
+        s.maxBottomLevelCost = Math.max(this.maxBottomLevelCost, lastNodeStartTime + SchedulerCache.bottomLevelCache.get(node));
         s.idleTime = this.idleTime + lastNodeStartTime - this.earliestTimes[processor - 1];
-        s.idleTimeHeuristicValue = (s.idleTime + SchedulerState.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
+        s.idleTimeHeuristicValue = (s.idleTime + SchedulerCache.totalNodeWeighting) / Config.getInstance().getNumberOfCores();
 
         s.earliestTimes = this.earliestTimes.clone();
         s.earliestTimes[processor - 1] = lastNodeStartTime + node.getProcessingCost();
@@ -112,7 +111,7 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
      */
     private void populateScheduleString() {
         StringJoiner joiner = new StringJoiner(" ");
-        for (INode node : SchedulerState.sortedNodes) {
+        for (INode node : SchedulerCache.sortedNodes) {
             Tuple<Integer, Integer> nodeSchedule = this.schedule.get(node);
             if (nodeSchedule != null) {
                 joiner.add(node.getLabel() + " " + nodeSchedule.x);
@@ -165,17 +164,5 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
 
     public int getHeuristicValue() {
         return heuristicValue;
-    }
-
-    public Set<AStarSchedule> getChildStates() {
-        if(childStates == null) {
-            childStates = new HashSet<>();
-            for (INode node : getFree()){
-                for(int i = 1; i <= Config.getInstance().getNumberOfCores(); i++){
-                    childStates.add(expand(node, i));
-                }
-            }
-        }
-        return childStates;
     }
 }

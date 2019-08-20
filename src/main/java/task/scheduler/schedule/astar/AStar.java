@@ -14,10 +14,6 @@ import java.util.*;
 
 public class AStar implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(AStar.class);
-
-    public static int totalNodeWeighting;
-    public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
-    public static final List<INode> sortedNodes = new ArrayList<>();
     private static SchedulerState state = SchedulerState.NOT_STARTED;
 
     private ISchedule currentSchedule;

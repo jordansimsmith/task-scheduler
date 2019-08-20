@@ -13,9 +13,6 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
-import task.scheduler.schedule.astar.AStar;
-import task.scheduler.schedule.astar.IterativeDeepeningAStar;
-import task.scheduler.schedule.astar.IterativeDeepeningAStarTT;
 import task.scheduler.ui.PanelVisualization;
 import task.scheduler.ui.UIOrchestrator;
 
@@ -76,7 +73,7 @@ public class App {
         if (Config.getInstance().getNumberOfThreads() > 1) {
             scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
         } else {
-            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.IDASTAR_TT);
         }
 
         // Start visuals

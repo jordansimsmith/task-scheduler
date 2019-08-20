@@ -10,7 +10,7 @@ import java.util.*;
  * justified because these fields are used very frequently, and thus the overhead from getters/object instantiation
  * is removed.
  */
-public class SchedulerState {
+public class SchedulerCache {
     public static int totalNodeWeighting;
     public static Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static List<INode> sortedNodes = new ArrayList<>();
@@ -36,7 +36,7 @@ public class SchedulerState {
      */
     public static void populateSortedNodes(IGraph graph) {
         // the use of streams here is justified because it is only called once
-        bottomLevelCache.clear();
+        sortedNodes.clear();
         graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
     }
 

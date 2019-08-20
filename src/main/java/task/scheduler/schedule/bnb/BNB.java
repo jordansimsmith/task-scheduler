@@ -8,7 +8,7 @@ import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.Schedule;
-import task.scheduler.schedule.SchedulerState;
+import task.scheduler.schedule.SchedulerCache;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,9 +33,9 @@ public class BNB implements IScheduler {
     @Override
     public ISchedule execute(IGraph graph) {
         // populate global state
-        SchedulerState.populateTotalNodeWeighting(graph);
-        SchedulerState.populateSortedNodes(graph);
-        SchedulerState.populateBottomLevelCache(graph);
+        SchedulerCache.populateTotalNodeWeighting(graph);
+        SchedulerCache.populateSortedNodes(graph);
+        SchedulerCache.populateBottomLevelCache(graph);
 
         // initialise BNB DFS variables
         Stack<Schedule> stack = new Stack<>();
@@ -135,5 +135,10 @@ public class BNB implements IScheduler {
     public int getSchedulesSearched() {
         // gets the total amount of partial schedules processed
         return this.schedulesSearched;
+    }
+
+    @Override
+    public SchedulerState getCurrentState() {
+        return null;
     }
 }
