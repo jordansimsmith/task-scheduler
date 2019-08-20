@@ -48,6 +48,10 @@ public class Config {
         this.outputFile = outputFile;
     }
 
+    /**
+     * Number of cores to produce a schedule for
+     * @return
+     */
     public int getNumberOfCores() {
         return numberOfCores;
     }
@@ -56,6 +60,10 @@ public class Config {
         this.numberOfCores = numberOfCores;
     }
 
+    /**
+     * Number of threads to execute on
+     * @return
+     */
     public int getNumberOfThreads() {
         return numberOfThreads;
     }

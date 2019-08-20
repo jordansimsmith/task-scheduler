@@ -16,6 +16,7 @@ public class AStar implements IScheduler {
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static final List<INode> sortedNodes = new ArrayList<>();
+    private static SchedulerState state = SchedulerState.NOT_STARTED;
 
     private ISchedule currentSchedule;
     private int schedulesSearched;
@@ -25,6 +26,8 @@ public class AStar implements IScheduler {
 
     @Override
     public ISchedule execute(IGraph graph) {
+        state = SchedulerState.RUNNING;
+
         populateTotalNodeWeighting(graph);
         populateBottomLevelCache(graph);
         populateSortedNodes(graph);
@@ -33,14 +36,15 @@ public class AStar implements IScheduler {
         Set<String> closed = new HashSet<>();
 
         open.add(new AStarSchedule(graph.getStartNodes(), getParentCountMap(graph)));
-        int searchCount = 0;
 
         while (!open.isEmpty()) {
             AStarSchedule s = open.peek();
             open.remove(s);
 
             if (s.getScheduledNodeCount() == graph.getNodeCount()) {
-                logger.info(searchCount + " states searched");
+                logger.info(this.schedulesSearched + " states searched");
+                state = SchedulerState.FINISHED;
+                currentSchedule = s;
                 return s; // optimal schedule found
             }
 
@@ -58,35 +62,9 @@ public class AStar implements IScheduler {
                 }
             }
         }
+
+        state = SchedulerState.STOPPED;
         return null;
-    }
-
-    /**
-     * Populates the sortedNodes field with all INodes of the given graph sorted according to their
-     * node label.
-     *
-     * @param graph of which to populate the sortedNodes field with
-     */
-    private void populateSortedNodes(IGraph graph) {
-        // the use of streams here is justified because it is only called once
-        graph.getNodes().stream().sorted(Comparator.comparing(INode::getLabel)).forEachOrdered(sortedNodes::add);
-    }
-
-    /**
-     * Returns a map of INode to a parent count Integer. The parent count Integer represents the
-     * remaining number of parents the INode has. The map contains this information for all INodes
-     * of the given IGraph.
-     *
-     * @param graph for which to calculate the parentCountMap
-     * @return a parentCountMap
-     */
-    private Map<INode, Integer> getParentCountMap(IGraph graph) {
-        Map<INode, Integer> parentCount = new HashMap<>();
-
-        for (INode node : graph.getNodes()) {
-            parentCount.put(node, node.getParents().size());
-        }
-        return parentCount;
     }
 
     /**
@@ -190,6 +168,11 @@ public class AStar implements IScheduler {
         }
 
         stack.push(node);
+    }
+
+    @Override
+    public SchedulerState getCurrentState() {
+        return this.state;
     }
 
     @Override

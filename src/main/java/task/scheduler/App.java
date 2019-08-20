@@ -13,6 +13,8 @@ import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.schedule.astar.AStar;
 import task.scheduler.schedule.astar.IterativeDeepeningAStar;
 import task.scheduler.schedule.astar.IterativeDeepeningAStarTT;
+import task.scheduler.ui.PanelVisualization;
+import task.scheduler.ui.UIOrchestrator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,7 +66,19 @@ public class App {
             return;
         }
 
-        IScheduler scheduler = new IterativeDeepeningAStarTT();
+        // Get scheduler
+        SchedulerFactory factory = new SchedulerFactory();
+        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+
+
+        // Start visuals
+        Thread ui = null;
+        if (config.isVisualise())   {
+            ui = new Thread(new UIOrchestrator(scheduler, new PanelVisualization(input), 1000));
+            ui.start();
+        }
+
+        // Execute
         logger.info("Starting ...");
         long time = System.currentTimeMillis();
         ISchedule output = scheduler.execute(input);
@@ -72,6 +86,10 @@ public class App {
         logger.info("... Finished");
         logger.info("In " + deltaTime + "ms");
         logger.info("Schedule cost: " + output.getTotalCost());
+
+        if (ui != null) {
+            ui.interrupt();
+        }
 
         // write to output file - construction is long because dependency injection is needed
         try (FileWriter fileWriter = new FileWriter(new FileOutputStream(config.getOutputFile()))) {

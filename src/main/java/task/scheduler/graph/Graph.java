@@ -1,5 +1,7 @@
 package task.scheduler.graph;
 
+import task.scheduler.common.Config;
+import task.scheduler.common.Triplet;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
@@ -33,10 +35,19 @@ public class Graph implements IGraph {
 
         BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 
+        List<Triplet<String, String, Integer>> edges = new ArrayList<>();
         String line = reader.readLine();
         while (line != null) {
-            this.readDotFileLine(line);
+            this.readDotFileLine(line, edges);
             line = reader.readLine();
+        }
+
+        // Add dependencies to graph
+        for (Triplet<String, String, Integer> edge : edges)    {
+            Node dependent = getNodeByLabel(edge.x);
+            Node parent = getNodeByLabel(edge.y);
+
+            addDependency(parent, dependent, edge.z);
         }
 
         // Find start nodes
@@ -52,7 +63,7 @@ public class Graph implements IGraph {
         }
     }
 
-    private void readDotFileLine(String line) throws DotFormatException {
+    private void readDotFileLine(String line, List<Triplet<String, String, Integer>> edges) throws DotFormatException {
         line = line.replaceAll("\\s", "");
 
         if (line.startsWith("digraph")) {
@@ -69,10 +80,7 @@ public class Graph implements IGraph {
         // Find dependencies
         m = edgeMatcher.matcher(line);
         if (m.matches()) {
-            Node dependent = getNodeByLabel(m.group(2));
-            Node parent = getNodeByLabel(m.group(1));
-
-            addDependency(parent, dependent, Integer.parseInt(m.group(4)));
+            edges.add(new Triplet<String, String, Integer>(m.group(2), m.group(1), Integer.parseInt(m.group(4))));
         }
     }
 
@@ -107,5 +115,24 @@ public class Graph implements IGraph {
     @Override
     public int getNodeCount() {
         return nodes.size();
+    }
+
+    /**
+     * Log of the upper bound on the number of potential schedules
+     * Does the arithmetic in log (log(a*b) = log(a) + log(b) to avoid dealing with really large numbers
+     * @return
+     */
+    @Override
+    public double getSchedulesUpperBoundLog() {
+        double P = Config.getInstance().getNumberOfCores();
+        int n = nodes.size();
+        double nFactorialLog = 0;
+
+        while (n > 0)   {
+            nFactorialLog +=  Math.log(n);
+            n--;
+        }
+
+        return Math.log(Math.pow(P, nodes.size())) + nFactorialLog;
     }
 }
