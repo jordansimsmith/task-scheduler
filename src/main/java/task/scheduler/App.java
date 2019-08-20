@@ -2,7 +2,10 @@ package task.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.scheduler.common.*;
+import task.scheduler.common.ArgumentParser;
+import task.scheduler.common.Config;
+import task.scheduler.common.FileWriter;
+import task.scheduler.common.InputValidator;
 import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.GraphException;
 import task.scheduler.graph.Graph;
@@ -66,10 +69,15 @@ public class App {
             return;
         }
 
-        // Get scheduler
+        // construct scheduler
         SchedulerFactory factory = new SchedulerFactory();
-        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
-
+        IScheduler scheduler;
+        // multithreading
+        if (Config.getInstance().getNumberOfThreads() > 1) {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
+        } else {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        }
 
         // Start visuals
         Thread ui = null;
