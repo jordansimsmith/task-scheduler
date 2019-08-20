@@ -76,7 +76,6 @@ public class App extends Application {
         SchedulerFactory factory = new SchedulerFactory();
         scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
 
-
         // Start visuals
         if (config.isVisualise()) {
             new Thread(() -> launch(args)).start();
@@ -100,6 +99,9 @@ public class App extends Application {
         }
 
         logger.info("Schedule written to output file " + Config.getInstance().getOutputFile().getPath());
+        if (!Config.getInstance().isVisualise()) {
+            System.exit(0);
+        }
     }
 
     @Override

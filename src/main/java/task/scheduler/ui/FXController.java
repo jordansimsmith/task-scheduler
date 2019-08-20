@@ -111,6 +111,7 @@ public class FXController implements IVisualization, Initializable {
         memoryYAxis.setLabel("Memory Usage (Mb)");
         LineChart<Number, Number> memoryChart = new LineChart<>(memoryXAxis, memoryYAxis);
         memoryChart.getData().add(memoryUsageSeries);
+        memoryChart.setLegendVisible(false);
         this.memoryPane.getChildren().add(memoryChart);
         memoryChart.prefWidthProperty().bind(this.memoryPane.widthProperty());
         memoryChart.prefHeightProperty().bind(this.memoryPane.heightProperty());
