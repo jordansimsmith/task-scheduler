@@ -10,19 +10,22 @@ import task.scheduler.schedule.IScheduler;
 
 import java.util.*;
 
-public class IterativeDeepeningAStar implements IScheduler {
-    public static final List<INode> sortedNodes = new ArrayList<>();
+public class IterativeDeepeningAStarTT implements IScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(AStar.class);
 
     public static int totalNodeWeighting;
     public static final Map<INode, Integer> bottomLevelCache = new HashMap<>();
-    private static final Logger logger = LoggerFactory.getLogger(AStar.class);
+    public static final List<INode> sortedNodes = new ArrayList<>();
+    private static final int NOT_FOUND = -1;
     private static final int FOUND = -2;
     private IGraph graph;
     private int searchCount = 0;
+    private IterativeDeepeningAStarScheduleTT answer;
+    private Map<String, Integer> transpositionTable = new HashMap<>();
+
     private ISchedule currentSchedule;
     private int schedulesSearched;
-
-    public IterativeDeepeningAStar() {
+    public IterativeDeepeningAStarTT() {
     }
 
     @Override
@@ -33,20 +36,15 @@ public class IterativeDeepeningAStar implements IScheduler {
         this.graph = graph;
 
 
-        IterativeDeepeningAStarSchedule initialState = new IterativeDeepeningAStarSchedule(graph.getStartNodes(), getParentCountMap(graph));
+        IterativeDeepeningAStarScheduleTT initialState = new IterativeDeepeningAStarScheduleTT(graph.getStartNodes(), getParentCountMap(graph));
         int limit = initialState.getHeuristicValue();
-        Stack<IterativeDeepeningAStarSchedule> stack = new Stack<>();
-        Set<String> closed = new HashSet<>();
-        stack.push(initialState);
-        closed.add(initialState.getScheduleString());
 
-        while(!stack.isEmpty()) {
-            closed.clear();
-            int result = DepthLimitedSearchRecursive(stack, closed, limit);
+        while(true) {
+            int result = DepthLimitedSearchRecursive(initialState, limit);
 
             if(result == FOUND){
                 System.out.println(searchCount + " states searched");
-                return stack.peek();
+                return answer;
             }
 
             if(result == Integer.MAX_VALUE) {
@@ -55,20 +53,12 @@ public class IterativeDeepeningAStar implements IScheduler {
 
             limit = result;
         }
-        return null;
     }
 
-    private int DepthLimitedSearchRecursive(Stack<IterativeDeepeningAStarSchedule> stack, Set<String> closed, int limit) {
-        IterativeDeepeningAStarSchedule currentState = stack.peek();
-        int f = currentState.getHeuristicValue();
-
-        // exit depth limit search if we have reached the limit
-        if ( f > limit) {
-            return f;
-        }
-
-        // goal test
+    private int DepthLimitedSearchRecursive(IterativeDeepeningAStarScheduleTT currentState, int limit) {
+        searchCount++;
         if (currentState.getScheduledNodeCount() == graph.getNodeCount()) {
+            answer = currentState;
             return FOUND;
         }
 
@@ -76,23 +66,33 @@ public class IterativeDeepeningAStar implements IScheduler {
 
         for (INode node : currentState.getFree()) {
             for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-                IterativeDeepeningAStarSchedule child = currentState.expand(node, i);
-                if (!closed.contains(child.getScheduleString())) {
-                    closed.add(child.getScheduleString());
-                    stack.push(child);
-                    int t = DepthLimitedSearchRecursive(stack, closed, limit);
-
-                    if ( t == FOUND) {
-                        return FOUND;
-                    }
-
-                    min = Math.min(t, min);
-                    stack.pop();
-                    searchCount++;
+                IterativeDeepeningAStarScheduleTT childState = currentState.expand(node, i);
+                int t;
+                if (lookUp(childState) <= limit) {
+                    t = DepthLimitedSearchRecursive(childState, limit);
+                } else {
+                    t = lookUp(childState);
                 }
+
+                if (t == FOUND) {
+                    return FOUND;
+                }
+
+                min = Math.min(t, min);
             }
         }
+
+        transpositionTable.put(currentState.getScheduleString(), min);
         return min;
+    }
+
+    private int lookUp(IterativeDeepeningAStarScheduleTT childState) {
+        if (transpositionTable.containsKey(childState.getScheduleString())){
+            return transpositionTable.get(childState.getScheduleString());
+        } else {
+            transpositionTable.put(childState.getScheduleString(), childState.getHeuristicValue());
+            return childState.getHeuristicValue();
+        }
     }
 
 

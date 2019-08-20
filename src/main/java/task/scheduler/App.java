@@ -12,6 +12,7 @@ import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.schedule.astar.AStar;
 import task.scheduler.schedule.astar.IterativeDeepeningAStar;
+import task.scheduler.schedule.astar.IterativeDeepeningAStarTT;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,13 +64,13 @@ public class App {
             return;
         }
 
-        IScheduler scheduler = new AStar();
+        IScheduler scheduler = new IterativeDeepeningAStarTT();
         logger.info("Starting ...");
         long time = System.currentTimeMillis();
         ISchedule output = scheduler.execute(input);
         long deltaTime = System.currentTimeMillis() - time;
         logger.info("... Finished");
-        logger.info("In " + deltaTime+ "ms");
+        logger.info("In " + deltaTime + "ms");
         logger.info("Schedule cost: " + output.getTotalCost());
 
         // write to output file - construction is long because dependency injection is needed
