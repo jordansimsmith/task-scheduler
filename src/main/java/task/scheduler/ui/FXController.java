@@ -130,7 +130,7 @@ public class FXController implements IVisualization, Initializable {
         StringJoiner joiner = new StringJoiner(" ");
         joiner.add("Task Scheduler");
         joiner.add("-");
-        joiner.add(Config.getInstance().getInputFile().getPath());
+        joiner.add(Config.getInstance().getInputFile().getName());
         joiner.add("-");
         joiner.add(this.schedulerState.toString());
 
