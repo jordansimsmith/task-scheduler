@@ -110,7 +110,7 @@ public class App extends Application {
         FXController controller = new FXController(graph, scheduler);
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
-        stage.setScene(new Scene(loader.load(), 1280, 720));
+        stage.setScene(new Scene(loader.load(), 1270, 720));
         stage.setResizable(false);
         stage.show();
     }
