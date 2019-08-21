@@ -9,11 +9,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: w;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<?import java.net.URL?>
+<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane prefHeight="64.0" prefWidth="1280.0" style="-fx-background-color: #e0e0e0;">
+      <Pane styleClass="background" prefHeight="64.0" prefWidth="1280.0" >
          <children>
-            <Pane prefHeight="54.0" prefWidth="1280.0" style="-fx-background-color: #2196f3;">
+            <Pane styleClass="title" prefHeight="54.0" prefWidth="1280.0" >
                <effect>
                   <DropShadow blurType="GAUSSIAN" height="15.0" width="15.0" />
                </effect>
@@ -24,11 +25,11 @@
             </Pane>
          </children>
       </Pane>
-      <HBox prefHeight="666.0" prefWidth="1280.0" style="-fx-background-color: #e0e0e0;">
+      <HBox styleClass="background" prefHeight="666.0" prefWidth="1280.0" >
          <children>
             <VBox prefHeight="666.0" prefWidth="400.0">
                <children>
-                  <Pane prefHeight="659.0" prefWidth="380.0" style="-fx-background-color: white;">
+                  <Pane styleClass="container" prefHeight="659.0" prefWidth="380.0" >
                      <HBox.margin>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </HBox.margin>
@@ -58,7 +59,7 @@
             </VBox>
             <VBox prefHeight="666.0" prefWidth="600.0">
                <children>
-                  <Pane prefHeight="782.0" prefWidth="580.0" style="-fx-background-color: white;">
+                  <Pane styleClass="container" prefHeight="782.0" prefWidth="580.0" >
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -79,7 +80,7 @@
                         </VBox>
                      </children>
                   </Pane>
-                  <Pane prefHeight="421.0" prefWidth="580.0" style="-fx-background-color: white;">
+                  <Pane styleClass="container" prefHeight="421.0" prefWidth="580.0" >
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -102,7 +103,7 @@
             </VBox>
             <VBox prefHeight="579.0" prefWidth="280.0">
                <children>
-                  <Pane prefHeight="385.0" prefWidth="260.0" style="-fx-background-color: white;">
+                  <Pane styleClass="container" prefHeight="385.0" prefWidth="260.0" >
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -118,7 +119,7 @@
                         </VBox>
                      </children>
                   </Pane>
-                  <Pane prefHeight="374.0" prefWidth="260.0" style="-fx-background-color: white;">
+                  <Pane styleClass="container" prefHeight="374.0" prefWidth="260.0" >
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -139,4 +140,7 @@
          </children>
       </HBox>
    </children>
+   <stylesheets>
+      <URL value="@../styles/ui.css" />
+   </stylesheets>
 </VBox>
