@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
@@ -7,29 +8,26 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 
-<?import java.net.URL?>
-<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane styleClass="background" prefHeight="64.0" prefWidth="1280.0" >
+      <Pane prefHeight="64.0" prefWidth="1280.0" styleClass="background">
          <children>
-            <Pane styleClass="title" prefHeight="54.0" prefWidth="1280.0" >
+            <Pane prefHeight="54.0" prefWidth="1280.0" styleClass="title">
                <effect>
-                  <DropShadow blurType="GAUSSIAN" height="15.0" width="15.0" />
+                  <DropShadow blurType="GAUSSIAN" color="#0000007d" height="15.0" width="15.0" />
                </effect>
                <children>
-                  <Text layoutX="54.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-                  <Label layoutX="54.0" layoutY="19.0" text="Task Scheduler" />
+                  <Label layoutX="53.0" layoutY="15.0" text="Task Scheduler" />
                </children>
             </Pane>
          </children>
       </Pane>
-      <HBox styleClass="background" prefHeight="666.0" prefWidth="1280.0" >
+      <HBox prefHeight="666.0" prefWidth="1280.0" styleClass="background">
          <children>
             <VBox prefHeight="666.0" prefWidth="400.0">
                <children>
-                  <Pane styleClass="container" prefHeight="659.0" prefWidth="380.0" >
+                  <Pane prefHeight="659.0" prefWidth="380.0" styleClass="container">
                      <HBox.margin>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </HBox.margin>
@@ -42,7 +40,7 @@
                      <children>
                         <VBox layoutY="-1.0" prefHeight="653.0" prefWidth="380.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="59.0" prefWidth="380.0" text="Input Graph">
+                              <Label alignment="CENTER" prefHeight="59.0" prefWidth="371.0" text="Input Graph">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
@@ -50,7 +48,10 @@
                                     <Insets />
                                  </opaqueInsets>
                               </Label>
-                              <Pane fx:id="inputGraphPane" prefHeight="600.0" prefWidth="380.0" />
+                              <Pane fx:id="inputGraphPane" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                                 <VBox.margin>
+                                    <Insets right="10.0" />
+                                 </VBox.margin></Pane>
                            </children>
                         </VBox>
                      </children>
@@ -59,7 +60,7 @@
             </VBox>
             <VBox prefHeight="666.0" prefWidth="600.0">
                <children>
-                  <Pane styleClass="container" prefHeight="782.0" prefWidth="580.0" >
+                  <Pane prefHeight="782.0" prefWidth="580.0" styleClass="container">
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -70,7 +71,7 @@
                         <VBox prefHeight="494.0" prefWidth="580.0">
                            <children>
                               <Label alignment="CENTER" prefHeight="59.0" prefWidth="580.0" text="Current Schedule" />
-                              <Pane fx:id="outputGraphPane" prefHeight="382.0" prefWidth="580.0" />
+                              <Pane fx:id="outputGraphPane" prefHeight="382.0" prefWidth="602.0" />
                               <Pane prefHeight="54.0" prefWidth="580.0">
                                  <children>
                                     <Label layoutX="208.0" layoutY="18.0" text="Current Cost: " />
@@ -80,7 +81,7 @@
                         </VBox>
                      </children>
                   </Pane>
-                  <Pane styleClass="container" prefHeight="421.0" prefWidth="580.0" >
+                  <Pane prefHeight="421.0" prefWidth="580.0" styleClass="container">
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -103,7 +104,7 @@
             </VBox>
             <VBox prefHeight="579.0" prefWidth="280.0">
                <children>
-                  <Pane styleClass="container" prefHeight="385.0" prefWidth="260.0" >
+                  <Pane prefHeight="385.0" prefWidth="260.0" styleClass="container">
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
@@ -114,23 +115,29 @@
                         <VBox prefHeight="319.0" prefWidth="260.0">
                            <children>
                               <Label alignment="CENTER" prefHeight="44.0" prefWidth="260.0" text="CPU" />
-                              <Pane fx:id="cpuPane" prefHeight="275.0" prefWidth="260.0" />
+                              <Pane fx:id="cpuPane" prefHeight="275.0" prefWidth="260.0">
+                                 <VBox.margin>
+                                    <Insets right="10.0" />
+                                 </VBox.margin></Pane>
                            </children>
                         </VBox>
                      </children>
                   </Pane>
-                  <Pane styleClass="container" prefHeight="374.0" prefWidth="260.0" >
+                  <Pane prefHeight="374.0" prefWidth="260.0" styleClass="container">
                      <effect>
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <VBox.margin>
-                        <Insets bottom="15.0" left="15.0" right="15.0"/>
+                        <Insets bottom="15.0" left="15.0" right="15.0" />
                      </VBox.margin>
                      <children>
                         <VBox prefHeight="308.0" prefWidth="260.0">
                            <children>
                               <Label alignment="CENTER" prefHeight="44.0" prefWidth="260.0" text="Memory " />
-                              <Pane fx:id="memoryPane" prefHeight="265.0" prefWidth="260.0" />
+                              <Pane fx:id="memoryPane" prefHeight="265.0" prefWidth="260.0">
+                                 <VBox.margin>
+                                    <Insets right="10.0" />
+                                 </VBox.margin></Pane>
                            </children>
                         </VBox>
                      </children>

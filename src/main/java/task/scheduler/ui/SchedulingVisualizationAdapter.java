@@ -185,10 +185,8 @@ public class SchedulingVisualizationAdapter {
         yAxis.setTickLabelFill(Color.CHOCOLATE);
         yAxis.setTickLabelGap(10);
 
-        chart.setTitle("Scheduling");
         chart.setLegendVisible(false);
         chart.setBlockHeight(50);
-
 
         for (int p = 1; p <= Config.getInstance().getNumberOfCores(); p++) {
             final XYChart.Series series = new XYChart.Series();

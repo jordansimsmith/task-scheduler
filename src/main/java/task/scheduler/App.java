@@ -111,6 +111,7 @@ public class App extends Application {
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
         stage.setScene(new Scene(loader.load(), 1280, 720));
+        stage.setResizable(false);
         stage.show();
     }
 }

@@ -1,5 +1,20 @@
+@font-face {
+    src: url('../fonts/Roboto-Medium.ttf');
+}
+
+Label {
+    -fx-font-family: "Roboto-Medium";
+    -fx-text-fill: #0039cb;
+    -fx-font-size: 14;
+}
+
 .title {
-    -fx-background-color: #2196f3;
+    -fx-background-color: #2962ff;
+}
+
+.title Label {
+    -fx-text-fill: white;
+    -fx-font-size: 20;
 }
 
 .background {
