@@ -13,7 +13,7 @@ import java.util.StringJoiner;
 
 import static org.junit.Assert.*;
 
-public class ITInputOutput {
+public class IntegrationTestInputOutput {
 
     private static final String JAR = "target/task-scheduler-1.0-SNAPSHOT.jar";
     private static final String INPUT = "src/test/resources/dot_files/integration_test_input.dot";

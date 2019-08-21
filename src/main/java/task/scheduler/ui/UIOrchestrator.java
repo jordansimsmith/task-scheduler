@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import task.scheduler.App;
 import task.scheduler.graph.IGraph;
+import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 /**
@@ -12,7 +13,7 @@ import task.scheduler.schedule.IScheduler;
  * Stops in response to interruption
  */
 public class UIOrchestrator implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger logger = LoggerFactory.getLogger(UIOrchestrator.class);
 
     private IScheduler watchedScheduler;
     private int interval;
@@ -56,6 +57,10 @@ public class UIOrchestrator implements Runnable {
                 break;
             }
 
+            IScheduler.SchedulerState currentState = this.watchedScheduler.getCurrentState();
+            if (currentState == IScheduler.SchedulerState.STOPPED || currentState == IScheduler.SchedulerState.FINISHED) {
+                break;
+            }
         }
     }
 
