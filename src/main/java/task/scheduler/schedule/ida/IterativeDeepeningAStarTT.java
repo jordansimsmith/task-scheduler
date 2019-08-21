@@ -19,7 +19,7 @@ public class IterativeDeepeningAStarTT implements IScheduler {
     private static final int FOUND = -2;
     private IGraph graph;
     private Schedule answer;
-    private Map<String, Integer> transpositionTable = new HashMap<>();
+    public static final Map<String, Integer> transpositionTable = new HashMap<>();
 
     private ISchedule currentSchedule;
     private int schedulesSearched;
@@ -32,7 +32,6 @@ public class IterativeDeepeningAStarTT implements IScheduler {
         SchedulerCache.populateBottomLevelCache(graph);
         SchedulerCache.populateSortedNodes(graph);
         this.graph = graph;
-
 
         Schedule initialState = new Schedule(graph.getStartNodes(), getParentCountMap(graph));
         int limit = initialState.getHeuristicValue();
@@ -84,6 +83,51 @@ public class IterativeDeepeningAStarTT implements IScheduler {
         return min;
     }
 
+    private int DepthLimitedSearch(Schedule currentState, int limit) {
+        this.schedulesSearched++;
+
+        int t = 0;
+        int min = Integer.MAX_VALUE;
+        Stack<Schedule> stack = new Stack<>();
+        stack.push(currentState);
+
+        while(currentState.getScheduledNodeCount() != graph.getNodeCount() && t != FOUND) {
+            currentState = stack.peek();
+
+            for (INode node : currentState.getFree()) {
+                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+
+                    Schedule childState = currentState.expand(node, i);
+
+                    if (lookUp(childState) <= limit) {
+                        t = DepthLimitedSearch(childState, limit);
+                    } else {
+                        t = lookUp(childState);
+                    }
+
+                    if (t == FOUND) {
+                        return FOUND;
+                    }
+
+                    min = Math.min(t, min);
+                }
+            }
+        }
+
+
+
+
+        transpositionTable.put(currentState.getScheduleString(), min);
+        return min;
+    }
+
+    /**
+     * Looks for the corresponding value of the given Schedule in the transposition table.
+     * The value returned is the min f-value that was returned by by doing a depth-limited
+     * search on the given schedule.
+     * @param childState
+     * @return
+     */
     private int lookUp(Schedule childState) {
         if (transpositionTable.containsKey(childState.getScheduleString())){
             return transpositionTable.get(childState.getScheduleString());

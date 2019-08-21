@@ -1,6 +1,7 @@
 package task.scheduler.schedule;
 
 import task.scheduler.schedule.astar.AStar;
+import task.scheduler.schedule.ida.IterativeDeepeningAStar;
 import task.scheduler.schedule.ida.IterativeDeepeningAStarTT;
 import task.scheduler.schedule.bnb.BNB;
 import task.scheduler.schedule.valid.ValidScheduler;
@@ -33,7 +34,7 @@ public class SchedulerFactory {
             case BNB:
                 return new BNB();
             case IDASTAR_TT:
-                return new IterativeDeepeningAStarTT();
+                return new IterativeDeepeningAStar();
             default:
                 throw new RuntimeException("createSchedular case not implemented for " + type);
         }
