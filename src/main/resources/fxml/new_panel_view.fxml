@@ -15,7 +15,7 @@
          <children>
             <Pane prefHeight="54.0" prefWidth="1280.0" style="-fx-background-color: #2196f3;">
                <effect>
-                  <DropShadow blurType="GAUSSIAN" />
+                  <DropShadow blurType="GAUSSIAN" height="15.0" width="15.0" />
                </effect>
                <children>
                   <Text layoutX="54.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" />
@@ -30,13 +30,13 @@
                <children>
                   <Pane prefHeight="659.0" prefWidth="380.0" style="-fx-background-color: white;">
                      <HBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </HBox.margin>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </VBox.margin>
                      <effect>
-                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0" />
+                        <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <children>
                         <VBox layoutY="-1.0" prefHeight="653.0" prefWidth="380.0">
@@ -60,10 +60,10 @@
                <children>
                   <Pane prefHeight="782.0" prefWidth="580.0" style="-fx-background-color: white;">
                      <effect>
-                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0" />
+                        <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="15.0" top="15.0" />
                      </VBox.margin>
                      <children>
                         <VBox prefHeight="494.0" prefWidth="580.0">
@@ -81,10 +81,10 @@
                   </Pane>
                   <Pane prefHeight="421.0" prefWidth="580.0" style="-fx-background-color: white;">
                      <effect>
-                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0" />
+                        <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="15.0" />
                      </VBox.margin>
                      <children>
                         <VBox prefHeight="133.0" prefWidth="580.0">
@@ -104,10 +104,10 @@
                <children>
                   <Pane prefHeight="385.0" prefWidth="260.0" style="-fx-background-color: white;">
                      <effect>
-                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0" />
+                        <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </VBox.margin>
                      <children>
                         <VBox prefHeight="319.0" prefWidth="260.0">
@@ -120,10 +120,10 @@
                   </Pane>
                   <Pane prefHeight="374.0" prefWidth="260.0" style="-fx-background-color: white;">
                      <effect>
-                        <DropShadow blurType="GAUSSIAN" height="10.0" radius="4.5" width="10.0" />
+                        <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="15.0" left="15.0" right="15.0"/>
                      </VBox.margin>
                      <children>
                         <VBox prefHeight="308.0" prefWidth="260.0">
