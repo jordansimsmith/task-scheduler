@@ -18,6 +18,7 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
@@ -40,6 +41,7 @@ public class FXController implements IVisualization, Initializable {
 
     @FXML
     private Pane cpuPane;
+    private List<ProgressBar> cpuBars;
 
     @FXML
     private Pane memoryPane;
@@ -55,6 +57,8 @@ public class FXController implements IVisualization, Initializable {
     public FXController(IGraph graph, IScheduler scheduler) {
         this.graph = graph;
         this.scheduler = scheduler;
+
+        cpuBars = new ArrayList<>();
     }
 
     @Override
@@ -94,8 +98,20 @@ public class FXController implements IVisualization, Initializable {
             double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
 
-            for (Double cpu : cpuUsage) {
-                System.out.println(cpu);
+            for (int i = 0; i <  cpuUsage.size(); i++) {
+                if (this.cpuBars.size() <= i)   {
+                    ProgressBar cpuBar = new ProgressBar();
+                    this.cpuBars.add(cpuBar);
+
+                    cpuBar.prefWidthProperty().bind(this.cpuPane.widthProperty().add(-20));
+                    cpuBar.prefHeightProperty().bind(this.cpuPane.heightProperty().divide(cpuUsage.size() + 1).add(-10));
+
+                    cpuBar.setLayoutX(10);
+                    cpuBar.layoutYProperty().bind(this.cpuPane.heightProperty().divide(4).multiply(i));
+
+                    this.cpuPane.getChildren().add(cpuBars.get(i));
+                }
+                cpuBars.get(i).setProgress(cpuUsage.get(i));
             }
         });
     }
