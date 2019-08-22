@@ -46,17 +46,14 @@ public class AStar implements IScheduler {
                 return s; // optimal schedule found
             }
 
-            for (INode node : s.getFree()) {
-                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-                    Schedule child = s.expand(node, i);
+            for (Schedule child: s.getChildStates()){
 
-                    // do not add duplicate states to the priority queue
-                    if (!closed.contains(child.getScheduleString())) {
-                        open.add(child);
-                        closed.add(child.getScheduleString());
-                        this.schedulesSearched++;
-                        this.currentSchedule = child;
-                    }
+                // do not add duplicate states to the priority queue
+                if (!closed.contains(child.getScheduleString())) {
+                    open.add(child);
+                    closed.add(child.getScheduleString());
+                    this.schedulesSearched++;
+                    this.currentSchedule = child;
                 }
             }
         }

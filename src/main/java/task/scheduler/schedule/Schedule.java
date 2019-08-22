@@ -19,6 +19,8 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
     private List<INode> free;
     private Map<INode, Tuple<Integer, Integer>> schedule;
     private Map<INode, Integer> parentCounter;
+    private Set<Schedule> childStates;
+    private List<INode> fixedTaskOrderings = new ArrayList<>();
 
     private int scheduledNodeCount;
 
@@ -58,6 +60,11 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
 
         List<INode> free = new ArrayList<>(this.free);
         free.remove(node);
+
+        fixedTaskOrderings.remove(node);
+
+        int sizeBefore = free.size();
+
         Map<INode, Integer> parentCounter = new HashMap<>(this.parentCounter);
         for (INode child : node.getChildren().keySet()) {
             // decrement unresolved dependencies to child
@@ -69,6 +76,7 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
                 free.add(child);
             }
         }
+
         s.scheduledNodeCount = scheduledNodeCount + 1;
         Map<INode, Tuple<Integer, Integer>> schedule = new HashMap<>(this.schedule);
         schedule.put(node, new Tuple<>(lastNodeStartTime, processor));
@@ -76,6 +84,9 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
         s.free = free;
         s.parentCounter = parentCounter;
         s.schedule = schedule;
+
+        s.fixedTaskOrderings = new ArrayList<>(this.fixedTaskOrderings);
+        s.recalculateFixedTaskOrderings();
 
         s.heuristicValue = Math.max(s.maxBottomLevelCost, s.idleTimeHeuristicValue);
         s.populateScheduleString();
@@ -120,6 +131,127 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
         }
 
         this.scheduleString = joiner.toString();
+    }
+
+    public Set<Schedule> getChildStates() {
+        if(childStates == null) {
+            childStates = new HashSet<>();
+
+            if(!fixedTaskOrderings.isEmpty()){
+                INode node = fixedTaskOrderings.get(0);
+                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+                    childStates.add(expand(node, i));
+                }
+
+            } else {
+                for (INode node : this.getFree()) {
+                    for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+                        childStates.add(expand(node, i));
+                    }
+                }
+            }
+        }
+        return childStates;
+
+    }
+
+    private void recalculateFixedTaskOrderings(){
+        if(fixedTaskOrderable()) {
+            this.fixedTaskOrderings = this.getFree();
+            sortFixedTaskOrderings();
+        }
+    }
+
+    private boolean fixedTaskOrderable() {
+        INode sharedChild = null;
+        int sharedParentProcessor =  -2;
+
+        for(INode node : this.getFree()) {
+
+            // 1. must all have at most one parent and at most one child
+            if(node.getParents().size() > 1 || node.getChildren().size() > 1) {
+                return false;
+            }
+
+            // 2. if node has a child, then it must be the same child as for any other task in free
+            if(node.getChildren().size() == 1) {
+
+                if (sharedChild == null) {
+
+                    sharedChild = (INode)node.getChildren().keySet().toArray()[0];
+
+                } else {
+
+                    if(!node.getChildren().containsKey(sharedChild)){
+                        return false;
+                    }
+                }
+            }
+
+            // 3. if node has a parent, then all other parents of nodes in free must be allocated to the same processor
+            if(node.getParents().size() == 1){
+                int parentProcessor = getNodeSchedule((INode)node.getParents().keySet().toArray()[0]).y;
+                if (sharedParentProcessor == -2){
+
+                    sharedParentProcessor = parentProcessor;
+                } else {
+
+                    if (sharedParentProcessor != parentProcessor) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private void sortFixedTaskOrderings() {
+        Collections.sort(fixedTaskOrderings, (node1, node2) -> {
+            // 1.  Sort tasks of free by their non-decreasing data ready time.
+            //     Data ready time is the finish time of the nodes parent plus the weight of the edge in between.
+            int drtComp = Integer.compare(getDataReadyTime(node1), getDataReadyTime(node2));
+
+            if (drtComp != 0) {
+                return drtComp;
+            }
+
+            // 2.  Break ties by sorting according to non-increasing out-edge costs.
+            //     If there is no out-edge, set cost to zero
+            return Integer.compare(getOutEdgeCost(node2), getOutEdgeCost(node1));
+        });
+
+        //  Verify that tasks of free are in non-increasing out-edge cost order
+        if (!verifyFixedTaskOrder()){
+            fixedTaskOrderings.clear();
+        }
+    }
+
+    private boolean verifyFixedTaskOrder() {
+        for(int i = 1; i < fixedTaskOrderings.size(); i++) {
+            if(Integer.compare(getOutEdgeCost(fixedTaskOrderings.get(i - 1)), getOutEdgeCost(fixedTaskOrderings.get(i))) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // assumption: node has at most one parent
+    private int getDataReadyTime(INode node) {
+        if (node.getParents().size() > 0) {
+
+            // TODO: could optimise this key retrieval?
+            INode parent = (INode)node.getParents().keySet().toArray()[0];
+            return getNodeSchedule(parent).x + parent.getProcessingCost();
+        }
+        return 0;
+    }
+
+    // assumption: node has at most one child
+    private int getOutEdgeCost(INode node) {
+        if (node.getChildren().size() > 0) {
+            return (int) node.getChildren().values().toArray()[0];
+        }
+        return 0;
     }
 
     public int getScheduledNodeCount() {

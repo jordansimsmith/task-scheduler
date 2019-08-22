@@ -73,7 +73,7 @@ public class App {
         if (Config.getInstance().getNumberOfThreads() > 1) {
             scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
         } else {
-            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.IDASTAR_TT);
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
         }
 
         // Start visuals
