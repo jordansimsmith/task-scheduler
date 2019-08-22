@@ -68,13 +68,7 @@ public class App {
 
         // construct scheduler
         SchedulerFactory factory = new SchedulerFactory();
-        IScheduler scheduler;
-        // multithreading
-        if (Config.getInstance().getNumberOfThreads() > 1) {
-            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
-        } else {
-            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.IDASTAR_TT);
-        }
+        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
 
         // Start visuals
         Thread ui = null;

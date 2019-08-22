@@ -11,6 +11,7 @@ import task.scheduler.schedule.Schedule;
 import task.scheduler.schedule.SchedulerCache;
 
 import java.util.*;
+import java.util.concurrent.*;
 
 public class AStar implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(AStar.class);
@@ -35,6 +36,9 @@ public class AStar implements IScheduler {
 
         open.add(new Schedule(graph.getStartNodes(), getParentCountMap(graph)));
 
+        int numThreads = Config.getInstance().getNumberOfThreads();
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
         while (!open.isEmpty()) {
             Schedule s = open.peek();
             open.remove(s);
@@ -43,12 +47,26 @@ public class AStar implements IScheduler {
                 state = SchedulerState.FINISHED;
                 currentSchedule = s;
                 logger.info("ASTAR searched " + this.schedulesSearched + " states");
+                executor.shutdown();
                 return s; // optimal schedule found
             }
 
+
+            // submit jobs
+            List<Future<Schedule>> futures = new ArrayList<>();
             for (INode node : s.getFree()) {
                 for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-                    Schedule child = s.expand(node, i);
+                    final int p = i;
+
+                    Future<Schedule> future = executor.submit(() -> s.expand(node, p));
+                    futures.add(future);
+                }
+            }
+
+            // collect jobs
+            for (Future<Schedule> future : futures) {
+                try {
+                    Schedule child = future.get();
 
                     // do not add duplicate states to the priority queue
                     if (!closed.contains(child.getScheduleString())) {
@@ -57,11 +75,15 @@ public class AStar implements IScheduler {
                         this.schedulesSearched++;
                         this.currentSchedule = child;
                     }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
             }
         }
 
+
         state = SchedulerState.STOPPED;
+        executor.shutdown();
         return null;
     }
 
