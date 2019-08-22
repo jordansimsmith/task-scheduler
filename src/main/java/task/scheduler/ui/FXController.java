@@ -18,6 +18,7 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
@@ -84,14 +85,18 @@ public class FXController implements IVisualization, Initializable {
     }
 
     @Override
-    public void pushStats(double ramUsage, double cpuUsage) {
-        // update memory graph
+    public void pushStats(double ramUsage, List<Double> cpuUsage) {
+        // update memory and cpu graph
         Platform.runLater(() -> {
             if (this.memoryStartTime < 1) {
                 memoryStartTime = System.currentTimeMillis();
             }
             double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
+
+            for (Double cpu : cpuUsage) {
+                System.out.println(cpu);
+            }
         });
     }
 

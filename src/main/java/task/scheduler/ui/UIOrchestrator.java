@@ -7,6 +7,14 @@ import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * The UI Orchestrator runs in its own thread, and is responsible for polling the algorithm execution thread(s) for
  * updated execution status and pushing that to the UI.
@@ -71,7 +79,41 @@ public class UIOrchestrator implements Runnable {
         visualization.pushState(watchedScheduler.getCurrentState());
         visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
 
+        List<Double> cpuLoad = new LinkedList<>();
+        ProcessBuilder cpuPB = new ProcessBuilder("/bin/bash", "-c", "mpstat -A");
+        try {
+            Process cpuP = cpuPB.start();
+            cpuP.waitFor();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader((cpuP.getInputStream())));
+
+            // Skip mpstat head
+            reader.readLine();
+            reader.readLine();
+            reader.readLine();
+            // Skip all summary
+            reader.readLine();
+
+            // Read CPU lines
+            String line = reader.readLine();
+            Pattern cpuLineMatcher = Pattern.compile("^[0-9]*:[0-9]*:[0-9]*\\W*[0-9]*(\\W*[0-9]*.[0-9]*]*)*([0-9]*)$");
+            while (line != null)  {
+                Matcher m = cpuLineMatcher.matcher(line);
+                if (m.matches())    {
+                    cpuLoad.add((100 - Double.parseDouble(m.group(1)))/100);
+                } else {
+                    break;
+                }
+
+                line = reader.readLine();
+            }
+
+        } catch (IOException | InterruptedException e) {
+            logger.error("Error while polling CPU statistics");
+            e.printStackTrace();
+        }
+
         Runtime runtime = Runtime.getRuntime();
-        visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), 0);
+        visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), cpuLoad);
     }
 }

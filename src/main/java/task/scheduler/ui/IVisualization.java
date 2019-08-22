@@ -3,6 +3,8 @@ package task.scheduler.ui;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
+import java.util.List;
+
 /**
  * An interface for any visualisation system, that takes the graph, schedule objects and draws them
  */
@@ -22,5 +24,5 @@ public interface IVisualization {
     /**
      * Pushes updated system resource usage information for graphs
      */
-    void pushStats(double ramUsage, double cpuUsage);
+    void pushStats(double ramUsage, List<Double> cpuUsage);
 }
