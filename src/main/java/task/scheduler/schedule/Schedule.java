@@ -21,6 +21,8 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
     private Map<INode, Integer> parentCounter;
 
     private int scheduledNodeCount;
+    private int totalCost;
+    private int hashCode;
 
     private Schedule() {
     }
@@ -79,6 +81,8 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
 
         s.heuristicValue = Math.max(s.maxBottomLevelCost, s.idleTimeHeuristicValue);
         s.populateScheduleString();
+        s.populateTotalCost();
+        s.populateHashCode();
 
         return s;
     }
@@ -122,6 +126,15 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
         this.scheduleString = joiner.toString();
     }
 
+    private void populateTotalCost() {
+        // the use of streams here is appropriate as this method is only called once
+        this.totalCost = Arrays.stream(earliestTimes).max().getAsInt();
+    }
+
+    private void populateHashCode() {
+        this.hashCode = this.scheduleString.hashCode();
+    }
+
     public int getScheduledNodeCount() {
         return scheduledNodeCount;
     }
@@ -141,8 +154,7 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
 
     @Override
     public int getTotalCost() {
-        // the use of streams here is appropriate as this method is only called once
-        return Arrays.stream(earliestTimes).max().getAsInt();
+        return this.totalCost;
     }
 
     @Override
@@ -152,7 +164,7 @@ public class Schedule implements ISchedule, Comparable<Schedule> {
 
     @Override
     public int hashCode() {
-        return this.scheduleString.hashCode();
+        return this.hashCode;
     }
 
     @Override
