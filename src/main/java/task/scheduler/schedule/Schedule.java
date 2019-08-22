@@ -8,6 +8,7 @@ import java.util.*;
 
 public class Schedule implements ISchedule, Comparable<Schedule> {
 
+    public Schedule parent;
     private int maxBottomLevelCost;
     private int idleTime;
     private int[] earliestTimes;

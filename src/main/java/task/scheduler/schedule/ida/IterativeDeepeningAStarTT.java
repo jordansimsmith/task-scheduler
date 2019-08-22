@@ -35,8 +35,11 @@ public class IterativeDeepeningAStarTT implements IScheduler {
 
         Schedule initialState = new Schedule(graph.getStartNodes(), getParentCountMap(graph));
         int limit = initialState.getHeuristicValue();
+        Stack<Schedule> stack = new Stack<>();
+
 
         while(true) {
+            stack.push(initialState);
             int result = DepthLimitedSearchRecursive(initialState, limit);
 
             if(result == FOUND){
@@ -50,6 +53,41 @@ public class IterativeDeepeningAStarTT implements IScheduler {
 
             limit = result;
         }
+    }
+
+    private int DepthLimitedSearchIterative(Stack<Schedule> stack, int limit) {
+        int min = Integer.MAX_VALUE;
+
+        while(!stack.empty()) {
+            Schedule currentState = stack.pop();
+            int f = currentState.getHeuristicValue();
+
+            // exit depth limit search if we have reached the limit
+            if ( f > limit) {
+                min = Math.min(min, f);
+                continue;
+            }
+
+            // goal test
+            if (currentState.getScheduledNodeCount() == graph.getNodeCount()) {
+                answer = currentState;
+                return FOUND;
+            }
+
+            for (INode node : currentState.getFree()) {
+                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
+                    Schedule child = currentState.expand(node, i);
+                    if (lookUp(child) <= limit) {
+                        stack.push(child);
+                        this.schedulesSearched++;
+                    } else {
+                        min = Math.min(lookUp(child), min);
+                    }
+                }
+            }
+            transpositionTable.put(currentState.getScheduleString(), min);
+        }
+        return min;
     }
 
     private int DepthLimitedSearchRecursive(Schedule currentState, int limit) {
@@ -78,44 +116,6 @@ public class IterativeDeepeningAStarTT implements IScheduler {
                 min = Math.min(t, min);
             }
         }
-
-        transpositionTable.put(currentState.getScheduleString(), min);
-        return min;
-    }
-
-    private int DepthLimitedSearch(Schedule currentState, int limit) {
-        this.schedulesSearched++;
-
-        int t = 0;
-        int min = Integer.MAX_VALUE;
-        Stack<Schedule> stack = new Stack<>();
-        stack.push(currentState);
-
-        while(currentState.getScheduledNodeCount() != graph.getNodeCount() && t != FOUND) {
-            currentState = stack.peek();
-
-            for (INode node : currentState.getFree()) {
-                for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-
-                    Schedule childState = currentState.expand(node, i);
-
-                    if (lookUp(childState) <= limit) {
-                        t = DepthLimitedSearch(childState, limit);
-                    } else {
-                        t = lookUp(childState);
-                    }
-
-                    if (t == FOUND) {
-                        return FOUND;
-                    }
-
-                    min = Math.min(t, min);
-                }
-            }
-        }
-
-
-
 
         transpositionTable.put(currentState.getScheduleString(), min);
         return min;

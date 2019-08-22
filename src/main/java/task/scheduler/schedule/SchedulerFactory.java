@@ -34,7 +34,7 @@ public class SchedulerFactory {
             case BNB:
                 return new BNB();
             case IDASTAR_TT:
-                return new IterativeDeepeningAStar();
+                return new IterativeDeepeningAStarTT();
             default:
                 throw new RuntimeException("createSchedular case not implemented for " + type);
         }

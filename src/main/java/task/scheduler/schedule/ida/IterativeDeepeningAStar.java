@@ -87,43 +87,7 @@ public class IterativeDeepeningAStar implements IScheduler {
         return min;
     }
 
-    private int DepthLimitedSearchRecursive(Stack<Schedule> stack, int limit) {
-        Schedule currentState = stack.peek();
-        int f = currentState.getHeuristicValue();
-
-        // exit depth limit search if we have reached the limit
-        if ( f > limit) {
-            return f;
-        }
-
-        // goal test
-        if (currentState.getScheduledNodeCount() == graph.getNodeCount()) {
-            answer = currentState;
-            return FOUND;
-        }
-
-        int min = Integer.MAX_VALUE;
-
-        for (INode node : currentState.getFree()) {
-            for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
-                Schedule child = currentState.expand(node, i);
-                stack.push(child);
-                int t = DepthLimitedSearchRecursive(stack, limit);
-
-                if ( t == FOUND) {
-                    return FOUND;
-                }
-
-                min = Math.min(t, min);
-                stack.pop();
-                searchCount++;
-            }
-        }
-        return min;
-    }
-
-
-    private int DepthLimitedSearchRecursiveOriginal(Stack<Schedule> stack, Set<String> closed, int limit) {
+    private int DepthLimitedSearchRecursive(Stack<Schedule> stack, Set<String> closed, int limit) {
         Schedule currentState = stack.peek();
         int f = currentState.getHeuristicValue();
 
@@ -145,7 +109,7 @@ public class IterativeDeepeningAStar implements IScheduler {
                 if (!closed.contains(child.getScheduleString())) {
                     closed.add(child.getScheduleString());
                     stack.push(child);
-                    int t = DepthLimitedSearchRecursiveOriginal(stack, closed, limit);
+                    int t = DepthLimitedSearchRecursive(stack, closed, limit);
 
                     if ( t == FOUND) {
                         return FOUND;
