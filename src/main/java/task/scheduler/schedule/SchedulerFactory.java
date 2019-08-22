@@ -1,6 +1,7 @@
 package task.scheduler.schedule;
 
 import task.scheduler.schedule.astar.AStar;
+import task.scheduler.schedule.astar.AStarParallel;
 import task.scheduler.schedule.ida.IterativeDeepeningAStar;
 import task.scheduler.schedule.ida.IterativeDeepeningAStarTT;
 import task.scheduler.schedule.bnb.BNB;
@@ -30,7 +31,7 @@ public class SchedulerFactory {
             case VALID:
                 return new ValidScheduler();
             case ASTAR:
-                return new AStar();
+                return new AStarParallel();
             case BNB:
                 return new BNB();
             case IDASTAR_TT:
