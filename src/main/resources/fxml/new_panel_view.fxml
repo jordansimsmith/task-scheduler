@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Pane prefHeight="64.0" prefWidth="1280.0" styleClass="background">
          <children>
@@ -94,7 +94,8 @@
                               <Label alignment="CENTER" prefHeight="44.0" prefWidth="580.0" text="States Searched" />
                               <Pane fx:id="progressBarPane" prefHeight="89.0" prefWidth="580.0">
                                  <children>
-                                    <ProgressBar fx:id="progressBar" layoutX="84.0" layoutY="14.0" prefHeight="27.0" prefWidth="412.0" progress="0.0" />
+                                    <ProgressBar fx:id="progressBar" layoutX="24.0" layoutY="14.0" prefHeight="20.0" prefWidth="532.0" progress="0.0" />
+                                    <Label fx:id="progressBarInfo" layoutX="24.0" layoutY="36.0" prefHeight="18.0" prefWidth="400.0" text="Label" />
                                  </children></Pane>
                            </children>
                         </VBox>

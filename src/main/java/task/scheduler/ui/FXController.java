@@ -12,12 +12,17 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.apache.commons.exec.util.StringUtils;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.text.Bidi;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
@@ -43,10 +48,15 @@ public class FXController implements IVisualization, Initializable {
     @FXML
     private Pane memoryPane;
 
+    @FXML
+    private Label progressBarInfo;
+
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
     private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
     private IScheduler.SchedulerState schedulerState;
     private double memoryStartTime;
+    private BigDecimal schedulesUpperBound;
+    private double schedulesUpperBoundLog;
 
     private IGraph graph;
     private IScheduler scheduler;
@@ -68,7 +78,12 @@ public class FXController implements IVisualization, Initializable {
             }
 
             // update progress bar
-            this.progressBar.setProgress(Math.log(schedulesSearched) / this.graph.getSchedulesUpperBoundLog());
+            this.progressBar.setProgress(Math.log(schedulesSearched) / this.schedulesUpperBoundLog);
+
+            // Update progress bar status
+            String percentageScheduled = String.valueOf(BigDecimal.valueOf(schedulesSearched * 100).divide(schedulesUpperBound,30, RoundingMode.HALF_UP));
+            //The first 3 number values and last 4 values are concatenated to give the decimal representation
+            this.progressBarInfo.setText( "Total search space searched: " + percentageScheduled.substring(0, 4) + percentageScheduled.substring(percentageScheduled.indexOf("E")) + "%" );
 
         });
     }
@@ -143,6 +158,8 @@ public class FXController implements IVisualization, Initializable {
         initialiseOutputGraph();
         initialiseInputGraph();
         initialiseMemoryUsage();
+        this.schedulesUpperBound = this.graph.getSchedulesUpperBound();
+        this.schedulesUpperBoundLog = this.graph.getSchedulesUpperBoundLog();
 
         // set up orchestrator to poll model for updates
         new Thread(new UIOrchestrator(this.scheduler, this, UPDATE_INTERVAL_MS)).start();
