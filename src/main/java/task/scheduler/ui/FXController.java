@@ -68,10 +68,13 @@ public class FXController implements IVisualization, Initializable {
 
     @Override
     public void pushSchedule(ISchedule schedule, int schedulesSearched) {
+        // update partial schedule displayed
+        this.scheduleVisualiser.populateVisual(this.graph, schedule);
+        // Update progress bar status
+        String percentageScheduled = String.valueOf(BigDecimal.valueOf(schedulesSearched * 100).divide(schedulesUpperBound,30, RoundingMode.HALF_UP));
+
         Platform.runLater(() -> {
             if (schedule != null) {
-                // update partial schedule displayed
-                this.scheduleVisualiser.populateVisual(this.graph, schedule);
 
                 // update current cost label
                 this.currentCostLabel.setText(String.valueOf(schedule.getTotalCost()));
@@ -80,8 +83,6 @@ public class FXController implements IVisualization, Initializable {
             // update progress bar
             this.progressBar.setProgress(Math.log(schedulesSearched) / this.schedulesUpperBoundLog);
 
-            // Update progress bar status
-            String percentageScheduled = String.valueOf(BigDecimal.valueOf(schedulesSearched * 100).divide(schedulesUpperBound,30, RoundingMode.HALF_UP));
             //The first 3 number values and last 4 values are concatenated to give the decimal representation
             this.progressBarInfo.setText( "Total search space searched: " + percentageScheduled.substring(0, 4) + percentageScheduled.substring(percentageScheduled.indexOf("E")) + "%" );
 
@@ -91,8 +92,9 @@ public class FXController implements IVisualization, Initializable {
     @Override
     public void pushState(IScheduler.SchedulerState newState) {
         // update scheduler state and set title
+        this.schedulerState = newState;
         Platform.runLater(() -> {
-            this.schedulerState = newState;
+
             Stage stage = (Stage) this.outputGraphPane.getScene().getWindow();
             stage.setTitle(getTitle());
         });
@@ -101,11 +103,12 @@ public class FXController implements IVisualization, Initializable {
     @Override
     public void pushStats(double ramUsage, double cpuUsage) {
         // update memory graph
+        if (this.memoryStartTime < 1) {
+            memoryStartTime = System.currentTimeMillis();
+        }
+        double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
+
         Platform.runLater(() -> {
-            if (this.memoryStartTime < 1) {
-                memoryStartTime = System.currentTimeMillis();
-            }
-            double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
         });
     }
