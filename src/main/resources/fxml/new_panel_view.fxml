@@ -38,9 +38,9 @@
                         <DropShadow blurType="GAUSSIAN" height="15.0" radius="4.5" width="15.0" />
                      </effect>
                      <children>
-                        <VBox layoutY="-1.0" prefHeight="653.0" prefWidth="380.0">
+                        <VBox alignment="CENTER" layoutY="-1.0" prefHeight="653.0" prefWidth="380.0">
                            <children>
-                              <Label alignment="CENTER" prefHeight="59.0" prefWidth="371.0" text="Input Graph">
+                              <Label alignment="CENTER" prefHeight="59.0" prefWidth="383.0" text="Input Graph" VBox.vgrow="ALWAYS">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
@@ -48,10 +48,14 @@
                                     <Insets />
                                  </opaqueInsets>
                               </Label>
-                              <Pane fx:id="inputGraphPane" maxWidth="1.7976931348623157E308" minWidth="0.0">
+                              <VBox alignment="CENTER" prefHeight="565.0" prefWidth="370.0" VBox.vgrow="ALWAYS">
                                  <VBox.margin>
                                     <Insets right="10.0" />
-                                 </VBox.margin></Pane>
+                                 </VBox.margin>
+                                 <children>
+                                    <Pane fx:id="inputGraphPane" maxWidth="1.7976931348623157E308" minWidth="0.0" prefHeight="559.0" prefWidth="370.0" />
+                                 </children>
+                              </VBox>
                            </children>
                         </VBox>
                      </children>
