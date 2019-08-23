@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +107,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Font.loadFont(getClass().getResource("/fonts/Roboto-Medium.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/new_panel_view.fxml"));
         FXController controller = new FXController(graph, scheduler);
         loader.setController(controller);
