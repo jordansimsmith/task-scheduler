@@ -5,14 +5,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.Chart;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
@@ -45,13 +43,8 @@ public class FXController implements IVisualization, Initializable {
 
     @FXML
     private Label currentCostLabel;
+    @FXML
     private PieChart dataChart;
-
-    @FXML
-    private VBox cpuVBox;
-
-    @FXML
-    private VBox memoryVbox;
 
     @FXML
     private Label timeElapsedLabel;
@@ -61,14 +54,13 @@ public class FXController implements IVisualization, Initializable {
 
     // For cpu visualisation
     @FXML
-    private Pane cpuPane;
+    private VBox cpuVBox;
     LineChart<Number, Number> cpuChart;
     private List<XYChart.Series<Number, Number>> cpuUsageSeries = new ArrayList<>();
 
     // For memory visualisation
     @FXML
-    private Label programStatusLabel;
-
+    private VBox memoryVbox;
     ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();;
 
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
@@ -79,6 +71,9 @@ public class FXController implements IVisualization, Initializable {
     // Schedules searched
     private BigDecimal schedulesUpperBound;
     private double schedulesUpperBoundLog;
+
+    @FXML
+    private Label programStatusLabel;
 
     @FXML
     private ProgressBar progressBar;
@@ -221,9 +216,9 @@ public class FXController implements IVisualization, Initializable {
 
         cpuChart = new LineChart<>(cpuXAxis, cpuYAxis);
         cpuChart.setLegendVisible(false);
-        this.cpuPane.getChildren().add(cpuChart);
-        cpuChart.prefWidthProperty().bind(this.memoryPane.widthProperty());
-        cpuChart.prefHeightProperty().bind(this.memoryPane.heightProperty());
+        this.cpuVBox.getChildren().add(cpuChart);
+        cpuChart.prefWidthProperty().bind(this.cpuVBox.widthProperty());
+        cpuChart.prefHeightProperty().bind(this.cpuVBox.heightProperty());
     }
 
     private void initialiseInputGraph() {
