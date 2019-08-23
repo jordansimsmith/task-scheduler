@@ -5,11 +5,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.*;
+import javafx.scene.chart.Chart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
@@ -19,12 +22,21 @@ import task.scheduler.schedule.IScheduler;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
+/**
+ * FX Controller for visualisation
+ */
 public class FXController implements IVisualization, Initializable {
+
     private static final int UPDATE_INTERVAL_MS = 1000;
 
+    /**
+     * FXML linked elements
+     */
     @FXML
     private VBox inputGraphVBox;
 
@@ -33,8 +45,6 @@ public class FXController implements IVisualization, Initializable {
 
     @FXML
     private Label currentCostLabel;
-
-    @FXML
     private PieChart dataChart;
 
     @FXML
@@ -49,9 +59,13 @@ public class FXController implements IVisualization, Initializable {
     @FXML
     private Label progressBarInfo;
 
+    // For cpu visualisation
     @FXML
-    private ProgressIndicator progressIndicator;
+    private Pane cpuPane;
+    LineChart<Number, Number> cpuChart;
+    private List<XYChart.Series<Number, Number>> cpuUsageSeries = new ArrayList<>();
 
+    // For memory visualisation
     @FXML
     private Label programStatusLabel;
 
@@ -60,10 +74,19 @@ public class FXController implements IVisualization, Initializable {
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
     private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
     private IScheduler.SchedulerState schedulerState;
-    private double memoryStartTime;
+    private double visualisationStartTime;
+
+    // Schedules searched
     private BigDecimal schedulesUpperBound;
     private double schedulesUpperBoundLog;
 
+    @FXML
+    private ProgressBar progressBar;
+
+    @FXML
+    private ProgressIndicator progressIndicator;
+
+    // Internal elements used by scheduler
     private IGraph graph;
     private IScheduler scheduler;
 
@@ -72,6 +95,9 @@ public class FXController implements IVisualization, Initializable {
         this.scheduler = scheduler;
     }
 
+    /**
+     * Pushes a schedule to be rendered, also includes info about the number of schedules searched
+     */
     @Override
     public void pushSchedule(ISchedule schedule, int schedulesSearched) {
         // update partial schedule displayed
@@ -97,6 +123,9 @@ public class FXController implements IVisualization, Initializable {
         });
     }
 
+    /**
+     * Pushes scheduler state used to update GUI elements about current status
+     */
     @Override
     public void pushState(IScheduler.SchedulerState newState) {
         // update scheduler state and set title
@@ -116,13 +145,17 @@ public class FXController implements IVisualization, Initializable {
         });
     }
 
+    /**
+     * Pushes RAM usage stats
+     * @param ramUsage RAM usage in bytes
+     */
     @Override
-    public void pushStats(double ramUsage, double cpuUsage) {
+    public void pushMemoryUsage(double ramUsage) {
         // update memory graph
-        if (this.memoryStartTime < 1) {
-            memoryStartTime = System.currentTimeMillis();
+        if (this.visualisationStartTime < 1) {
+            visualisationStartTime = System.currentTimeMillis();
         }
-        double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
+        double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
 
         Platform.runLater(() -> {
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
@@ -130,6 +163,28 @@ public class FXController implements IVisualization, Initializable {
             timeElapsedLabel.setText("Time Elapsed: " + Math.ceil(timeElapsed));
         });
     }
+
+    /**
+     * @param perCoreUsage List of doubles, each double representing cpu usage on a core, range 0-1 (1 being 100%)
+     */
+    @Override
+    public void pushCPUUsage(List<Double> perCoreUsage) {
+        Platform.runLater(() -> {
+            for (int i = 0; i <  perCoreUsage.size(); i++) {
+                double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
+
+                if (this.cpuUsageSeries.size() <= i)   {
+                    XYChart.Series<Number,Number> trend = new XYChart.Series<>();
+                    this.cpuChart.getData().add(trend);
+                    this.cpuUsageSeries.add(trend);
+                }
+
+                this.cpuUsageSeries.get(i).getData().add(new XYChart.Data<>(timeElapsed, perCoreUsage.get(i) * 100));
+            }
+        });
+    }
+
+    // Initialisation functions for several elements
 
     private void initialiseOutputGraph() {
         // initialise schedule visualiser
@@ -146,11 +201,29 @@ public class FXController implements IVisualization, Initializable {
         NumberAxis memoryYAxis = new NumberAxis();
         memoryYAxis.setLabel("Memory Usage (Mb)");
         LineChart<Number, Number> memoryChart = new LineChart<>(memoryXAxis, memoryYAxis);
+
         memoryChart.getData().add(memoryUsageSeries);
         memoryChart.setLegendVisible(false);
         this.memoryVbox.getChildren().add(memoryChart);
         memoryChart.prefWidthProperty().bind(this.memoryVbox.widthProperty());
         memoryChart.prefHeightProperty().bind(this.memoryVbox.heightProperty());
+    }
+
+    private void initialiseCPUUsage()   {
+        NumberAxis cpuXAxis = new NumberAxis();
+        cpuXAxis.setLabel("Time (s)");
+        NumberAxis cpuYAxis = new NumberAxis();
+        cpuYAxis.setLabel("CPU Usage %");
+        cpuYAxis.setForceZeroInRange(true);
+        cpuYAxis.setAutoRanging(false);
+        cpuYAxis.setUpperBound(100);
+        cpuYAxis.setLowerBound(0);
+
+        cpuChart = new LineChart<>(cpuXAxis, cpuYAxis);
+        cpuChart.setLegendVisible(false);
+        this.cpuPane.getChildren().add(cpuChart);
+        cpuChart.prefWidthProperty().bind(this.memoryPane.widthProperty());
+        cpuChart.prefHeightProperty().bind(this.memoryPane.heightProperty());
     }
 
     private void initialiseInputGraph() {
@@ -183,12 +256,14 @@ public class FXController implements IVisualization, Initializable {
         return joiner.toString();
     }
 
+    // Initializes the whole GUI
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // setup views
         initialiseOutputGraph();
         initialiseInputGraph();
         initialiseMemoryUsage();
+        initialiseCPUUsage();
         initialiseChartData();
         //Spinning indicator
         progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);

@@ -2,10 +2,15 @@ package task.scheduler.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.scheduler.App;
-import task.scheduler.graph.IGraph;
-import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The UI Orchestrator runs in its own thread, and is responsible for polling the algorithm execution thread(s) for
@@ -16,6 +21,7 @@ public class UIOrchestrator implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(UIOrchestrator.class);
 
     private IScheduler watchedScheduler;
+    private Thread cpuMonitor;
     private int interval;
 
     private IVisualization visualization;
@@ -28,6 +34,10 @@ public class UIOrchestrator implements Runnable {
         this.watchedScheduler = watchedScheduler;
         this.interval = interval;
         this.visualization = visualization;
+
+        // Launch CPU Monitor in seperate thread
+        this.cpuMonitor = new Thread(new UIOrchestratorCPUMonitor(this.visualization));
+        this.cpuMonitor.start();
     }
 
     /**
@@ -53,12 +63,14 @@ public class UIOrchestrator implements Runnable {
             } catch (InterruptedException e)    {
                 this.businessLogic();
                 logger.info("UI Thread received interrupt, will push once and shut down.");
+                cpuMonitor.interrupt();
                 this.businessLogic();
                 break;
             }
 
             IScheduler.SchedulerState currentState = this.watchedScheduler.getCurrentState();
             if (currentState == IScheduler.SchedulerState.STOPPED || currentState == IScheduler.SchedulerState.FINISHED) {
+                cpuMonitor.interrupt();
                 break;
             }
         }
@@ -72,6 +84,6 @@ public class UIOrchestrator implements Runnable {
         visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
 
         Runtime runtime = Runtime.getRuntime();
-        visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), 0);
+        visualization.pushMemoryUsage(runtime.totalMemory() - runtime.freeMemory());
     }
 }
