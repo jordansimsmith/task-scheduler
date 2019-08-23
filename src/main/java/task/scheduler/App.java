@@ -112,7 +112,7 @@ public class App extends Application {
         FXController controller = new FXController(graph, scheduler);
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
-        stage.setScene(new Scene(loader.load(), 1270, 720)); // use -10 to fix the margin on width
+        stage.setScene(new Scene(loader.load(), 1300, 720)); // use -10 to fix the margin on width
         stage.setResizable(false);
         stage.show();
     }

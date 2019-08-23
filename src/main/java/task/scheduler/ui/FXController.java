@@ -72,7 +72,14 @@ public class FXController implements IVisualization, Initializable {
         this.scheduleVisualiser.populateVisual(this.graph, schedule);
         // Update progress bar status
         String percentageScheduled = String.valueOf(BigDecimal.valueOf(schedulesSearched * 100).divide(schedulesUpperBound,30, RoundingMode.HALF_UP));
+        String percentageToPrint = "Total search space searched: " + percentageScheduled.substring(0, 4);
+        if(percentageScheduled.contains("E")){
+            percentageToPrint = percentageToPrint + percentageScheduled.substring(percentageScheduled.indexOf("E")) + " %";
+        } else {
+            percentageToPrint = percentageToPrint +  " %";
+        }
 
+        String finalPercentageToPrint = percentageToPrint;
         Platform.runLater(() -> {
             if (schedule != null) {
 
@@ -84,7 +91,7 @@ public class FXController implements IVisualization, Initializable {
             this.progressBar.setProgress(Math.log(schedulesSearched) / this.schedulesUpperBoundLog);
 
             //The first 3 number values and last 4 values are concatenated to give the decimal representation
-            this.progressBarInfo.setText( "Total search space searched: " + percentageScheduled.substring(0, 4) + percentageScheduled.substring(percentageScheduled.indexOf("E")) + "%" );
+            this.progressBarInfo.setText(finalPercentageToPrint);
 
         });
     }
@@ -116,9 +123,9 @@ public class FXController implements IVisualization, Initializable {
     private void initialiseOutputGraph() {
         // initialise schedule visualiser
         Chart outputGraph = scheduleVisualiser.getChart();
-        this.outputGraphPane.getChildren().add(outputGraph);
         outputGraph.prefWidthProperty().bind(this.outputGraphPane.widthProperty());
         outputGraph.prefHeightProperty().bind(this.outputGraphPane.heightProperty());
+        this.outputGraphPane.getChildren().add(outputGraph);
     }
 
     private void initialiseMemoryUsage() {
@@ -139,9 +146,12 @@ public class FXController implements IVisualization, Initializable {
         // initialise input graph visualisation
         InputGraphGenerator inputGraphGenerator = new InputGraphGenerator(this.graph);
         ImageView inputGraph = inputGraphGenerator.getGraph();
+        inputGraph.setFitWidth(350);
+        inputGraph.preserveRatioProperty();
         this.inputGraphPane.getChildren().add(inputGraph);
-        inputGraph.fitWidthProperty().bind(this.inputGraphPane.widthProperty());
-        inputGraph.fitHeightProperty().bind(this.inputGraphPane.heightProperty());
+        //inputGraph.fitWidthProperty().bind(this.inputGraphPane.widthProperty());
+        //inputGraph.setPreserveRatio(true);
+        //inputGraph.fitHeightProperty().bind(this.inputGraphPane.heightProperty());
     }
 
     private String getTitle() {
