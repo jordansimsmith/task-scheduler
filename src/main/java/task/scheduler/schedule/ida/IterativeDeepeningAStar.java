@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
-import task.scheduler.schedule.ISchedule;
-import task.scheduler.schedule.IScheduler;
-import task.scheduler.schedule.Schedule;
-import task.scheduler.schedule.SchedulerCache;
+import task.scheduler.schedule.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +15,11 @@ import java.util.Stack;
 public class IterativeDeepeningAStar implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(IterativeDeepeningAStar.class);
     private static final int FOUND = -2;
+
     private IGraph graph;
     private Schedule answer;
     private static SchedulerState state = SchedulerState.NOT_STARTED;
+    private static SchedulerUtils schedulerUtils = new SchedulerUtils();
 
     private ISchedule currentSchedule;
     private int schedulesSearched;
@@ -38,7 +37,7 @@ public class IterativeDeepeningAStar implements IScheduler {
         this.graph = graph;
 
 
-        Schedule initialState = new Schedule(graph.getStartNodes(), getParentCountMap(graph));
+        Schedule initialState = new Schedule(graph.getStartNodes(), schedulerUtils.getParentCountMap(graph));
         int limit = initialState.getHeuristicValue();
         Stack<Schedule> stack = new Stack<>();
 
@@ -147,23 +146,6 @@ public class IterativeDeepeningAStar implements IScheduler {
             }
         }
         return min;
-    }
-
-    /**
-     * Returns a map of INode to a parent count Integer. The parent count Integer represents the
-     * remaining number of parents the INode has. The map contains this information for all INodes
-     * of the given IGraph.
-     *
-     * @param graph for which to calculate the parentCountMap
-     * @return a parentCountMap
-     */
-    private Map<INode, Integer> getParentCountMap(IGraph graph) {
-        Map<INode, Integer> parentCount = new HashMap<>();
-
-        for (INode node : graph.getNodes()) {
-            parentCount.put(node, node.getParents().size());
-        }
-        return parentCount;
     }
 
     @Override

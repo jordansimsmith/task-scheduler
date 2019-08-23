@@ -14,6 +14,7 @@ public class SchedulerCache {
     public static int totalNodeWeighting;
     public static Map<INode, Integer> bottomLevelCache = new HashMap<>();
     public static List<INode> sortedNodes = new ArrayList<>();
+    private static SchedulerUtils schedulerUtils = new SchedulerUtils();
 
     /**
      * Calculates and populates the totalNodeWeighting field with sum of the
@@ -50,83 +51,8 @@ public class SchedulerCache {
     public static void populateBottomLevelCache(IGraph graph) {
         bottomLevelCache.clear();
         for (INode node : graph.getNodes()) {
-            int bottomLevel = computeCriticalPath(node, graph);
+            int bottomLevel = schedulerUtils.computeCriticalPath(node, graph);
             bottomLevelCache.put(node, bottomLevel);
         }
-    }
-
-    /**
-     * computeCriticalPath is used to compute the greatest cost path from the provided source node.
-     * It updates the critical paths field with the maxmimal cost path.
-     * https://www.geeksforgeeks.org/find-longest-path-directed-acyclic-graph/
-     *
-     * @param source node to be considered
-     */
-    private static int computeCriticalPath(INode source, IGraph graph) {
-        List<INode> nodes = graph.getNodes();
-
-        Map<INode, Integer> distances = new HashMap<>();
-        Map<INode, Boolean> visited = new HashMap<>();
-        Stack<INode> stack = new Stack<>();
-
-        // Initialise distances to all vertices as negative infinity
-        // distances to source node are zero
-        for (INode node : nodes) {
-            distances.put(node, Integer.MIN_VALUE);
-            visited.put(node, false);
-        }
-        distances.put(source, source.getProcessingCost());
-
-        // topologically sort nodes into the stack
-        for (INode node : nodes) {
-            if (!visited.get(node)) {
-                topologicalSortUtil(node, visited, stack);
-            }
-        }
-
-        // process nodes in topological order
-        while (!stack.empty()) {
-            INode node = stack.pop();
-
-            if (distances.get(node) != Integer.MIN_VALUE) {
-                // iterate over node children
-                for (INode child : node.getChildren().keySet()) {
-
-                    // update distances if greater
-                    if (distances.get(child) < distances.get(node) + child.getProcessingCost()) {
-                        distances.put(child, distances.get(node) + child.getProcessingCost());
-                    }
-                }
-            }
-        }
-
-        int max = 0;
-
-        for (int distance : distances.values()) {
-            max = Math.max(max, distance);
-        }
-
-        return max;
-    }
-
-    /**
-     * Topological sort recursive function
-     *
-     * @param node    current node
-     * @param visited map of whether nodes have been visited or not
-     * @param stack   stack to push topological ordering to
-     */
-    private static void topologicalSortUtil(INode node, Map<INode, Boolean> visited, Stack<INode> stack) {
-        // mark current node as visited
-        visited.put(node, true);
-
-        // recursively call topological sort on unvisited nodes
-        for (Map.Entry<INode, Integer> child : node.getChildren().entrySet()) {
-            if (!visited.get(child.getKey())) {
-                topologicalSortUtil(child.getKey(), visited, stack);
-            }
-        }
-
-        stack.push(node);
     }
 }
