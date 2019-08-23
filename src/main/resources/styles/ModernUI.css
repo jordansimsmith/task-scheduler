@@ -21,7 +21,7 @@ Label {
 }
 
 .chart-series-line {
-    -fx-stroke: #b43652;
+    -fx-stroke: #DD5427;
 }
 
 .chart-line-symbol {
@@ -45,13 +45,22 @@ Label {
 }
 
 .chart-plot-background {
-    -fx-background-color: #14223C;
+    -fx-background-color: transparent;
 }
 
-.default-color0.chart-pie { -fx-pie-color: #b43652; }
+.default-color0.chart-pie { -fx-pie-color: #DD5427; }
 .default-color1.chart-pie { -fx-pie-color: #1f3c62; }
 
 .chart-legend {
     -fx-background-color:  transparent;
     -fx-font-size: 10;
+}
+
+.chart-pie {
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+.categories{
+    -fx-background-color: #212543;
+    -fx-background-radius:  5;
 }

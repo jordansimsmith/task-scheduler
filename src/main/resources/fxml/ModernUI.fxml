@@ -18,64 +18,92 @@
          <children>
             <HBox prefHeight="960.0" prefWidth="1300.0">
                <children>
-                  <VBox spacing="3.0">
+                  <VBox>
                      <children>
-                        <HBox prefHeight="866.0" prefWidth="918.0">
+                        <HBox prefHeight="548.0" prefWidth="905.0">
                            <children>
                               <VBox prefHeight="572.0" prefWidth="424.0" styleClass="inputGraphContainer">
                                  <children>
-                                    <Label prefHeight="69.0" prefWidth="404.0" styleClass="subheading" text="     Input Graph">
-                                       <opaqueInsets>
-                                          <Insets />
-                                       </opaqueInsets>
-                                    </Label>
-                                    <VBox fx:id="inputGraphVBox" alignment="CENTER" prefHeight="524.0" prefWidth="403.0">
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
-                                       <padding>
-                                          <Insets top="10.0" />
-                                       </padding>
-                                       <opaqueInsets>
-                                          <Insets left="20.0" />
-                                       </opaqueInsets></VBox>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="572.0" prefWidth="525.0">
-                                 <children>
-                                    <VBox prefHeight="572.0" prefWidth="577.0" styleClass="scheduleContainer">
+                                    <VBox styleClass="categories">
                                        <children>
-                                          <Label prefHeight="63.0" prefWidth="548.0" styleClass="subheading" text="     Current Schedule" />
-                                          <VBox fx:id="outputGraphVBox" prefHeight="521.0" prefWidth="511.0" />
+                                          <Label alignment="TOP_LEFT" prefHeight="36.0" prefWidth="402.0" styleClass="subheading" text="Input Graph">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <padding>
+                                                <Insets left="15.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <VBox fx:id="inputGraphVBox" alignment="CENTER" prefHeight="524.0" prefWidth="403.0">
+                                             <padding>
+                                                <Insets top="10.0" />
+                                             </padding>
+                                             <opaqueInsets>
+                                                <Insets left="20.0" />
+                                             </opaqueInsets>
+                                          </VBox>
                                        </children>
-                                       <padding>
-                                          <Insets top="10.0" />
-                                       </padding>
                                     </VBox>
                                  </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </VBox>
+                              <VBox prefHeight="530.0" prefWidth="501.0">
+                                 <children>
+                                    <VBox prefHeight="591.0" prefWidth="486.0" styleClass="categories">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" prefHeight="63.0" prefWidth="510.0" styleClass="subheading" text="Current Schedule">
+                                             <padding>
+                                                <Insets left="15.0" top="5.0" />
+                                             </padding></Label>
+                                          <VBox fx:id="outputGraphVBox" prefHeight="530.0" prefWidth="486.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </padding>
                               </VBox>
                            </children>
                         </HBox>
-                        <VBox>
+                        <VBox prefHeight="327.0" prefWidth="905.0">
                            <children>
-                              <Label prefHeight="0.0" prefWidth="911.0" styleClass="subheading" text="      States Searched" />
-                              <HBox prefHeight="549.0" prefWidth="911.0">
+                              <VBox prefHeight="336.0" prefWidth="895.0" styleClass="categories">
                                  <children>
-                                    <AnchorPane>
+                                    <Label alignment="TOP_LEFT" prefHeight="46.0" prefWidth="868.0" styleClass="subheading" text="States Searched">
+                                       <padding>
+                                          <Insets left="15.0" top="5.0" />
+                                       </padding></Label>
+                                    <HBox prefHeight="202.0" prefWidth="868.0">
                                        <children>
-                                          <Label fx:id="progressBarInfo" layoutX="4.0" layoutY="14.0" prefHeight="30.0" prefWidth="456.0" text="Label" />
+                                          <AnchorPane prefHeight="253.0" prefWidth="433.0" />
+                                          <VBox prefHeight="260.0" prefWidth="477.0">
+                                             <children>
+                                                <PieChart fx:id="dataChart" prefHeight="198.0" prefWidth="445.0">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin></PieChart>
+                                                <Label fx:id="progressBarInfo" alignment="CENTER" prefHeight="30.0" prefWidth="456.0" text="Label" textAlignment="CENTER">
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets></Label>
+                                             </children>
+                                          </VBox>
                                        </children>
-                                    </AnchorPane>
-                                    <VBox prefHeight="260.0" prefWidth="477.0">
-                                       <children>
-                                          <PieChart fx:id="dataChart" />
-                                       </children></VBox>
+                                    </HBox>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </children>
                            <padding>
-                              <Insets top="10.0" />
+                              <Insets bottom="10.0" left="10.0" />
                            </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                         </VBox>
                      </children>
                   </VBox>
@@ -83,20 +111,34 @@
                      <children>
                         <VBox prefHeight="400.0" prefWidth="328.0" styleClass="cpuGraphContainer">
                            <children>
-                              <Label contentDisplay="CENTER" prefHeight="63.0" prefWidth="389.0" styleClass="subheading" text="    CPU" />
-                              <VBox fx:id="cpuVBox" prefHeight="336.0" prefWidth="380.0" />
+                              <VBox styleClass="categories">
+                                 <children>
+                                    <Label alignment="TOP_LEFT" contentDisplay="CENTER" prefHeight="33.0" prefWidth="365.0" styleClass="subheading" text="CPU">
+                                       <padding>
+                                          <Insets left="15.0" top="5.0" />
+                                       </padding></Label>
+                                    <VBox fx:id="cpuVBox" prefHeight="344.0" prefWidth="365.0" />
+                                 </children>
+                              </VBox>
                            </children>
                            <padding>
-                              <Insets top="10.0" />
+                              <Insets right="10.0" top="10.0" />
                            </padding>
                         </VBox>
                         <VBox prefHeight="471.0" prefWidth="328.0">
                            <children>
-                              <Label prefHeight="58.0" prefWidth="315.0" styleClass="subheading" text="   Memory " />
-                              <VBox fx:id="memoryVbox" prefHeight="411.0" prefWidth="380.0" />
+                              <VBox styleClass="categories">
+                                 <children>
+                                    <Label alignment="TOP_LEFT" prefHeight="29.0" prefWidth="376.0" styleClass="subheading" text="Memory ">
+                                       <padding>
+                                          <Insets left="15.0" top="5.0" />
+                                       </padding></Label>
+                                    <VBox fx:id="memoryVbox" prefHeight="429.0" prefWidth="376.0" />
+                                 </children>
+                              </VBox>
                            </children>
                            <padding>
-                              <Insets top="10.0" />
+                              <Insets bottom="10.0" right="10.0" />
                            </padding>
                         </VBox>
                      </children>

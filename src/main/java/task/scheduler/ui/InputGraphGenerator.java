@@ -65,7 +65,7 @@ public class InputGraphGenerator {
         });
 
         g.graphAttrs()
-                .add(Color.rgb(	20, 34, 60).background())
+                .add(Color.rgb(	33, 37, 67).background())
                 .nodes().forEach(node ->
                 node.add(
                         Color.rgb(180, 73, 91),
