@@ -23,10 +23,16 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
+/**
+ * FX Controller for visualisation
+ */
 public class FXController implements IVisualization, Initializable {
 
     private static final int UPDATE_INTERVAL_MS = 1000;
 
+    /**
+     * FXML linked elements
+     */
     @FXML
     private Pane inputGraphPane;
 
@@ -39,19 +45,22 @@ public class FXController implements IVisualization, Initializable {
     @FXML
     private ProgressBar progressBar;
 
+    // For cpu visualisation
     @FXML
     private Pane cpuPane;
     LineChart<Number, Number> cpuChart;
     private List<XYChart.Series<Number, Number>> cpuUsageSeries = new ArrayList<>();
 
+    // For memory visualisation
     @FXML
     private Pane memoryPane;
 
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
     private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
     private IScheduler.SchedulerState schedulerState;
-    private double memoryStartTime;
+    private double visualisationStartTime;
 
+    // Internal elements used by scheduler
     private IGraph graph;
     private IScheduler scheduler;
 
@@ -60,6 +69,9 @@ public class FXController implements IVisualization, Initializable {
         this.scheduler = scheduler;
     }
 
+    /**
+     * Pushes a schedule to be rendered, also includes info about the number of schedules searched
+     */
     @Override
     public void pushSchedule(ISchedule schedule, int schedulesSearched) {
         Platform.runLater(() -> {
@@ -77,6 +89,9 @@ public class FXController implements IVisualization, Initializable {
         });
     }
 
+    /**
+     * Pushes scheduler state used to update GUI elements about current status
+     */
     @Override
     public void pushState(IScheduler.SchedulerState newState) {
         // update scheduler state and set title
@@ -87,14 +102,19 @@ public class FXController implements IVisualization, Initializable {
         });
     }
 
+    /**
+     * Pushes RAM and CPU usage stats
+     * @param ramUsage RAM usage in bytes
+     * @param cpuUsage List of doubles, each double representing cpu usage on a core, range 0-1 (1 being 100%)
+     */
     @Override
     public void pushStats(double ramUsage, List<Double> cpuUsage) {
         // update memory and cpu graph
         Platform.runLater(() -> {
-            if (this.memoryStartTime < 1) {
-                memoryStartTime = System.currentTimeMillis();
+            if (this.visualisationStartTime < 1) {
+                visualisationStartTime = System.currentTimeMillis();
             }
-            double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
+            double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
 
             for (int i = 0; i <  cpuUsage.size(); i++) {
@@ -108,6 +128,8 @@ public class FXController implements IVisualization, Initializable {
             }
         });
     }
+
+    // Initialisation functions for several elements
 
     private void initialiseOutputGraph() {
         // initialise schedule visualiser
@@ -165,11 +187,12 @@ public class FXController implements IVisualization, Initializable {
         return joiner.toString();
     }
 
+    // Initializes the whole GUI
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // setup views
         initialiseOutputGraph();
-        //initialiseInputGraph();
+        initialiseInputGraph();
         initialiseMemoryUsage();
         initialiseCPUUsage();
 
