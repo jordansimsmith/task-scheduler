@@ -10,14 +10,16 @@ import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.Schedule;
 import task.scheduler.schedule.SchedulerCache;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 
 public class IterativeDeepeningAStar implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(IterativeDeepeningAStar.class);
     private static final int FOUND = -2;
     private IGraph graph;
     private Schedule answer;
-    private int searchCount = 0;
     private static SchedulerState state = SchedulerState.NOT_STARTED;
 
     private ISchedule currentSchedule;
@@ -40,23 +42,34 @@ public class IterativeDeepeningAStar implements IScheduler {
         int limit = initialState.getHeuristicValue();
         Stack<Schedule> stack = new Stack<>();
 
+        // the iterative deepening loop, repeatedly applies the astar algorithm up to the f-value limit
         while(true) {
             stack.push(initialState);
             int result = DepthLimitedSearchIterative(stack, limit);
 
             if(result == FOUND){
-                logger.info(searchCount + " states searched");
+                logger.info(schedulesSearched + " states searched");
                 return answer;
             }
 
             if(result == Integer.MAX_VALUE) {
+                logger.error("No complete solution was found.");
                 return null;
             }
 
+            // set new limit as the min f-value that exceeded the previous limit
             limit = result;
         }
     }
 
+    /**
+     * Expands the state tree of the Schedule(s) on the given stack but stops expansion
+     * once the given limit has been reached.
+     *
+     * @param stack containing the Schedules being expanded
+     * @param limit the max f-value to which to probe to
+     * @return the minimum f-value that exceeded the given limit
+     */
     private int DepthLimitedSearchIterative(Stack<Schedule> stack, int limit) {
         int min = Integer.MAX_VALUE;
 
@@ -80,13 +93,23 @@ public class IterativeDeepeningAStar implements IScheduler {
                 for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
                     Schedule child = currentState.expand(node, i);
                     stack.push(child);
-                    searchCount++;
+                    this.schedulesSearched++;
                 }
             }
         }
         return min;
     }
 
+    /**
+     * Expands the state tree of the Schedule(s) on the given stack but stops expansion
+     * once the given limit has been reached. This method uses a recursive approach so
+     * requires more memory.
+     *
+     * @param stack  containing the Schedules being expanded
+     * @param closed the schedule strings of the Schedules that have already been visited
+     * @param limit  the max f-value to which to probe to
+     * @return the minimum f-value that exceeded the given limit
+     */
     private int DepthLimitedSearchRecursive(Stack<Schedule> stack, Set<String> closed, int limit) {
         Schedule currentState = stack.peek();
         int f = currentState.getHeuristicValue();
@@ -106,6 +129,8 @@ public class IterativeDeepeningAStar implements IScheduler {
         for (INode node : currentState.getFree()) {
             for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
                 Schedule child = currentState.expand(node, i);
+
+                // do not revisit duplicate states
                 if (!closed.contains(child.getScheduleString())) {
                     closed.add(child.getScheduleString());
                     stack.push(child);
@@ -117,7 +142,7 @@ public class IterativeDeepeningAStar implements IScheduler {
 
                     min = Math.min(t, min);
                     stack.pop();
-                    searchCount++;
+                    this.schedulesSearched++;
                 }
             }
         }

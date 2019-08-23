@@ -10,12 +10,13 @@ import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.Schedule;
 import task.scheduler.schedule.SchedulerCache;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 public class IterativeDeepeningAStarTT implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(IterativeDeepeningAStarTT.class);
 
-    private static final int NOT_FOUND = -1;
     private static final int FOUND = -2;
     private IGraph graph;
     private Schedule answer;
@@ -55,6 +56,14 @@ public class IterativeDeepeningAStarTT implements IScheduler {
         }
     }
 
+    /**
+     * Expands the state tree of the Schedule(s) on the given stack but stops expansion
+     * once the given limit has been reached.
+     *
+     * @param stack containing the Schedules being expanded
+     * @param limit the max f-value to which to probe to
+     * @return the minimum f-value that exceeded the given limit
+     */
     private int DepthLimitedSearchIterative(Stack<Schedule> stack, int limit) {
         int min = Integer.MAX_VALUE;
 
@@ -77,6 +86,8 @@ public class IterativeDeepeningAStarTT implements IScheduler {
             for (INode node : currentState.getFree()) {
                 for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
                     Schedule child = currentState.expand(node, i);
+
+                    // check if this state has already been expanded beyond this limit
                     if (lookUp(child) <= limit) {
                         stack.push(child);
                         this.schedulesSearched++;
@@ -90,6 +101,15 @@ public class IterativeDeepeningAStarTT implements IScheduler {
         return min;
     }
 
+    /**
+     * Expands the state tree of the given Schedule but stops expansion
+     * once the given limit has been reached. This method uses a recursive approach so
+     * requires more memory.
+     *
+     * @param currentState the schedule at which to begin tree expansion
+     * @param limit        the max f-value to which to probe to
+     * @return the minimum f-value that exceeded the given limit
+     */
     private int DepthLimitedSearchRecursive(Schedule currentState, int limit) {
         this.schedulesSearched++;
         if (currentState.getScheduledNodeCount() == graph.getNodeCount()) {
@@ -103,6 +123,8 @@ public class IterativeDeepeningAStarTT implements IScheduler {
             for (int i = 1; i <= Config.getInstance().getNumberOfCores(); i++) {
                 Schedule childState = currentState.expand(node, i);
                 int t;
+
+                // check if this state has already been expanded beyond this limit
                 if (lookUp(childState) <= limit) {
                     t = DepthLimitedSearchRecursive(childState, limit);
                 } else {
@@ -124,9 +146,11 @@ public class IterativeDeepeningAStarTT implements IScheduler {
     /**
      * Looks for the corresponding value of the given Schedule in the transposition table.
      * The value returned is the min f-value that was returned by by doing a depth-limited
-     * search on the given schedule.
-     * @param childState
-     * @return
+     * search on the given schedule. If no value is found, its f-value is stored in the
+     * transposition table.
+     *
+     * @param childState to find in the transposition table
+     * @return the f-value found in the transposition table
      */
     private int lookUp(Schedule childState) {
         if (transpositionTable.containsKey(childState.getScheduleString())){
