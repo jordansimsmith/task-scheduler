@@ -168,6 +168,10 @@ public class FXController implements IVisualization, Initializable {
         cpuXAxis.setLabel("Time (s)");
         NumberAxis cpuYAxis = new NumberAxis();
         cpuYAxis.setLabel("CPU Usage %");
+        cpuYAxis.setForceZeroInRange(true);
+        cpuYAxis.setAutoRanging(false);
+        cpuYAxis.setUpperBound(100);
+        cpuYAxis.setLowerBound(0);
 
         cpuChart = new LineChart<>(cpuXAxis, cpuYAxis);
         cpuChart.setLegendVisible(false);
