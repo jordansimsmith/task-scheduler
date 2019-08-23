@@ -62,6 +62,7 @@
                                                 <Insets left="15.0" top="5.0" />
                                              </padding></Label>
                                           <VBox fx:id="outputGraphVBox" prefHeight="530.0" prefWidth="486.0" />
+                                          <Label styleClass="chart-info-label" prefHeight="30.0" prefWidth="495.0" text="Click on the schedules to see its parents and child" />
                                        </children>
                                     </VBox>
                                  </children>

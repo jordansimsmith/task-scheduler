@@ -164,7 +164,8 @@ public class FXController implements IVisualization, Initializable {
     }
 
     private void initialiseChartData(){
-        pieChartData.add(new PieChart.Data("Log States", 0) );
+        //The order that this gets added into the observable matters as it gets accessed using index values later
+        pieChartData.add(new PieChart.Data("Log Searched States", 0) );
         pieChartData.add(new PieChart.Data("Log All States", 0) );
         dataChart.setData(pieChartData);
         dataChart.setLegendVisible(false);
