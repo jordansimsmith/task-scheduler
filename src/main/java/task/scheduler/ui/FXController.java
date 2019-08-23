@@ -41,7 +41,8 @@ public class FXController implements IVisualization, Initializable {
 
     @FXML
     private Pane cpuPane;
-    private List<ProgressBar> cpuBars;
+    LineChart<Number, Number> cpuChart;
+    private List<XYChart.Series<Number, Number>> cpuUsageSeries = new ArrayList<>();
 
     @FXML
     private Pane memoryPane;
@@ -57,8 +58,6 @@ public class FXController implements IVisualization, Initializable {
     public FXController(IGraph graph, IScheduler scheduler) {
         this.graph = graph;
         this.scheduler = scheduler;
-
-        cpuBars = new ArrayList<>();
     }
 
     @Override
@@ -99,19 +98,13 @@ public class FXController implements IVisualization, Initializable {
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
 
             for (int i = 0; i <  cpuUsage.size(); i++) {
-                if (this.cpuBars.size() <= i)   {
-                    ProgressBar cpuBar = new ProgressBar();
-                    this.cpuBars.add(cpuBar);
-
-                    cpuBar.prefWidthProperty().bind(this.cpuPane.widthProperty().add(-20));
-                    cpuBar.prefHeightProperty().bind(this.cpuPane.heightProperty().divide(cpuUsage.size() + 1).add(-10));
-
-                    cpuBar.setLayoutX(10);
-                    cpuBar.layoutYProperty().bind(this.cpuPane.heightProperty().divide(4).multiply(i));
-
-                    this.cpuPane.getChildren().add(cpuBars.get(i));
+                if (this.cpuUsageSeries.size() <= i)   {
+                    XYChart.Series<Number,Number> trend = new XYChart.Series<>();
+                    this.cpuChart.getData().add(trend);
+                    this.cpuUsageSeries.add(trend);
                 }
-                cpuBars.get(i).setProgress(cpuUsage.get(i));
+
+                this.cpuUsageSeries.get(i).getData().add(new XYChart.Data<>(timeElapsed, cpuUsage.get(i)));
             }
         });
     }
@@ -131,11 +124,25 @@ public class FXController implements IVisualization, Initializable {
         NumberAxis memoryYAxis = new NumberAxis();
         memoryYAxis.setLabel("Memory Usage (Mb)");
         LineChart<Number, Number> memoryChart = new LineChart<>(memoryXAxis, memoryYAxis);
+
         memoryChart.getData().add(memoryUsageSeries);
         memoryChart.setLegendVisible(false);
         this.memoryPane.getChildren().add(memoryChart);
         memoryChart.prefWidthProperty().bind(this.memoryPane.widthProperty());
         memoryChart.prefHeightProperty().bind(this.memoryPane.heightProperty());
+    }
+
+    private void initialiseCPUUsage()   {
+        NumberAxis cpuXAxis = new NumberAxis();
+        cpuXAxis.setLabel("Time (s)");
+        NumberAxis cpuYAxis = new NumberAxis();
+        cpuYAxis.setLabel("CPU Usage %");
+
+        cpuChart = new LineChart<>(cpuXAxis, cpuYAxis);
+        cpuChart.setLegendVisible(false);
+        this.cpuPane.getChildren().add(cpuChart);
+        cpuChart.prefWidthProperty().bind(this.memoryPane.widthProperty());
+        cpuChart.prefHeightProperty().bind(this.memoryPane.heightProperty());
     }
 
     private void initialiseInputGraph() {
@@ -162,8 +169,9 @@ public class FXController implements IVisualization, Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // setup views
         initialiseOutputGraph();
-        initialiseInputGraph();
+        //initialiseInputGraph();
         initialiseMemoryUsage();
+        initialiseCPUUsage();
 
         // set up orchestrator to poll model for updates
         new Thread(new UIOrchestrator(this.scheduler, this, UPDATE_INTERVAL_MS)).start();
