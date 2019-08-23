@@ -168,13 +168,25 @@ public class FXController implements IVisualization, Initializable {
     }
 
     private void initialiseInputGraph() {
-        // initialise input graph visualisation
-        InputGraphGenerator inputGraphGenerator = new InputGraphGenerator(this.graph);
-        ImageView inputGraph = inputGraphGenerator.getGraph();
-        this.inputGraphPane.getChildren().add(inputGraph);
-        
-        inputGraph.fitWidthProperty().bind(this.inputGraphPane.widthProperty());
-        inputGraph.fitHeightProperty().bind(this.inputGraphPane.heightProperty());
+        // initialise input graph visualisation in separate thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InputGraphGenerator inputGraphGenerator = new InputGraphGenerator(graph);
+                ImageView inputGraph = inputGraphGenerator.getGraph();
+
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        // JavaFX main GUI thread
+                        inputGraphPane.getChildren().add(inputGraph);
+                        inputGraph.fitWidthProperty().bind(inputGraphPane.widthProperty());
+                        inputGraph.fitHeightProperty().bind(inputGraphPane.heightProperty());
+
+                    }
+                });
+            }
+        }).start();
     }
 
     private String getTitle() {
