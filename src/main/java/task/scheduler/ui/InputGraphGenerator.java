@@ -43,7 +43,6 @@ public class InputGraphGenerator {
      */
     private void generateGraph() {
         MutableGraph g = mutGraph("Graph1").setDirected(true).use((gr, ctx) -> {
-
             List<INode> nodes = graph.getNodes();
 
             for (INode parent : nodes) {
@@ -54,12 +53,13 @@ public class InputGraphGenerator {
                 for (INode child : childrenList) {
                     mutNode(parent.getLabel()).addLink(to(mutNode(child.getLabel())).with(Label.of(children.get(child).toString())));
                 }
+
+                //Edge case if there is only one node
+                if (parent.getChildren().size() == 0) {
+                    mutNode(parent.getLabel());
+                }
             }
 
-            //Edge case if there is only one node
-            if (nodes.size() == 1) {
-                mutNode(nodes.get(0).getLabel());
-            }
         });
 
 
