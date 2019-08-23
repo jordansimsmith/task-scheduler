@@ -51,7 +51,10 @@
                               <Pane fx:id="inputGraphPane" maxWidth="1.7976931348623157E308" minWidth="0.0">
                                  <VBox.margin>
                                     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                                 </VBox.margin></Pane>
+                                 </VBox.margin>
+                                 <children>
+                                    <ProgressBar prefHeight="20.0" prefWidth="341.0" />
+                                 </children></Pane>
                            </children>
                         </VBox>
                      </children>

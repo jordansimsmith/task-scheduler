@@ -179,6 +179,7 @@ public class FXController implements IVisualization, Initializable {
                     @Override
                     public void run() {
                         // JavaFX main GUI thread
+                        inputGraphPane.getChildren().removeAll();
                         inputGraphPane.getChildren().add(inputGraph);
                         inputGraph.fitWidthProperty().bind(inputGraphPane.widthProperty());
                         inputGraph.fitHeightProperty().bind(inputGraphPane.heightProperty());
