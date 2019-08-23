@@ -15,22 +15,22 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Note: This class is a proof of concept, therefore please ignore any bad coding practices.
+ */
 public class AStarParallel implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(AStar.class);
     private static SchedulerState state = SchedulerState.NOT_STARTED;
 
-    // TODO: Try with different sync threshold
-    public static final int SYNC_THRESHOLD = 100000;
-    // TODO: Try without duplicate detection
-    public static final boolean DUPLICATE_DETECTION = true;
+    public static final int SYNC_THRESHOLD = 100;
+    public static final boolean DUPLICATE_DETECTION = false;
     private static final int numberOfWorkers = Config.getInstance().getNumberOfThreads();
     // TODO: optimise to access int for cost instead
-    private static AtomicReference<Schedule> bestSolution = new AtomicReference<>();
+    private static AtomicInteger bestSolutionCost = new AtomicInteger(Integer.MAX_VALUE);
     private static AtomicInteger idleWorkerCount = new AtomicInteger(0);
     private static PriorityBlockingQueue<Schedule>[] priorityQueues;
     private static boolean[] hasWork;
-    private static final Set<String> closed = ConcurrentHashMap.newKeySet();
-
+    private static Set<String> closed = ConcurrentHashMap.newKeySet();
 
     private ISchedule currentSchedule;
     private int schedulesSearched;
@@ -39,16 +39,11 @@ public class AStarParallel implements IScheduler {
     public AStarParallel() {
     }
 
-    private Void aStarWorker(int id) {
+    private Schedule aStarWorker(int id) {
         PriorityBlockingQueue<Schedule> localPriorityQueue = priorityQueues[id];
-        int localBestKnown = bestSolution.get().getTotalCost();
+        int localBestKnownCost = Integer.MAX_VALUE;
+        Schedule localBestKnownSolution = null;
         int syncCounter = 0;
-
-        if(DUPLICATE_DETECTION) {
-            for(Object schedule : localPriorityQueue) {
-                closed.add(((Schedule) schedule).getScheduleString());
-            }
-        }
 
         while (idleWorkerCount.intValue() < numberOfWorkers) {
             while (!localPriorityQueue.isEmpty()) {
@@ -57,15 +52,19 @@ public class AStarParallel implements IScheduler {
 
                 if (syncCounter == SYNC_THRESHOLD) {
                     // TODO: Check, should be the same as getTotalCost for a complete solution
-                    localBestKnown = bestSolution.get().getHeuristicValue();
+                    int globalBest = bestSolutionCost.get();
+                    localBestKnownCost = Math.min(globalBest, localBestKnownCost);
                     syncCounter = 0;
                 }
 
-                if(currentState.getHeuristicValue() < localBestKnown) {
+                if(currentState.getHeuristicValue() < localBestKnownCost) {
                     if(currentState.getScheduledNodeCount() == graph.getNodeCount()) {
-                        bestSolution.set(currentState);
+                        if (currentState.getHeuristicValue() < bestSolutionCost.get()) {
+                            bestSolutionCost.set(currentState.getHeuristicValue());
+                        }
                         // TODO: not in the pseudocode, but worth?
-                        localBestKnown = currentState.getHeuristicValue();
+                        localBestKnownCost = currentState.getHeuristicValue();
+                        localBestKnownSolution = currentState;
                     }
 
                     for (INode node : currentState.getFree()) {
@@ -89,23 +88,31 @@ public class AStarParallel implements IScheduler {
                     localPriorityQueue.clear();
                 }
             }
+            stealWork(id);
+        }
+        return localBestKnownSolution;
+    }
 
-            // work stealing section
-            hasWork[id] = false;
-            idleWorkerCount.incrementAndGet();
+    private synchronized void stealWork(int id){
+        // work stealing section
+        idleWorkerCount.incrementAndGet();
 
-            // TODO: improve random number generation
-            Random r = new Random();
-            int victimThreadId = r.nextInt(numberOfWorkers);
+        // TODO: improve random number generation
+        Random r = new Random();
+        int victimThreadId = r.nextInt(numberOfWorkers);
 
-            if (hasWork[victimThreadId]) {
+        if(victimThreadId == id) {
+            victimThreadId = (victimThreadId + 1) % numberOfWorkers;
+        }
+
+        hasWork[id] = false;
+
+        if (hasWork[victimThreadId] && !priorityQueues[victimThreadId].isEmpty()) {
                 Schedule stolenState = priorityQueues[victimThreadId].poll();
-                localPriorityQueue.add(stolenState);
+                priorityQueues[id].add(stolenState);
                 hasWork[id] = true;
                 idleWorkerCount.decrementAndGet();
-            }
         }
-        return null;
     }
 
     @Override
@@ -118,7 +125,7 @@ public class AStarParallel implements IScheduler {
         this.graph = graph;
 
         state = SchedulerState.RUNNING;
-
+        closed = new HashSet<>();
         Schedule empty = new Schedule(graph.getStartNodes(), getParentCountMap(graph));
 
         Set<Schedule> seedStates = new HashSet<>();
@@ -155,7 +162,8 @@ public class AStarParallel implements IScheduler {
 
         priorityQueues = new PriorityBlockingQueue[numberOfWorkers];
         for(int i = 0; i < priorityQueues.length; i++) {
-            priorityQueues[i] = new PriorityBlockingQueue<>(decomposedList.get(i));
+            priorityQueues[i] = new PriorityBlockingQueue<>();
+            priorityQueues[i].addAll(decomposedList.get(i));
         }
 
         logger.info("placed seed states into priorityQueues");
@@ -165,23 +173,28 @@ public class AStarParallel implements IScheduler {
 
         logger.info("set has work to true");
 
-        bestSolution.set(priorityQueues[0].peek());
-        logger.info("set initial bestSolution");
-
         // now we have enough items in open
         ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
-        List<Future<Void>> futures = new ArrayList<>();
+        List<Future<Schedule>> futures = new ArrayList<>();
 
         for (int workerId = 0; workerId < numberOfWorkers; workerId++) {
             int finalWorkerId = workerId;
 
-            Future<Void> future = executor.submit(() -> aStarWorker(finalWorkerId));
+            Future<Schedule> future = executor.submit(() -> aStarWorker(finalWorkerId));
             futures.add(future);
         }
 
-        for (Future<Void> future : futures) {
+        logger.info("Futures size " + futures.size());
+
+        Schedule best = null;
+        int bestCost = Integer.MAX_VALUE;
+        for (Future<Schedule> future : futures) {
             try {
-                future.get();
+                Schedule s = future.get();
+                if (s != null && s.getTotalCost() < bestCost) {
+                    best = s;
+                    bestCost = s.getTotalCost();
+                }
 
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
@@ -189,7 +202,7 @@ public class AStarParallel implements IScheduler {
         }
 
         state = SchedulerState.STOPPED;
-        return bestSolution.get();
+        return best;
     }
 
 
