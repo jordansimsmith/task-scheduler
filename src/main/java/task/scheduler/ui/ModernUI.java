@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -43,7 +44,16 @@ public class ModernUI implements IVisualization, Initializable {
     private VBox memoryVbox;
 
     @FXML
+    private Label timeElapsedLabel;
+
+    @FXML
     private Label progressBarInfo;
+
+    @FXML
+    private ProgressIndicator progressIndicator;
+
+    @FXML
+    private Label programStatusLabel;
 
     ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();;
 
@@ -91,6 +101,14 @@ public class ModernUI implements IVisualization, Initializable {
     public void pushState(IScheduler.SchedulerState newState) {
         // update scheduler state and set title
         this.schedulerState = newState;
+        if (newState == IScheduler.SchedulerState.FINISHED){
+            Platform.runLater(() -> {
+                progressIndicator.setVisible(false);
+                programStatusLabel.setVisible(true);
+            });
+
+
+        }
         Platform.runLater(() -> {
 
             Stage stage = (Stage) this.outputGraphVBox.getScene().getWindow();
@@ -108,6 +126,8 @@ public class ModernUI implements IVisualization, Initializable {
 
         Platform.runLater(() -> {
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
+            //Updating time elapsed label
+            timeElapsedLabel.setText("Time Elapsed: " + Math.ceil(timeElapsed));
         });
     }
 
@@ -169,6 +189,10 @@ public class ModernUI implements IVisualization, Initializable {
         initialiseInputGraph();
         initialiseMemoryUsage();
         initialiseChartData();
+        //Spinning indicator
+        progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+        // Hides the button for displaying when a process has finished
+        programStatusLabel.setVisible(false);
         this.schedulesUpperBound = this.graph.getSchedulesUpperBound();
         this.schedulesUpperBoundLog = this.graph.getSchedulesUpperBoundLog();
 

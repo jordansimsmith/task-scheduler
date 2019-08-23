@@ -72,3 +72,18 @@ Label {
 .chart-info-label {
     -fx-font-size: 10;
 }
+
+.progressIndicator {
+    -fx-progress-color: rgba(180, 73, 91, 0.73);
+}
+
+.progressbar > .track {
+    -fx-background-color: transparent;
+    -fx-background-radius:0;
+    -fx-background-insets: 0, 1;
+}
+
+.statusLabel{
+    -fx-font-size: 30;
+    -fx-text-fill: rgba(42, 180, 38, 0.73);
+}

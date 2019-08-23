@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -74,16 +75,21 @@
                            <children>
                               <VBox prefHeight="336.0" prefWidth="895.0" styleClass="categories">
                                  <children>
-                                    <Label alignment="TOP_LEFT" prefHeight="46.0" prefWidth="868.0" styleClass="subheading" text="States Searched">
+                                    <Label alignment="TOP_LEFT" prefHeight="50.0" prefWidth="868.0" styleClass="subheading" text="States Searched">
                                        <padding>
                                           <Insets left="15.0" top="5.0" />
                                        </padding></Label>
                                     <HBox prefHeight="268.0" prefWidth="895.0">
                                        <children>
-                                          <AnchorPane prefHeight="228.0" prefWidth="425.0" />
+                                          <AnchorPane prefHeight="228.0" prefWidth="425.0">
+                                             <children>
+                                                <Label fx:id="timeElapsedLabel" layoutX="18.0" layoutY="194.0" prefHeight="46.0" prefWidth="386.0" text="Label" />
+                                                <Label fx:id="programStatusLabel" alignment="CENTER" layoutX="20.0" layoutY="67.0" prefHeight="61.0" prefWidth="365.0" styleClass="statusLabel" text="Label" textAlignment="CENTER" />
+                                                <ProgressIndicator fx:id="progressIndicator" layoutX="78.0" layoutY="34.0" prefHeight="149.0" prefWidth="250.0" progress="0.0" styleClass="progressIndicator" />
+                                             </children></AnchorPane>
                                           <VBox prefHeight="260.0" prefWidth="477.0">
                                              <children>
-                                                <PieChart fx:id="dataChart" prefHeight="235.0" prefWidth="474.0">
+                                                <PieChart fx:id="dataChart" prefHeight="229.0" prefWidth="474.0">
                                                    <VBox.margin>
                                                       <Insets />
                                                    </VBox.margin></PieChart>
