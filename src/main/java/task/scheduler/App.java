@@ -108,7 +108,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Font.loadFont(getClass().getResource("/fonts/Roboto-Medium.ttf").toExternalForm(), 10);
         Font.loadFont(getClass().getResource("/fonts/BebasNeue-Regular.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ModernUI.fxml"));
         FXController controller = new FXController(graph, scheduler);
