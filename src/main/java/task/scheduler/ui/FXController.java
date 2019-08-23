@@ -172,6 +172,7 @@ public class FXController implements IVisualization, Initializable {
         InputGraphGenerator inputGraphGenerator = new InputGraphGenerator(this.graph);
         ImageView inputGraph = inputGraphGenerator.getGraph();
         this.inputGraphPane.getChildren().add(inputGraph);
+        
         inputGraph.fitWidthProperty().bind(this.inputGraphPane.widthProperty());
         inputGraph.fitHeightProperty().bind(this.inputGraphPane.heightProperty());
     }

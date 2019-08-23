@@ -50,7 +50,7 @@
                               </Label>
                               <Pane fx:id="inputGraphPane" maxWidth="1.7976931348623157E308" minWidth="0.0">
                                  <VBox.margin>
-                                    <Insets right="10.0" />
+                                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                                  </VBox.margin></Pane>
                            </children>
                         </VBox>
