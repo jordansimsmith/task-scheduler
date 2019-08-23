@@ -68,8 +68,8 @@ public class InputGraphGenerator {
                 .add(Color.rgb(	33, 37, 67).background())
                 .nodes().forEach(node ->
                 node.add(
-                        Color.rgb(180, 73, 91),
-                        Style.lineWidth(4),
+                        Color.rgb(178, 71, 89),
+                        Style.lineWidth(2),
                         Color.rgb(180, 73, 91).font()));
 
         try {

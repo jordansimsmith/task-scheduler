@@ -11,7 +11,7 @@ Label {
 
 .mainLabel {
     -fx-font-size: 40;
-    -fx-text-fill: #b43652;
+    -fx-text-fill: rgba(180, 73, 91, 0.73);
 }
 .topheader{
     -fx-background-color: #0d1331;
@@ -21,7 +21,7 @@ Label {
 }
 
 .chart-series-line {
-    -fx-stroke: #DD5427;
+    -fx-stroke: #b43652;
 }
 
 .chart-line-symbol {
@@ -33,7 +33,7 @@ Label {
 .axis {
     -fx-tick-label-font-family: "Roboto Medium";
     -fx-tick-label-font-size: 0.94em;
-    -fx-tick-label-fill: #b43652;
+    -fx-tick-label-fill: rgba(180, 73, 91, 0.73);
 }
 
 .chart-vertical-grid-lines {
@@ -48,12 +48,16 @@ Label {
     -fx-background-color: transparent;
 }
 
-.default-color0.chart-pie { -fx-pie-color: #DD5427; }
+.default-color0.chart-pie { -fx-pie-color: rgba(180, 73, 91, 0.73); }
 .default-color1.chart-pie { -fx-pie-color: #1f3c62; }
 
 .chart-legend {
-    -fx-background-color:  transparent;
+    -fx-background-color: transparent;
     -fx-font-size: 10;
+}
+.chart-pie-label { /*this is what you need for labels*/
+    -fx-fill: rgba(180, 73, 91, 0.73);
+    -fx-font-size: 1em;
 }
 
 .chart-pie {
@@ -63,4 +67,8 @@ Label {
 .categories{
     -fx-background-color: #212543;
     -fx-background-radius:  5;
+}
+
+.chart-info-label {
+    -fx-font-size: 10;
 }

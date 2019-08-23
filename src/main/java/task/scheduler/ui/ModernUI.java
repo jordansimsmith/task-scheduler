@@ -140,15 +140,14 @@ public class ModernUI implements IVisualization, Initializable {
         inputGraph.setFitWidth(350);
         inputGraph.preserveRatioProperty();
         this.inputGraphVBox.getChildren().add(inputGraph);
-        //inputGraph.fitWidthProperty().bind(this.inputGraphVBox.widthProperty());
-        //inputGraph.setPreserveRatio(true);
-        //inputGraph.fitHeightProperty().bind(this.inputGraphVBox.heightProperty());
+
     }
 
     private void initialiseChartData(){
        pieChartData.add(new PieChart.Data("Log States", 0) );
-        pieChartData.add(new PieChart.Data("All States", 0) );
+        pieChartData.add(new PieChart.Data("Log All States", 0) );
        dataChart.setData(pieChartData);
+       dataChart.setLegendVisible(false);
 
     }
 

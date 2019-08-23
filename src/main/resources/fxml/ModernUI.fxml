@@ -78,12 +78,12 @@
                                        <padding>
                                           <Insets left="15.0" top="5.0" />
                                        </padding></Label>
-                                    <HBox prefHeight="202.0" prefWidth="868.0">
+                                    <HBox prefHeight="268.0" prefWidth="895.0">
                                        <children>
-                                          <AnchorPane prefHeight="253.0" prefWidth="433.0" />
+                                          <AnchorPane prefHeight="228.0" prefWidth="425.0" />
                                           <VBox prefHeight="260.0" prefWidth="477.0">
                                              <children>
-                                                <PieChart fx:id="dataChart" prefHeight="198.0" prefWidth="445.0">
+                                                <PieChart fx:id="dataChart" prefHeight="235.0" prefWidth="474.0">
                                                    <VBox.margin>
                                                       <Insets />
                                                    </VBox.margin></PieChart>
@@ -91,6 +91,14 @@
                                                    <opaqueInsets>
                                                       <Insets />
                                                    </opaqueInsets></Label>
+                                                <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="245.0" prefHeight="30.0" prefWidth="456.0" styleClass="chart-info-label" text="Data shown on the graph is log transformed" textAlignment="RIGHT">
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                   <padding>
+                                                      <Insets bottom="2.0" />
+                                                   </padding>
+                                                </Label>
                                              </children>
                                           </VBox>
                                        </children>
