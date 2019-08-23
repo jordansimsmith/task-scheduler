@@ -23,6 +23,13 @@ public interface IVisualization {
 
     /**
      * Pushes updated system resource usage information for graphs
+     * ramUsage is RAM usage in bytes
      */
-    void pushStats(double ramUsage, List<Double> cpuUsage);
+    void pushMemoryUsage(double ramUsage);
+
+    /**
+     * Updates CPU usage information for GUI
+     * @param perCoreUsage 0-1 double per CPU core expressing usage fraction
+     */
+    void pushCPUUsage(List<Double> perCoreUsage);
 }

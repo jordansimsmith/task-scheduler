@@ -2,9 +2,6 @@ package task.scheduler.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.scheduler.App;
-import task.scheduler.graph.IGraph;
-import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 
 import java.io.BufferedReader;
@@ -24,6 +21,7 @@ public class UIOrchestrator implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(UIOrchestrator.class);
 
     private IScheduler watchedScheduler;
+    private Thread cpuMonitor;
     private int interval;
 
     private IVisualization visualization;
@@ -36,6 +34,10 @@ public class UIOrchestrator implements Runnable {
         this.watchedScheduler = watchedScheduler;
         this.interval = interval;
         this.visualization = visualization;
+
+        // Launch CPU Monitor in seperate thread
+        this.cpuMonitor = new Thread(new UIOrchestratorCPUMonitor(this.visualization));
+        this.cpuMonitor.start();
     }
 
     /**
@@ -61,12 +63,14 @@ public class UIOrchestrator implements Runnable {
             } catch (InterruptedException e)    {
                 this.businessLogic();
                 logger.info("UI Thread received interrupt, will push once and shut down.");
+                cpuMonitor.interrupt();
                 this.businessLogic();
                 break;
             }
 
             IScheduler.SchedulerState currentState = this.watchedScheduler.getCurrentState();
             if (currentState == IScheduler.SchedulerState.STOPPED || currentState == IScheduler.SchedulerState.FINISHED) {
+                cpuMonitor.interrupt();
                 break;
             }
         }
@@ -79,41 +83,7 @@ public class UIOrchestrator implements Runnable {
         visualization.pushState(watchedScheduler.getCurrentState());
         visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
 
-        List<Double> cpuLoad = new LinkedList<>();
-        ProcessBuilder cpuPB = new ProcessBuilder("/bin/bash", "-c", "mpstat -A");
-        try {
-            Process cpuP = cpuPB.start();
-            cpuP.waitFor();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader((cpuP.getInputStream())));
-
-            // Skip mpstat head
-            reader.readLine();
-            reader.readLine();
-            reader.readLine();
-            // Skip all summary
-            reader.readLine();
-
-            // Read CPU lines
-            String line = reader.readLine();
-            Pattern cpuLineMatcher = Pattern.compile("^[0-9]*:[0-9]*:[0-9]*\\W*[0-9]*(\\W*[0-9]*.[0-9]*]*)*([0-9]*)$");
-            while (line != null)  {
-                Matcher m = cpuLineMatcher.matcher(line);
-                if (m.matches())    {
-                    cpuLoad.add((100 - Double.parseDouble(m.group(1)))/100);
-                } else {
-                    break;
-                }
-
-                line = reader.readLine();
-            }
-
-        } catch (IOException | InterruptedException e) {
-            logger.error("Error while polling CPU statistics");
-            e.printStackTrace();
-        }
-
         Runtime runtime = Runtime.getRuntime();
-        visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), cpuLoad);
+        visualization.pushMemoryUsage(runtime.totalMemory() - runtime.freeMemory());
     }
 }

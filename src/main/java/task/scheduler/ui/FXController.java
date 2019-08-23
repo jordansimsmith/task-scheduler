@@ -103,12 +103,11 @@ public class FXController implements IVisualization, Initializable {
     }
 
     /**
-     * Pushes RAM and CPU usage stats
+     * Pushes RAM usage stats
      * @param ramUsage RAM usage in bytes
-     * @param cpuUsage List of doubles, each double representing cpu usage on a core, range 0-1 (1 being 100%)
      */
     @Override
-    public void pushStats(double ramUsage, List<Double> cpuUsage) {
+    public void pushMemoryUsage(double ramUsage) {
         // update memory and cpu graph
         Platform.runLater(() -> {
             if (this.visualisationStartTime < 1) {
@@ -116,15 +115,25 @@ public class FXController implements IVisualization, Initializable {
             }
             double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
+        });
+    }
 
-            for (int i = 0; i <  cpuUsage.size(); i++) {
+    /**
+     * @param perCoreUsage List of doubles, each double representing cpu usage on a core, range 0-1 (1 being 100%)
+     */
+    @Override
+    public void pushCPUUsage(List<Double> perCoreUsage) {
+        Platform.runLater(() -> {
+            for (int i = 0; i <  perCoreUsage.size(); i++) {
+                double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
+
                 if (this.cpuUsageSeries.size() <= i)   {
                     XYChart.Series<Number,Number> trend = new XYChart.Series<>();
                     this.cpuChart.getData().add(trend);
                     this.cpuUsageSeries.add(trend);
                 }
 
-                this.cpuUsageSeries.get(i).getData().add(new XYChart.Data<>(timeElapsed, cpuUsage.get(i) * 100));
+                this.cpuUsageSeries.get(i).getData().add(new XYChart.Data<>(timeElapsed, perCoreUsage.get(i) * 100));
             }
         });
     }
