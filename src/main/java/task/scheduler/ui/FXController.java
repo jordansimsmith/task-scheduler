@@ -58,6 +58,8 @@ public class FXController implements IVisualization, Initializable {
     LineChart<Number, Number> cpuChart;
     private List<XYChart.Series<Number, Number>> cpuUsageSeries = new ArrayList<>();
 
+    private double cpuStartTime;
+
     // For memory visualisation
     @FXML
     private VBox memoryVbox;
@@ -66,7 +68,7 @@ public class FXController implements IVisualization, Initializable {
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
     private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
     private IScheduler.SchedulerState schedulerState;
-    private double visualisationStartTime;
+    private double memoryStartTime;
 
     // Schedules searched
     private BigDecimal schedulesUpperBound;
@@ -147,10 +149,10 @@ public class FXController implements IVisualization, Initializable {
     @Override
     public void pushMemoryUsage(double ramUsage) {
         // update memory graph
-        if (this.visualisationStartTime < 1) {
-            visualisationStartTime = System.currentTimeMillis();
+        if (this.memoryStartTime < 1) {
+            memoryStartTime = System.currentTimeMillis();
         }
-        double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
+        double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
 
         Platform.runLater(() -> {
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
@@ -166,7 +168,10 @@ public class FXController implements IVisualization, Initializable {
     public void pushCPUUsage(List<Double> perCoreUsage) {
         Platform.runLater(() -> {
             for (int i = 0; i <  perCoreUsage.size(); i++) {
-                double timeElapsed = (System.currentTimeMillis() - this.visualisationStartTime) / 1000;
+                if (this.cpuStartTime < 1)  {
+                    this.cpuStartTime = System.currentTimeMillis();
+                }
+                double timeElapsed = (System.currentTimeMillis() - this.cpuStartTime) / 1000;
 
                 if (this.cpuUsageSeries.size() <= i)   {
                     XYChart.Series<Number,Number> trend = new XYChart.Series<>();

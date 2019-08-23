@@ -46,6 +46,11 @@ Label {
 .default-color0.chart-pie { -fx-pie-color: rgba(180, 73, 91, 0.73); }
 .default-color1.chart-pie { -fx-pie-color: #1f3c62; }
 
+.default-color0.chart-series-line   { -fx-stroke: #B43652; }
+.default-color1.chart-series-line   { -fx-stroke: #DD6E37; }
+.default-color2.chart-series-line   { -fx-stroke: #EEC782; }
+.default-color3.chart-series-line   { -fx-stroke: #FFFFFF; }
+
 .chart-legend {
     -fx-background-color: transparent;
     -fx-font-size: 10;
