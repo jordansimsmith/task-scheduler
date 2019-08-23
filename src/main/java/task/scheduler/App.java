@@ -111,11 +111,10 @@ public class App extends Application {
         Font.loadFont(getClass().getResource("/fonts/Roboto-Medium.ttf").toExternalForm(), 10);
         Font.loadFont(getClass().getResource("/fonts/BebasNeue-Regular.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ModernUI.fxml"));
-        ModernUI controller = new ModernUI(graph, scheduler);
+        FXController controller = new FXController(graph, scheduler);
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
-        stage.setScene(new Scene(loader.load(), 1280, 960)); // use -10 to fix the margin on width
-        stage.setResizable(false);
+        stage.setScene(new Scene(loader.load(), 1280, 960));
         stage.show();
     }
 }

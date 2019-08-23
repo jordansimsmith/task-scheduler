@@ -81,12 +81,6 @@
                                        </padding></Label>
                                     <HBox prefHeight="268.0" prefWidth="895.0">
                                        <children>
-                                          <AnchorPane prefHeight="228.0" prefWidth="425.0">
-                                             <children>
-                                                <Label fx:id="timeElapsedLabel" layoutX="18.0" layoutY="194.0" prefHeight="46.0" prefWidth="386.0" text="Label" />
-                                                <Label fx:id="programStatusLabel" alignment="CENTER" layoutX="20.0" layoutY="67.0" prefHeight="61.0" prefWidth="365.0" styleClass="statusLabel" text="Label" textAlignment="CENTER" />
-                                                <ProgressIndicator fx:id="progressIndicator" layoutX="78.0" layoutY="34.0" prefHeight="149.0" prefWidth="250.0" progress="0.0" styleClass="progressIndicator" />
-                                             </children></AnchorPane>
                                           <VBox prefHeight="260.0" prefWidth="477.0">
                                              <children>
                                                 <PieChart fx:id="dataChart" prefHeight="229.0" prefWidth="474.0">
@@ -97,16 +91,22 @@
                                                    <opaqueInsets>
                                                       <Insets />
                                                    </opaqueInsets></Label>
-                                                <Label alignment="CENTER_RIGHT" layoutX="10.0" layoutY="245.0" prefHeight="30.0" prefWidth="456.0" styleClass="chart-info-label" text="Data shown on the graph is log transformed" textAlignment="RIGHT">
+                                                <Label layoutX="10.0" layoutY="245.0" prefHeight="30.0" prefWidth="456.0" styleClass="chart-info-label" text="Data shown on the graph is log transformed" textAlignment="RIGHT">
                                                    <opaqueInsets>
                                                       <Insets />
                                                    </opaqueInsets>
                                                    <padding>
-                                                      <Insets bottom="2.0" />
+                                                      <Insets bottom="2.0" left="2.0" />
                                                    </padding>
                                                 </Label>
                                              </children>
                                           </VBox>
+                                          <AnchorPane prefHeight="228.0" prefWidth="425.0">
+                                             <children>
+                                                <Label fx:id="timeElapsedLabel" alignment="CENTER" layoutY="206.0" prefHeight="46.0" prefWidth="302.0" text="Label" />
+                                                <Label fx:id="programStatusLabel" alignment="CENTER" layoutX="-27.0" layoutY="65.0" prefHeight="61.0" prefWidth="365.0" styleClass="statusLabel" text="Label" textAlignment="CENTER" />
+                                                <ProgressIndicator fx:id="progressIndicator" layoutX="30.0" layoutY="30.0" prefHeight="149.0" prefWidth="250.0" progress="0.0" styleClass="progressIndicator" />
+                                             </children></AnchorPane>
                                        </children>
                                     </HBox>
                                  </children>
