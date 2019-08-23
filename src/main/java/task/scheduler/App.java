@@ -68,7 +68,12 @@ public class App {
 
         // construct scheduler
         SchedulerFactory factory = new SchedulerFactory();
-        IScheduler scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        IScheduler scheduler;
+        if (Config.getInstance().isVisualise()) {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
+        } else {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        }
 
         // Start visuals
         Thread ui = null;
