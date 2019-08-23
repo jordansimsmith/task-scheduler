@@ -124,7 +124,7 @@ public class FXController implements IVisualization, Initializable {
                     this.cpuUsageSeries.add(trend);
                 }
 
-                this.cpuUsageSeries.get(i).getData().add(new XYChart.Data<>(timeElapsed, cpuUsage.get(i)));
+                this.cpuUsageSeries.get(i).getData().add(new XYChart.Data<>(timeElapsed, cpuUsage.get(i) * 100));
             }
         });
     }
