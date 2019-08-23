@@ -221,14 +221,21 @@ public class FXController implements IVisualization, Initializable {
         cpuChart.prefHeightProperty().bind(this.cpuVBox.heightProperty());
     }
 
+    /**
+     *  initialise input graph visualisation
+     */
     private void initialiseInputGraph() {
-        // initialise input graph visualisation
-        InputGraphGenerator inputGraphGenerator = new InputGraphGenerator(this.graph);
-        ImageView inputGraph = inputGraphGenerator.getGraph();
-        inputGraph.setFitWidth(350);
-        inputGraph.preserveRatioProperty();
-        this.inputGraphVBox.getChildren().add(inputGraph);
+        new Thread(() -> {
+            InputGraphGenerator inputGraphGenerator = new InputGraphGenerator(this.graph);
+            ImageView inputGraph = inputGraphGenerator.getGraph();
+            inputGraph.setFitWidth(350);
+            inputGraph.preserveRatioProperty();
 
+            Platform.runLater(() -> {
+                this.inputGraphVBox.getChildren().removeAll();
+                this.inputGraphVBox.getChildren().add(inputGraph);
+            });
+        }).start();
     }
 
     private void initialiseChartData(){

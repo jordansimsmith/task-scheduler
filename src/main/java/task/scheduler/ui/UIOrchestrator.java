@@ -24,6 +24,8 @@ public class UIOrchestrator implements Runnable {
     private Thread cpuMonitor;
     private int interval;
 
+    private boolean schedulerRunning;
+
     private IVisualization visualization;
 
     /**
@@ -34,6 +36,7 @@ public class UIOrchestrator implements Runnable {
         this.watchedScheduler = watchedScheduler;
         this.interval = interval;
         this.visualization = visualization;
+        this.schedulerRunning = true;
 
         // Launch CPU Monitor in seperate thread
         this.cpuMonitor = new Thread(new UIOrchestratorCPUMonitor(this.visualization));
@@ -49,8 +52,8 @@ public class UIOrchestrator implements Runnable {
         while (true)    {
             long start = System.currentTimeMillis();
             if (Thread.currentThread().isInterrupted()) {
-                logger.info("UI Thread received interrupt, will push once and shut down.");
-                this.businessLogic();
+                logger.info("UI Thread received interrupt, will shut down.");
+                cpuMonitor.interrupt();
                 break;
             }
 
@@ -61,17 +64,14 @@ public class UIOrchestrator implements Runnable {
                 long sleep = interval - (System.currentTimeMillis() - start);
                 Thread.sleep(sleep > 0 ? sleep : 1);
             } catch (InterruptedException e)    {
-                this.businessLogic();
-                logger.info("UI Thread received interrupt, will push once and shut down.");
+                logger.info("UI Thread received interrupt, will shut down.");
                 cpuMonitor.interrupt();
-                this.businessLogic();
                 break;
             }
 
             IScheduler.SchedulerState currentState = this.watchedScheduler.getCurrentState();
             if (currentState == IScheduler.SchedulerState.STOPPED || currentState == IScheduler.SchedulerState.FINISHED) {
-                cpuMonitor.interrupt();
-                break;
+                this.schedulerRunning = false;
             }
         }
     }
@@ -80,8 +80,10 @@ public class UIOrchestrator implements Runnable {
      * Polls execution thread(s) for information, and provides to UI
      */
     private void businessLogic() {
-        visualization.pushState(watchedScheduler.getCurrentState());
-        visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
+        if (schedulerRunning) {
+            visualization.pushState(watchedScheduler.getCurrentState());
+            visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
+        }
 
         Runtime runtime = Runtime.getRuntime();
         visualization.pushMemoryUsage(runtime.totalMemory() - runtime.freeMemory());
