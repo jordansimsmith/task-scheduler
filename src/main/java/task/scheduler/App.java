@@ -20,7 +20,6 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.ui.FXController;
-import task.scheduler.ui.ModernUI;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -113,7 +112,7 @@ public class App extends Application {
         FXController controller = new FXController(graph, scheduler);
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
-        stage.setScene(new Scene(loader.load(), 1280, 960));
+        stage.setScene(new Scene(loader.load(), 1300, 960));
         stage.show();
     }
 }

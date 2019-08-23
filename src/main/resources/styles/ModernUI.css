@@ -83,6 +83,6 @@ Label {
 }
 
 .statusLabel{
-    -fx-font-size: 30;
+    -fx-font-size: 50;
     -fx-text-fill: rgba(42, 180, 38, 0.73);
 }
