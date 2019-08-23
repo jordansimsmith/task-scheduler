@@ -20,6 +20,7 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.ui.FXController;
+import task.scheduler.ui.ModernUI;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -108,11 +109,12 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Font.loadFont(getClass().getResource("/fonts/Roboto-Medium.ttf").toExternalForm(), 10);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/new_panel_view.fxml"));
-        FXController controller = new FXController(graph, scheduler);
+        Font.loadFont(getClass().getResource("/fonts/BebasNeue-Regular.ttf").toExternalForm(), 10);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ModernUI.fxml"));
+        ModernUI controller = new ModernUI(graph, scheduler);
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
-        stage.setScene(new Scene(loader.load(), 1300, 720)); // use -10 to fix the margin on width
+        stage.setScene(new Scene(loader.load(), 1280, 960)); // use -10 to fix the margin on width
         stage.setResizable(false);
         stage.show();
     }

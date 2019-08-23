@@ -1,0 +1,57 @@
+.background {
+    -fx-background-color: #14223C;
+}
+
+
+Label {
+    -fx-font-family: "Bebas Neue Regular";
+    -fx-text-fill: rgba(180, 73, 91, 0.73);
+    -fx-font-size: 25;
+}
+
+.mainLabel {
+    -fx-font-size: 40;
+    -fx-text-fill: #b43652;
+}
+.topheader{
+    -fx-background-color: #0d1331;
+}
+.middle-element-top {
+
+}
+
+.chart-series-line {
+    -fx-stroke: #b43652;
+}
+
+.chart-line-symbol {
+    -fx-background-radius: 0px;
+    -fx-padding: 0px;
+}
+
+
+.axis {
+    -fx-tick-label-font-family: "Roboto Medium";
+    -fx-tick-label-font-size: 0.94em;
+    -fx-tick-label-fill: #b43652;
+}
+
+.chart-vertical-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: transparent;
+}
+
+.chart-plot-background {
+    -fx-background-color: #14223C;
+}
+
+.default-color0.chart-pie { -fx-pie-color: #b43652; }
+.default-color1.chart-pie { -fx-pie-color: #1f3c62; }
+
+.chart-legend {
+    -fx-background-color:  transparent;
+    -fx-font-size: 10;
+}
