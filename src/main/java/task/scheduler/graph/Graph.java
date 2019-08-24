@@ -6,6 +6,8 @@ import task.scheduler.exception.DotFormatException;
 import task.scheduler.exception.DotNodeMissingException;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -135,4 +137,19 @@ public class Graph implements IGraph {
 
         return Math.log(Math.pow(P, nodes.size())) + nFactorialLog;
     }
+
+    @Override
+    public BigDecimal getSchedulesUpperBound() {
+        int P = Config.getInstance().getNumberOfCores();
+        int n = nodes.size();
+        BigDecimal nFactorial = BigDecimal.valueOf(1);
+
+        while (n > 0)   {
+            nFactorial = BigDecimal.valueOf(n).multiply(nFactorial);
+            n--;
+        }
+        return nFactorial.multiply( BigDecimal.valueOf( (int) Math.pow(P, n)));
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package task.scheduler.ui;
 
+import guru.nidi.graphviz.attribute.Color;
 import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.attribute.Style;
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
@@ -51,7 +53,7 @@ public class InputGraphGenerator {
 
 
                 for (INode child : childrenList) {
-                    mutNode(parent.getLabel()).addLink(to(mutNode(child.getLabel())).with(Label.of(children.get(child).toString())));
+                    mutNode(parent.getLabel()).addLink(to(mutNode(child.getLabel())).with(Label.of(children.get(child).toString()), Color.ROSYBROWN, Color.ROSYBROWN3.font()));
                 }
 
                 //Edge case if there is only one node
@@ -62,12 +64,21 @@ public class InputGraphGenerator {
 
         });
 
+        g.graphAttrs()
+                .add(Color.rgb(	33, 37, 67).background())
+                .nodes().forEach(node ->
+                node.add(
+                        Color.rgb(178, 71, 89),
+                        Style.lineWidth(2),
+                        Color.rgb(180, 73, 91).font()));
 
         try {
             Graphviz.fromGraph(g).width(900).render(Format.PNG).toFile(new File(".tmp/input-graph.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
 

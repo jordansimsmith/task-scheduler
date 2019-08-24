@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BNB implements IScheduler {
     private static final Logger logger = LoggerFactory.getLogger(BNB.class);
     private static SchedulerUtils schedulerUtils = new SchedulerUtils();
+    private static SchedulerState state = SchedulerState.NOT_STARTED;
 
     private AtomicInteger upperBound = new AtomicInteger(Integer.MAX_VALUE);
     private AtomicReference<Schedule> bestSchedule = new AtomicReference<>();
@@ -34,6 +35,7 @@ public class BNB implements IScheduler {
         SchedulerCache.populateTotalNodeWeighting(graph);
         SchedulerCache.populateSortedNodes(graph);
         SchedulerCache.populateBottomLevelCache(graph);
+        state = SchedulerState.RUNNING;
 
         // initialise BNB DFS variables
         Stack<Schedule> stack = new Stack<>();
@@ -55,6 +57,7 @@ public class BNB implements IScheduler {
 
         // success
         logger.info("BNB searched " + this.schedulesSearched + " states");
+        state = SchedulerState.FINISHED;
         return this.bestSchedule.get();
     }
 
@@ -76,7 +79,7 @@ public class BNB implements IScheduler {
                         Schedule child = s.expand(node, p);
 
                         // pruning
-                        if (child.getTotalCost() <= this.upperBound.get()) {
+                        if (child.getHeuristicValue() <= this.upperBound.get()) {
 
                             // duplicate detection
                             if (!seenSchedules.contains(child.getScheduleString())) {
@@ -120,6 +123,6 @@ public class BNB implements IScheduler {
 
     @Override
     public SchedulerState getCurrentState() {
-        return null;
+        return state;
     }
 }

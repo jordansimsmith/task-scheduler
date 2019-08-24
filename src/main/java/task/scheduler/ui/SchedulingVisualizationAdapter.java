@@ -8,6 +8,7 @@ import task.scheduler.common.Tuple;
 import task.scheduler.graph.IGraph;
 import task.scheduler.graph.INode;
 import task.scheduler.schedule.ISchedule;
+
 import java.util.*;
 
 /**
@@ -69,7 +70,7 @@ public class SchedulingVisualizationAdapter {
                 Platform.runLater(() -> {
                     SchedulingVisualization.DetailedInformation s = new SchedulingVisualization.DetailedInformation(visualNode);
                     XYChart.Series series = seriesMap.get(visualNode.getScheduledProcessor());
-                    XYChart.Data data = new XYChart.Data(visualNode.getStartPos(), "P" + visualNode.getScheduledProcessor(), s);
+                    XYChart.Data<Number, String> data = new XYChart.Data<>(visualNode.getStartPos(), "P" + visualNode.getScheduledProcessor(), s);
                     series.getData().add(data);
                     data.getNode().setOnMouseClicked(event -> setSelectionListenerAction(graph, visualNode, schedule, data));
 
@@ -185,10 +186,8 @@ public class SchedulingVisualizationAdapter {
         yAxis.setTickLabelFill(Color.CHOCOLATE);
         yAxis.setTickLabelGap(10);
 
-        chart.setTitle("Scheduling");
         chart.setLegendVisible(false);
         chart.setBlockHeight(50);
-
 
         for (int p = 1; p <= Config.getInstance().getNumberOfCores(); p++) {
             final XYChart.Series series = new XYChart.Series();

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="960.0" prefWidth="1280.0" styleClass="background" stylesheets="@../styles/ModernUI.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="86.0" prefWidth="1300.0" styleClass="topheader">
+         <children>
+            <Label alignment="CENTER" prefHeight="90.0" prefWidth="375.0" styleClass="mainLabel" text="Task Scheduler" textAlignment="CENTER" />
+         </children>
+      </HBox>
+      <VBox layoutY="93.0" prefHeight="866.0" prefWidth="1300.0">
+         <children>
+            <HBox prefHeight="960.0" prefWidth="1300.0">
+               <children>
+                  <VBox>
+                     <children>
+                        <HBox prefHeight="548.0" prefWidth="905.0">
+                           <children>
+                              <VBox prefHeight="572.0" prefWidth="424.0" styleClass="inputGraphContainer">
+                                 <children>
+                                    <VBox styleClass="categories">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" prefHeight="36.0" prefWidth="402.0" styleClass="subheading" text="Input Graph">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <padding>
+                                                <Insets left="15.0" top="5.0" />
+                                             </padding>
+                                          </Label>
+                                          <VBox fx:id="inputGraphVBox" alignment="CENTER" prefHeight="524.0" prefWidth="403.0">
+                                             <padding>
+                                                <Insets top="10.0" />
+                                             </padding>
+                                             <opaqueInsets>
+                                                <Insets left="20.0" />
+                                             </opaqueInsets>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                              </VBox>
+                              <VBox prefHeight="530.0" prefWidth="501.0">
+                                 <children>
+                                    <VBox prefHeight="591.0" prefWidth="486.0" styleClass="categories">
+                                       <children>
+                                          <Label alignment="TOP_LEFT" prefHeight="63.0" prefWidth="510.0" styleClass="subheading" text="Current Schedule">
+                                             <padding>
+                                                <Insets left="15.0" top="5.0" />
+                                             </padding></Label>
+                                          <VBox fx:id="outputGraphVBox" prefHeight="530.0" prefWidth="486.0" />
+                                          <Label prefHeight="30.0" prefWidth="495.0" styleClass="chart-info-label" text="Click on the schedules to see its parents and child">
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets bottom="3.0" left="3.0" />
+                                             </padding></Label>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                        </HBox>
+                        <VBox prefHeight="327.0" prefWidth="905.0">
+                           <children>
+                              <VBox prefHeight="336.0" prefWidth="895.0" styleClass="categories">
+                                 <children>
+                                    <Label alignment="TOP_LEFT" prefHeight="50.0" prefWidth="868.0" styleClass="subheading" text="States Searched">
+                                       <padding>
+                                          <Insets left="15.0" top="5.0" />
+                                       </padding></Label>
+                                    <HBox prefHeight="268.0" prefWidth="895.0">
+                                       <children>
+                                          <VBox prefHeight="260.0" prefWidth="477.0">
+                                             <children>
+                                                <PieChart fx:id="dataChart" prefHeight="229.0" prefWidth="474.0">
+                                                   <VBox.margin>
+                                                      <Insets />
+                                                   </VBox.margin></PieChart>
+                                                <Label fx:id="progressBarInfo" alignment="CENTER" prefHeight="30.0" prefWidth="456.0" text="Label" textAlignment="CENTER">
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets></Label>
+                                                <Label layoutX="10.0" layoutY="245.0" prefHeight="30.0" prefWidth="456.0" styleClass="chart-info-label" text="Data shown on the graph is log transformed" textAlignment="RIGHT">
+                                                   <opaqueInsets>
+                                                      <Insets />
+                                                   </opaqueInsets>
+                                                   <padding>
+                                                      <Insets bottom="2.0" left="2.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                          </VBox>
+                                          <AnchorPane prefHeight="228.0" prefWidth="425.0">
+                                             <children>
+                                                <Label fx:id="timeElapsedLabel" alignment="CENTER" layoutY="206.0" prefHeight="46.0" prefWidth="312.0" text="Time Elapsed: 0.0" />
+                                                <Label fx:id="programStatusLabel" alignment="CENTER" layoutX="-26.0" layoutY="81.0" prefHeight="61.0" prefWidth="365.0" styleClass="statusLabel" text="Done" textAlignment="CENTER" />
+                                                <ProgressIndicator fx:id="progressIndicator" layoutX="31.0" layoutY="44.0" prefHeight="149.0" prefWidth="250.0" progress="0.0" styleClass="progressIndicator" />
+                                                <Label fx:id="currentCostLabel" alignment="TOP_CENTER" prefHeight="46.0" prefWidth="302.0" textAlignment="CENTER" />
+                                             </children></AnchorPane>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" />
+                           </padding>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="464.0" layoutY="10.0" prefHeight="866.0" prefWidth="396.0">
+                     <children>
+                        <VBox prefHeight="400.0" prefWidth="328.0" styleClass="cpuGraphContainer">
+                           <children>
+                              <VBox styleClass="categories">
+                                 <children>
+                                    <Label alignment="TOP_LEFT" contentDisplay="CENTER" prefHeight="33.0" prefWidth="365.0" styleClass="subheading" text="CPU">
+                                       <padding>
+                                          <Insets left="15.0" top="5.0" />
+                                       </padding></Label>
+                                    <VBox fx:id="cpuVBox" prefHeight="344.0" prefWidth="365.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox prefHeight="471.0" prefWidth="328.0">
+                           <children>
+                              <VBox styleClass="categories">
+                                 <children>
+                                    <Label alignment="TOP_LEFT" prefHeight="29.0" prefWidth="376.0" styleClass="subheading" text="Memory ">
+                                       <padding>
+                                          <Insets left="15.0" top="5.0" />
+                                       </padding></Label>
+                                    <VBox fx:id="memoryVbox" prefHeight="429.0" prefWidth="376.0" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" right="10.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -2,9 +2,15 @@ package task.scheduler.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import task.scheduler.App;
-import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.IScheduler;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The UI Orchestrator runs in its own thread, and is responsible for polling the algorithm execution thread(s) for
@@ -12,10 +18,13 @@ import task.scheduler.schedule.IScheduler;
  * Stops in response to interruption
  */
 public class UIOrchestrator implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger logger = LoggerFactory.getLogger(UIOrchestrator.class);
 
     private IScheduler watchedScheduler;
+    private Thread cpuMonitor;
     private int interval;
+
+    private boolean schedulerRunning;
 
     private IVisualization visualization;
 
@@ -27,6 +36,11 @@ public class UIOrchestrator implements Runnable {
         this.watchedScheduler = watchedScheduler;
         this.interval = interval;
         this.visualization = visualization;
+        this.schedulerRunning = true;
+
+        // Launch CPU Monitor in seperate thread
+        this.cpuMonitor = new Thread(new UIOrchestratorCPUMonitor(this.visualization));
+        this.cpuMonitor.start();
     }
 
     /**
@@ -38,8 +52,8 @@ public class UIOrchestrator implements Runnable {
         while (true)    {
             long start = System.currentTimeMillis();
             if (Thread.currentThread().isInterrupted()) {
-                logger.info("UI Thread received interrupt, will push once and shut down.");
-                this.businessLogic();
+                logger.info("UI Thread received interrupt, will shut down.");
+                cpuMonitor.interrupt();
                 break;
             }
 
@@ -50,12 +64,15 @@ public class UIOrchestrator implements Runnable {
                 long sleep = interval - (System.currentTimeMillis() - start);
                 Thread.sleep(sleep > 0 ? sleep : 1);
             } catch (InterruptedException e)    {
-                this.businessLogic();
-                logger.info("UI Thread received interrupt, will push once and shut down.");
-                this.businessLogic();
+                logger.info("UI Thread received interrupt, will shut down.");
+                cpuMonitor.interrupt();
                 break;
             }
 
+            IScheduler.SchedulerState currentState = this.watchedScheduler.getCurrentState();
+            if (currentState == IScheduler.SchedulerState.STOPPED || currentState == IScheduler.SchedulerState.FINISHED) {
+                this.schedulerRunning = false;
+            }
         }
     }
 
@@ -63,10 +80,11 @@ public class UIOrchestrator implements Runnable {
      * Polls execution thread(s) for information, and provides to UI
      */
     private void businessLogic() {
+        if (schedulerRunning) {
+            visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
+        }
         visualization.pushState(watchedScheduler.getCurrentState());
-        visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
-
         Runtime runtime = Runtime.getRuntime();
-        visualization.pushStats(runtime.totalMemory() - runtime.freeMemory(), 0);
+        visualization.pushMemoryUsage(runtime.totalMemory() - runtime.freeMemory());
     }
 }

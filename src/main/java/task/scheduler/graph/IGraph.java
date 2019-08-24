@@ -1,5 +1,7 @@
 package task.scheduler.graph;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -34,4 +36,10 @@ public interface IGraph {
      * @return logged double of the result
      */
     double getSchedulesUpperBoundLog();
+
+    /**
+     * Returns the theoretical upper bound on the number of schedules that could be searched for this graph
+     * @return BigInteger of the result
+     */
+    BigDecimal getSchedulesUpperBound();
 }
