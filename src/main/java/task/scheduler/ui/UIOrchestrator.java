@@ -81,10 +81,9 @@ public class UIOrchestrator implements Runnable {
      */
     private void businessLogic() {
         if (schedulerRunning) {
-            visualization.pushState(watchedScheduler.getCurrentState());
             visualization.pushSchedule(watchedScheduler.getCurrentSchedule(), watchedScheduler.getSchedulesSearched());
         }
-
+        visualization.pushState(watchedScheduler.getCurrentState());
         Runtime runtime = Runtime.getRuntime();
         visualization.pushMemoryUsage(runtime.totalMemory() - runtime.freeMemory());
     }

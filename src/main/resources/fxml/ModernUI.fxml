@@ -110,8 +110,8 @@
                                           </VBox>
                                           <AnchorPane prefHeight="228.0" prefWidth="425.0">
                                              <children>
-                                                <Label fx:id="timeElapsedLabel" alignment="CENTER" layoutY="206.0" prefHeight="46.0" prefWidth="302.0" text="Label" />
-                                                <Label fx:id="programStatusLabel" alignment="CENTER" layoutX="-27.0" layoutY="65.0" prefHeight="61.0" prefWidth="365.0" styleClass="statusLabel" text="Done" textAlignment="CENTER" />
+                                                <Label fx:id="timeElapsedLabel" alignment="CENTER" layoutY="206.0" prefHeight="46.0" prefWidth="312.0" text="Label" />
+                                                <Label fx:id="programStatusLabel" alignment="CENTER" layoutX="-26.0" layoutY="81.0" prefHeight="61.0" prefWidth="365.0" styleClass="statusLabel" text="Done" textAlignment="CENTER" />
                                                 <ProgressIndicator fx:id="progressIndicator" layoutX="31.0" layoutY="44.0" prefHeight="149.0" prefWidth="250.0" progress="0.0" styleClass="progressIndicator" />
                                                 <Label fx:id="currentCostLabel" alignment="TOP_CENTER" prefHeight="46.0" prefWidth="302.0" textAlignment="CENTER" />
                                              </children></AnchorPane>
