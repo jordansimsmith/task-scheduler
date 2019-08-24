@@ -55,7 +55,7 @@ public class FXController implements IVisualization, Initializable {
     // For cpu visualisation
     @FXML
     private VBox cpuVBox;
-    LineChart<Number, Number> cpuChart;
+    private LineChart<Number, Number> cpuChart;
     private List<XYChart.Series<Number, Number>> cpuUsageSeries = new ArrayList<>();
 
     private double cpuStartTime;
@@ -63,7 +63,7 @@ public class FXController implements IVisualization, Initializable {
     // For memory visualisation
     @FXML
     private VBox memoryVbox;
-    ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();;
+    private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();;
 
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
     private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
