@@ -73,9 +73,13 @@ public class App extends Application {
             return;
         }
 
-        // Get scheduler
+        // construct scheduler
         SchedulerFactory factory = new SchedulerFactory();
-        scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        if (Config.getInstance().isVisualise()) {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.BNB);
+        } else {
+            scheduler = factory.createScheduler(SchedulerFactory.SchedulerType.ASTAR);
+        }
 
         // Start visuals
         if (config.isVisualise()) {
