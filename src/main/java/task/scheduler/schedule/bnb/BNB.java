@@ -79,7 +79,7 @@ public class BNB implements IScheduler {
                         Schedule child = s.expand(node, p);
 
                         // pruning
-                        if (child.getTotalCost() <= this.upperBound.get()) {
+                        if (child.getHeuristicValue() <= this.upperBound.get()) {
 
                             // duplicate detection
                             if (!seenSchedules.contains(child.getScheduleString())) {
