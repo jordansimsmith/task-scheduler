@@ -110,6 +110,7 @@ public class FXController implements IVisualization, Initializable {
 
         String finalPercentageToPrint = percentageToPrint;
         Platform.runLater(() -> {
+            currentCostLabel.setText("Cost of schedule: " + schedule.getTotalCost());
             // First element is log value and second element is the total value
             pieChartData.get(0).setPieValue(Math.log(schedulesSearched));
             pieChartData.get(1).setPieValue(this.schedulesUpperBoundLog);
