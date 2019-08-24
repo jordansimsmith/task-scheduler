@@ -63,7 +63,8 @@ public class FXController implements IVisualization, Initializable {
     // For memory visualisation
     @FXML
     private VBox memoryVbox;
-    private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();;
+    private ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+    ;
 
     private XYChart.Series<Number, Number> memoryUsageSeries = new XYChart.Series<>();
     private SchedulingVisualizationAdapter scheduleVisualiser = SchedulingVisualizationAdapter.getInstance();
@@ -100,12 +101,12 @@ public class FXController implements IVisualization, Initializable {
         // update partial schedule displayed
         this.scheduleVisualiser.populateVisual(this.graph, schedule);
         // Update progress bar status
-        String percentageScheduled = String.valueOf(BigDecimal.valueOf(schedulesSearched * 100).divide(schedulesUpperBound,30, RoundingMode.HALF_UP));
+        String percentageScheduled = String.valueOf(BigDecimal.valueOf(schedulesSearched * 100).divide(schedulesUpperBound, 30, RoundingMode.HALF_UP));
         String percentageToPrint = "Total search space searched: " + percentageScheduled.substring(0, 4);
-        if(percentageScheduled.contains("E")){
+        if (percentageScheduled.contains("E")) {
             percentageToPrint = percentageToPrint + percentageScheduled.substring(percentageScheduled.indexOf("E")) + " %";
         } else {
-            percentageToPrint = percentageToPrint +  " %";
+            percentageToPrint = percentageToPrint + " %";
         }
 
         String finalPercentageToPrint = percentageToPrint;
@@ -128,16 +129,14 @@ public class FXController implements IVisualization, Initializable {
     public void pushState(IScheduler.SchedulerState newState) {
         // update scheduler state and set title
         this.schedulerState = newState;
-        if (newState == IScheduler.SchedulerState.FINISHED){
+        if (newState == IScheduler.SchedulerState.FINISHED) {
             Platform.runLater(() -> {
                 progressIndicator.setVisible(false);
                 programStatusLabel.setVisible(true);
             });
-
-
         }
-        Platform.runLater(() -> {
 
+        Platform.runLater(() -> {
             Stage stage = (Stage) this.outputGraphVBox.getScene().getWindow();
             stage.setTitle(getTitle());
         });
@@ -145,6 +144,7 @@ public class FXController implements IVisualization, Initializable {
 
     /**
      * Pushes RAM usage stats
+     *
      * @param ramUsage RAM usage in bytes
      */
     @Override
@@ -155,11 +155,17 @@ public class FXController implements IVisualization, Initializable {
         }
         double timeElapsed = (System.currentTimeMillis() - this.memoryStartTime) / 1000;
 
+        // update ram usage
         Platform.runLater(() -> {
             this.memoryUsageSeries.getData().add(new XYChart.Data<>(timeElapsed, ramUsage / (1024 * 1024)));
-            //Updating time elapsed label
-            timeElapsedLabel.setText("Time Elapsed: " + Math.ceil(timeElapsed));
         });
+
+        // update time elapsed label if running
+        if (this.schedulerState == IScheduler.SchedulerState.RUNNING) {
+            Platform.runLater(() -> {
+                timeElapsedLabel.setText("Time Elapsed: " + Math.ceil(timeElapsed));
+            });
+        }
     }
 
     /**
@@ -168,14 +174,14 @@ public class FXController implements IVisualization, Initializable {
     @Override
     public void pushCPUUsage(List<Double> perCoreUsage) {
         Platform.runLater(() -> {
-            for (int i = 0; i <  perCoreUsage.size(); i++) {
-                if (this.cpuStartTime < 1)  {
+            for (int i = 0; i < perCoreUsage.size(); i++) {
+                if (this.cpuStartTime < 1) {
                     this.cpuStartTime = System.currentTimeMillis();
                 }
                 double timeElapsed = (System.currentTimeMillis() - this.cpuStartTime) / 1000;
 
-                if (this.cpuUsageSeries.size() <= i)   {
-                    XYChart.Series<Number,Number> trend = new XYChart.Series<>();
+                if (this.cpuUsageSeries.size() <= i) {
+                    XYChart.Series<Number, Number> trend = new XYChart.Series<>();
                     this.cpuChart.getData().add(trend);
                     this.cpuUsageSeries.add(trend);
                 }
@@ -210,7 +216,7 @@ public class FXController implements IVisualization, Initializable {
         memoryChart.prefHeightProperty().bind(this.memoryVbox.heightProperty());
     }
 
-    private void initialiseCPUUsage()   {
+    private void initialiseCPUUsage() {
         NumberAxis cpuXAxis = new NumberAxis();
         cpuXAxis.setLabel("Time (s)");
         NumberAxis cpuYAxis = new NumberAxis();
@@ -228,7 +234,7 @@ public class FXController implements IVisualization, Initializable {
     }
 
     /**
-     *  initialise input graph visualisation
+     * initialise input graph visualisation
      */
     private void initialiseInputGraph() {
         new Thread(() -> {
@@ -244,10 +250,10 @@ public class FXController implements IVisualization, Initializable {
         }).start();
     }
 
-    private void initialiseChartData(){
+    private void initialiseChartData() {
         //The order that this gets added into the observable matters as it gets accessed using index values later
-        pieChartData.add(new PieChart.Data("Log Searched States", 0) );
-        pieChartData.add(new PieChart.Data("Log All States", 0) );
+        pieChartData.add(new PieChart.Data("Log Searched States", 0));
+        pieChartData.add(new PieChart.Data("Log All States", 0));
         dataChart.setData(pieChartData);
         dataChart.setLegendVisible(false);
 
