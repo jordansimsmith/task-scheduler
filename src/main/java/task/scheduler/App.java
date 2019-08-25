@@ -38,13 +38,13 @@ public class App extends Application {
 
         // parse input arguments
         ArgumentParser argumentParser = new ArgumentParser();
-        Config config;
+        Config config = null;
         try {
             config = argumentParser.parse(args);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage());
             argumentParser.printHelp();
-            return;
+            System.exit(1);
         }
 
         // display results
@@ -59,11 +59,11 @@ public class App extends Application {
             graph = new Graph(config.getInputFile());
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+            System.exit(1);
         } catch (DotFormatException e) {
             logger.error("There was an error in the input dot file");
             logger.error(e.getMessage());
-            return;
+            System.exit(1);
         }
 
         // validation
@@ -73,7 +73,7 @@ public class App extends Application {
         } catch (GraphException e) {
             logger.error("Validation failure. Check your graph!");
             e.printStackTrace();
-            return;
+            System.exit(1);
         }
 
         // construct scheduler
