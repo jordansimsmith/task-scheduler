@@ -1,6 +1,6 @@
 # Task Scheduler - Group 13
 This project is about using artificial intelligence (AI) and parallel processing power to solve a
-difficult scheduling problem.
+difficult scheduling problem. In its general form, this scheduling problem belongs to the class of so called NP-hard problems.
 
 [![CircleCI](https://circleci.com/gh/jordansimsmith/task-scheduler/tree/master.svg?style=svg&circle-token=c48171477558fe26614b73a159c316c8658e152b)](https://circleci.com/gh/jordansimsmith/task-scheduler/tree/master)
 
