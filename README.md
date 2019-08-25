@@ -45,7 +45,8 @@ Project boards, issue tracking and pull requests were used to aid project manage
 - **CPU/Memory:** These panels show the current performance of the hardware while Task Scheduler is active.
 
 ### Performance Disclaimer
-- When the user interface is enabled (`-v` flag), Task Scheduler throttles/uses a less intensive algorithm to provide a smoother user experience. **If timing is critical, please run the program without visualisation enabled.**
+When the user interface is enabled (`-v` flag), Task Scheduler throttles/uses a less intensive algorithm to provide a smoother user experience. 
+> **If timing is critical, please run the program without visualisation enabled.**
 
 ## Team members
 - Reshad Contractor - res550 - Rcon954
