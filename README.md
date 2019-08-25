@@ -48,8 +48,10 @@ Project boards, issue tracking and pull requests were used to aid project manage
 - When the user interface is enabled (`-v` flag), Task Scheduler throttles/uses a less intensive algorithm to provide a smoother user experience. **If timing is critical, please run the program without visualisation enabled.**
 
 ## Team members
-- Reshad Contractor - res550 - Rcon954
-- Harrison Leach - HarrisonLeach1 - Hlea849
-- Nidhinesh Nand - nidhineshnand - Nnan773
-- Jed Robertson - JedLJRobertson - Jrob928
-- Jordan Sim-Smith - jordansimsmith - Jsim862
+| Name               | GitHub Username | UoA UPI |
+|--------------------|:---------------:|---------|
+| Reshad Contractor  | res550          | Rcon954 |
+| Harrison Leach     | HarrisonLeach1  | Hlea849 |
+| Nidhinesh Nand     | nidhineshnand   | Nnan773 |
+| Jed Robertson      | JedLJRobertson  | Jrob928 |
+| Jordan Sim-Smith   | jordansimsmith  | Jsim862 |
