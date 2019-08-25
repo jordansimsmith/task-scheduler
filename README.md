@@ -1,6 +1,6 @@
 # Task Scheduler - Group 13
 This project is about using artificial intelligence (AI) and parallel processing power to solve a
-difficult scheduling problem.
+difficult scheduling problem. In its general form, this scheduling problem belongs to the class of so called NP-hard problems.
 
 [![CircleCI](https://circleci.com/gh/jordansimsmith/task-scheduler/tree/master.svg?style=svg&circle-token=c48171477558fe26614b73a159c316c8658e152b)](https://circleci.com/gh/jordansimsmith/task-scheduler/tree/master)
 
@@ -49,8 +49,10 @@ When the user interface is enabled (`-v` flag), Task Scheduler throttles/uses a 
 > **If timing is critical, please run the program without visualisation enabled.**
 
 ## Team members
-- Reshad Contractor - res550 - Rcon954
-- Harrison Leach - HarrisonLeach1 - Hlea849
-- Nidhinesh Nand - nidhineshnand - Nnan773
-- Jed Robertson - JedLJRobertson - Jrob928
-- Jordan Sim-Smith - jordansimsmith - Jsim862
+| Name               | GitHub Username | UoA UPI |
+|--------------------|:---------------:|---------|
+| Reshad Contractor  | res550          | Rcon954 |
+| Harrison Leach     | HarrisonLeach1  | Hlea849 |
+| Nidhinesh Nand     | nidhineshnand   | Nnan773 |
+| Jed Robertson      | JedLJRobertson  | Jrob928 |
+| Jordan Sim-Smith   | jordansimsmith  | Jsim862 |
