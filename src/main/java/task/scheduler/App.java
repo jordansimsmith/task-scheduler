@@ -20,6 +20,7 @@ import task.scheduler.schedule.ISchedule;
 import task.scheduler.schedule.IScheduler;
 import task.scheduler.schedule.SchedulerFactory;
 import task.scheduler.ui.FXController;
+import task.scheduler.ui.IVisualization;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,6 +30,8 @@ public class App extends Application {
 
     private static IGraph graph;
     private static IScheduler scheduler;
+
+    private IVisualization controller;
 
     public static void main(String[] args) {
         logger.info("Task Scheduler starting.");
@@ -113,11 +116,16 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
         Font.loadFont(getClass().getResource("/fonts/BebasNeue-Regular.ttf").toExternalForm(), 10);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ModernUI.fxml"));
-        FXController controller = new FXController(graph, scheduler);
+        controller = new FXController(graph, scheduler);
         loader.setController(controller);
         stage.setTitle("Task Scheduler");
         stage.setScene(new Scene(loader.load(), 1300, 960));
         stage.setResizable(false);
         stage.show();
+    }
+
+    @Override
+    public void stop(){
+        controller.gracefulStop();
     }
 }

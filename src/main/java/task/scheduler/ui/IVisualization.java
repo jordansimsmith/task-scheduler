@@ -32,4 +32,9 @@ public interface IVisualization {
      * @param perCoreUsage 0-1 double per CPU core expressing usage fraction
      */
     void pushCPUUsage(List<Double> perCoreUsage);
+
+    /*
+    * Gracefully clean up the interface for a stop
+     */
+    void gracefulStop();
 }
