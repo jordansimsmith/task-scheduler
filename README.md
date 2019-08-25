@@ -20,7 +20,7 @@ Optional:
 −v visualise the search
 −o OUTPUT.dot output file is named OUTPUT.dot (default is INPUT−output.dot)
 ```
-To run the project, ensure you have Oracle JDK 8 installed. Refer to the help message above for command line arguments.
+To run the project, ensure you have Oracle JDK 8 installed. Refer to the help message above for command line arguments. The project is developed to run on Linux, specifically the UoA lab computer builds. For visualisation, make sure you have mpstat (from the sysstat package) installed if running in another Linux environment. 
 
 ## Project documentation
 Please refer to the project Wiki for comprehensive documentation regarding the development of this project. Key areas of the wiki are linked below.
