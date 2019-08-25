@@ -62,6 +62,7 @@ public class UIOrchestratorCPUMonitor implements Runnable {
                 logger.error("Error while polling CPU statistics");
                 e.printStackTrace();
             } catch (InterruptedException e)    {
+                logger.info("UI CPU Monitor shutting down.");
                 return;
             }
         }

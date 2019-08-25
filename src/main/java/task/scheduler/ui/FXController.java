@@ -12,6 +12,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import task.scheduler.common.Config;
 import task.scheduler.graph.IGraph;
 import task.scheduler.schedule.ISchedule;
@@ -31,6 +33,10 @@ import java.util.StringJoiner;
 public class FXController implements IVisualization, Initializable {
 
     private static final int UPDATE_INTERVAL_MS = 1000;
+
+    private static final Logger logger = LoggerFactory.getLogger(FXController.class);
+
+    private Thread uiOrchestrator;
 
     /**
      * FXML linked elements
@@ -287,6 +293,13 @@ public class FXController implements IVisualization, Initializable {
         this.schedulesUpperBoundLog = this.graph.getSchedulesUpperBoundLog();
 
         // set up orchestrator to poll model for updates
-        new Thread(new UIOrchestrator(this.scheduler, this, UPDATE_INTERVAL_MS)).start();
+        uiOrchestrator = new Thread(new UIOrchestrator(this.scheduler, this, UPDATE_INTERVAL_MS));
+        uiOrchestrator.start();
+    }
+
+
+    public void gracefulStop() {
+        logger.info("Gracefully shutting down UI");
+        uiOrchestrator.interrupt();
     }
 }
