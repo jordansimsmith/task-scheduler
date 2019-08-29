@@ -56,3 +56,7 @@ When the user interface is enabled (`-v` flag), Task Scheduler throttles/uses a 
 | Nidhinesh Nand     | nidhineshnand   | Nnan773 |
 | Jed Robertson      | JedLJRobertson  | Jrob928 |
 | Jordan Sim-Smith   | jordansimsmith  | Jsim862 |
+
+## Awards
+- First place for fastest sequential execution, averaged over 5 12 node graphs.
+- Third place for best search visualisation
